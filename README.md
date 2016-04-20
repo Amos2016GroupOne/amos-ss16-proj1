@@ -18,4 +18,5 @@ Install and build:
 
 Run:
 
-- cordova emulate OR cordova run
+- `cordova emulate` OR `cordova run` OR (if you have no sdk's installed yet: `cordova run browser --target=chromium`
+
