@@ -1,5 +1,5 @@
 # inspired by https://thesabbir.com/continuous-integration-with-cordova-android-applications/
-#language: android
+language: android
 sudo: required
 android:
         components:
