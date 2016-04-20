@@ -1,6 +1,8 @@
 # inspired by https://thesabbir.com/continuous-integration-with-cordova-android-applications/
 language: android
 sudo: required
+#services:
+        #docker
 android:
         components:
                 - build-tools-23.0.3 # Specify your build tools verison
@@ -8,33 +10,33 @@ android:
 env: # Envirement Variables
 global:
 before_install:
-# Commands to excecute before install
-- echo "Before install stage"
+        # Commands to excecute before install
+        - echo "Before install stage"
 install:
-# Specify what and how to install
-- echo "Install stage"
-- curl --silent --location https://deb.nodesource.com/setup | sudo bash -
-- sudo apt-get install -y nodejs
-- sudo npm -g cordova
-# TODO as shown in the inspired by link: use npm i --save ;)
-- sudo npm i
-- cordova prepare
+        # Specify what and how to install
+        - echo "Install stage"
+        - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
+        - sudo apt-get install -y nodejs
+        - sudo npm install -g cordova
+        # TODO as shown in the inspired by link: use npm i --save ;)
+        - sudo npm i
+        - cordova prepare
 before_script:
-# Commands to excecute before running tests
-- echo "Before script stage"
+        # Commands to excecute before running tests
+        - echo "Before script stage"
 script:
-# Run tests
-- echo "Running tests"
-- cordova build
-- echo "Starting build"
-- cordova run browser
-# TODO^^ test cases!
+        # Run tests
+        - echo "Running tests"
+        - cordova build
+        - echo "Starting build"
+        - cordova run browser
+        # TODO^^ test cases!
 after_success:
-# You can do thing after success
-- echo "Build success"
+        # You can do thing after success
+        - echo "Build success"
 after_failure:
-# What if your test fails?
-- echo "After failure stage"
+        # What if your test fails?
+        - echo "After failure stage"
 after_script:
-# Do things anyway after script/test pass or not
-- echo "After script stage"
+        # Do things anyway after script/test pass or not
+        - echo "After script stage"
