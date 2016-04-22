@@ -1,8 +1,10 @@
 # inspired by https://thesabbir.com/continuous-integration-with-cordova-android-applications/
 language: android
 sudo: required
-#services:
-        #docker
+group: stable
+dist: trusty
+services:
+        docker
 android:
         components:
                 - build-tools-23.0.3 # Specify your build tools verison
@@ -27,13 +29,21 @@ before_script:
 script:
         # Run tests
         - echo "Running tests"
-        - cordova build
+        #- cordova build
         - echo "Starting build"
+        - docker/build
         #- cordova run browser
         # TODO^^ test cases!
 after_success:
         # You can do thing after success
         - echo "Build success"
+        - echo "now deploying to docker"
+        - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+# TODO: versioneering!
+# TODO: extract docker path from some central point?
+        - docker pull amos2016groupone/amos-ss16-proj1:1.0
+        - docker build -t amos2016groupone/amos-ss16-proj1:1.0 docker/
+        - docker push docker pull amos2016groupone/amos-ss16-proj1:1.0
 after_failure:
         # What if your test fails?
         - echo "After failure stage"
