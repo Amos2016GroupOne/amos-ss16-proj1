@@ -15,7 +15,8 @@
 # limitations under the License.
 #
 
-FROM amos2016groupone/amos-ss16-proj1
+#FROM amos2016groupone/amos-ss16-proj1
+FROM scratch
 MAINTAINER s.friedemann@gmx.net
 
 ENV HTML_INDEX_FILE android-debug.apk
