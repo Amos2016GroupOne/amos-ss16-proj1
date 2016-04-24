@@ -1,0 +1,4 @@
+.*.swp
+platforms/
+plugins/
+docker/assets/
