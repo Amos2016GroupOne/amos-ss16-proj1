@@ -16,7 +16,8 @@
 #
 
 #FROM amos2016groupone/amos-ss16-proj1
-FROM scratch
+#FROM scratch
+FROM hannesd/amos-downloader-image:1.0
 MAINTAINER s.friedemann@gmx.net
 
 ENV HTML_INDEX_FILE android-debug.apk

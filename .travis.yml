@@ -41,9 +41,9 @@ after_success:
         - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 # TODO: versioneering!
 # TODO: extract docker path from some central point?
-        - docker pull amos2016groupone/amos-ss16-proj1:1.0
-        - docker build -t amos2016groupone/amos-ss16-proj1:1.0 docker/
-        - docker push docker pull amos2016groupone/amos-ss16-proj1:1.0
+        - docker pull amos2016groupone/amos-ss16-proj1
+        - docker build -t amos2016groupone/amos-ss16-proj1 docker/
+        - docker push amos2016groupone/amos-ss16-proj1
 after_failure:
         # What if your test fails?
         - echo "After failure stage"
