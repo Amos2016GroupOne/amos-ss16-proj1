@@ -1,1 +1,3 @@
-var app = angular.module('helloWorld', []);
+var helloWorldModule = angular.module('helloWorld', []);
+
+helloWorldModule.controller('HelloController', function(){});
