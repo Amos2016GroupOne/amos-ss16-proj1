@@ -16,35 +16,119 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+ /*
+ Not 100% stable. More a 80% thing. Need a better check if the device is still available before the app crashes.
+ 
+ How to use:
+ cordova platform add android
+ cordova run android
+ 
+ */
+ 
+'use strict';
+
+var barometer = {
+    service: "F000AA40-0451-4000-B000-000000000000",
+    data: "F000AA41-0451-4000-B000-000000000000",
+    notification: "F0002902-0451-4000-B000-000000000000",
+    configuration: "F000AA42-0451-4000-B000-000000000000",
+    period: "F000AA43-0451-4000-B000-000000000000"
+};
+
 var app = {
-    // Application Constructor
+	// Application Constructor
     initialize: function() {
         this.bindEvents();
+        devicePage.hidden = true;
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
+	// Bind Event Listeners
+	//
+	// Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.	
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        SensorTagList.addEventListener('touchstart', this.connect, false);
+		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
+        disconnectButton.addEventListener('touchstart', this.disconnect, false);        
     },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
+	// Scan for SensorTags, after startup
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+        app.refreshSensorTagList();
     },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+	// Update the List of Devices
+    refreshSensorTagList: function() {
+        SensorTagList.innerHTML = '';
+        // scan for all devices. need to put something in ble(['filter']) to scan only for CC2560 SensorTags, not sure what
+        ble.scan([], 5, app.onDiscoverDevice, app.onError);
+    },
+	// Show details of a device
+    onDiscoverDevice: function(device) {
+        var listItem = document.createElement('li'),
+            html = '<b>' + device.name + '</b><br/>' +
+                'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
+                device.id;
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        listItem.dataset.deviceId = device.id;
+        listItem.innerHTML = html;
+        SensorTagList.appendChild(listItem);
+    },
+    connect: function(e) {
+        var deviceId = e.target.dataset.deviceId,
+            onConnect = function() {
 
-        console.log('Received Event: ' + id);
+                //Subscribe to barometer service
+                ble.startNotification(deviceId, barometer.service, barometer.data, app.onBarometerData, app.onError);
+
+                //Turn on barometer
+                var barometerConfig = new Uint8Array(1);
+                barometerConfig[0] = 0x01;
+                ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
+                    function() { console.log("Started barometer."); },app.onError);
+
+                //Associate the deviceID with the disconnect button
+                disconnectButton.dataset.deviceId = deviceId;
+                app.showDevicePage();
+            };
+
+        ble.connect(deviceId, onConnect, app.onError);
+    },
+
+    
+    sensorBarometerConvert: function(data){
+        return (data / 100);
+
+    },
+    onBarometerData: function(data) {
+         console.log(data);
+         var message;
+         var a = new Uint8Array(data);
+
+         //0-2 Temp
+         //3-5 Pressure
+         message =  "Temperature <br/>" +
+                    app.sensorBarometerConvert( a[0] | (a[1] << 8) | (a[2] << 16)) + "°C <br/><br/ >" +
+                    "Pressure <br/>" +
+                    app.sensorBarometerConvert( a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa <br/><br />" ;
+
+
+        barometerData.innerHTML = message;
+
+    },
+    disconnect: function(event) {
+        var deviceId = event.target.dataset.deviceId;
+        ble.disconnect(deviceId, app.showOverviewPage, app.onError);
+    },
+    showOverviewPage: function() {
+        overviewPage.hidden = false;
+        devicePage.hidden = true;
+    },
+    showDevicePage: function() {
+        overviewPage.hidden = true;
+        devicePage.hidden = false;
+    },
+    onError: function(reason) {
+        alert("ERROR: " + reason);
     }
 };
 
