@@ -52,8 +52,22 @@ var app = {
 		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
         disconnectButton.addEventListener('touchstart', this.disconnect, false);        
     },
-	// Scan for SensorTags, after startup
     onDeviceReady: function() {
+        //check if the device supports Bluetooth Low Energy
+        try {
+            //Android: will only work if the BluetoothManager class is present. So Android 4.3 is required as earlier versions dont have this class
+            cordova.plugins.BluetoothStatus.initPlugin();
+            if(!BluetoothStatus.hasBTLE){
+                //The device has sufficient Android version but does not have BTLE hardware
+                navigator.notification.alert("Sorry. Your device does not support BTLE!", function(){navigator.app.exitApp();});
+                return;
+            }
+        }catch(e){
+            //BluetoothStatus was undefined because initPlugin did not work -> probably the phone does not have BT
+            navigator.notification.alert("Sorry. Your device does not support BTLE!", function(){navigator.app.exitApp();});
+            return;
+        }
+        // Scan for SensorTags, after startup
         app.refreshSensorTagList();
     },
 	// Update the List of Devices
@@ -130,6 +144,7 @@ var app = {
     onError: function(reason) {
         alert("ERROR: " + reason);
     }
+    
 };
 
 app.initialize();
