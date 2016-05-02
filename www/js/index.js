@@ -48,9 +48,11 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.	
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        //onBTenabled is called as soon as the user enables Bluetooth
+        addEventListener('BluetoothStatus.enabled', this.onBTenabled, false);
         SensorTagList.addEventListener('touchstart', this.connect, false);
 		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
-        disconnectButton.addEventListener('touchstart', this.disconnect, false);        
+        disconnectButton.addEventListener('touchstart', this.disconnect, false);
     },
     onDeviceReady: function() {
         //check if the device supports Bluetooth Low Energy
@@ -67,7 +69,20 @@ var app = {
             navigator.notification.alert("Sorry. Your device does not support BTLE!", function(){navigator.app.exitApp();});
             return;
         }
-        // Scan for SensorTags, after startup
+        //if we get here the device support BTLE
+        ble.isEnabled(
+            function() {
+                //this function is called if BT is enabled
+                app.onBTenabled();
+            },
+            function() {
+                //this function is called if BT is not enabled
+                navigator.notification.alert("Bluetooth is not enabled on your phone. Please turn it on to continue!", function(){});
+            }
+        );
+    },
+    onBTenabled: function () {
+        // Scan for SensorTags, after Bluetooth was enabled
         app.refreshSensorTagList();
     },
 	// Update the List of Devices
