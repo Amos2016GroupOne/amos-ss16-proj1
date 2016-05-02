@@ -12,7 +12,7 @@ Android:
 
 Install and build:
 
-- npm install -g cordova
+- npm install -g cordova cordova-icon
 - cordova prepare
 - cordova build
 
