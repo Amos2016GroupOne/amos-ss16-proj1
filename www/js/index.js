@@ -50,7 +50,7 @@ var app = {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         //onBTenabled is called as soon as the user enables Bluetooth
         addEventListener('BluetoothStatus.enabled', this.onBTenabled, false);
-        SensorTagList.addEventListener('touchstart', this.connect, false);
+        SensorTagList.addEventListener('touchstart', this.wrap_connect, false);
 		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
         disconnectButton.addEventListener('touchstart', this.disconnect, false);        
     },
@@ -85,16 +85,15 @@ var app = {
                                 navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function(){navigator.app.exitApp();});
                             }
                         );
+                    }
+                );
             }
-        );
-            }
-        }, 1000);
-        
-        
+        }, 1000);     
     },
     onBTenabled: function () {
         // Scan for SensorTags, after Bluetooth was enabled
-        app.refreshSensorTagList();
+        lastConDevice.innerHTML = "<br><br>Last connecte device: <br>" + app.getLastCon();
+        ble.scan([], 1, app.oldConnection, app.onError);
     },
 	// Update the List of Devices
     refreshSensorTagList: function() {
@@ -102,10 +101,22 @@ var app = {
         // scan for all devices. need to put something in ble(['filter']) to scan only for CC2560 SensorTags, not sure what
         ble.scan([], 5, app.onDiscoverDevice, app.onError);
     },
+	// Restore old Connection
+    oldConnection: function(device) {
+        //if(device.id == "B0:B4:48:D2:EC:03")
+		if(device.id == app.getLastCon())
+		{
+			reconnectMessage.innerHTML = "Reconnecting...";
+			app.connect(device.id);
+		}
+		
+		// Make the List on Startup-Page
+		app.onDiscoverDevice(device);
+    },
 	// Show details of a device
     onDiscoverDevice: function(device) {
         var listItem = document.createElement('li'),
-            html = '<b>' + device.name + '</b><br/>' +
+            html = device.name + '<br/>' +
                 'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
                 device.id;
 
@@ -113,24 +124,33 @@ var app = {
         listItem.innerHTML = html;
         SensorTagList.appendChild(listItem);
     },
-    connect: function(e) {
-        var deviceId = e.target.dataset.deviceId,
-            onConnect = function() {
+	wrap_connect: function(e) {
+        var deviceId = e.target.dataset.deviceId;
+		app.connect(deviceId);
+	},
+	connect: function(deviceId) {
+        
+		var onConnect = function() {
 
-                //Subscribe to barometer service
-                ble.startNotification(deviceId, barometer.service, barometer.data, app.onBarometerData, app.onError);
+			//Subscribe to barometer service
+			ble.startNotification(deviceId, barometer.service, barometer.data, app.onBarometerData, app.onError);
 
-                //Turn on barometer
-                var barometerConfig = new Uint8Array(1);
-                barometerConfig[0] = 0x01;
-                ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
-                    function() { console.log("Started barometer."); },app.onError);
+			//Turn on barometer
+			var barometerConfig = new Uint8Array(1);
+			barometerConfig[0] = 0x01;
+			ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
+				function() { console.log("Started barometer."); },app.onError);
 
-                //Associate the deviceID with the disconnect button
-                disconnectButton.dataset.deviceId = deviceId;
-                app.showDevicePage();
+			//Associate the deviceID with the disconnect button
+			disconnectButton.dataset.deviceId = deviceId;
+			app.showDevicePage();
             };
 
+		reconnectMessage.innerHTML = "Connecting...";
+			
+		// Save deviceId as last connected one
+		app.setLastCon(deviceId);
+			
         ble.connect(deviceId, onConnect, app.onError);
     },
 
@@ -164,13 +184,19 @@ var app = {
         devicePage.hidden = true;
     },
     showDevicePage: function() {
+		reconnectMessage.innerHTML = '';
         overviewPage.hidden = true;
         devicePage.hidden = false;
     },
     onError: function(reason) {
         alert("ERROR: " + reason);
-    }
-    
+    },
+	getLastCon: function() {
+		return localStorage.getItem("lastCon");
+	},
+	setLastCon: function(deviceId) {
+		localStorage.setItem("lastCon", deviceId);
+	}
 };
 
 app.initialize();
