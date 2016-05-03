@@ -77,6 +77,14 @@ var app = {
             function() {
                 //this function is called if BT is not enabled
                 navigator.notification.alert("Bluetooth is not enabled on your phone. Please turn it on to continue!", function(){});
+                ble.enable(
+                    function() {
+                        app.onBTenabled();
+                    },
+                    function() {
+                        navigator.app.exitApp();
+                    }
+                );
             }
         );
     },
