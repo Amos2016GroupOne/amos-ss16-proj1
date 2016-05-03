@@ -40,20 +40,12 @@
     <body ng-app="helloWorld">
         <div class="app" ng-controller="HelloController as helloCtrl">
             <h1>Sensor Tag</h1>
-            <!-- <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div> -->
-            <p>Without Angular:</p>
-            <h1>Hello World!</h1>
-            <p>now with Angular (using expressions):<p>
-            <h1>{{"Hello" + " World "}}</h1>
-            <h1>1 + 4 = {{1 + 4}}</h1>
-            <h1>{{helloCtrl.hello}}</h1>
+            
             <div id="overviewPage">
 				<h2 id="reconnectMessage"></h2>
                 <ul id="SensorTagList"> </ul>
                 <button id="btnRefresh">Scan for Devices</button>
+				<span id="lastConDevice"></span>
             </div>
             <div id="devicePage">
                 <div id="barometerData">no data...</div>

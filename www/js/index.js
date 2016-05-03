@@ -50,7 +50,6 @@ var app = {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         //onBTenabled is called as soon as the user enables Bluetooth
         addEventListener('BluetoothStatus.enabled', this.onBTenabled, false);
-        SensorTagList.addEventListener('touchstart', this.connect, false);
         SensorTagList.addEventListener('touchstart', this.wrap_connect, false);
 		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
         disconnectButton.addEventListener('touchstart', this.disconnect, false);        
@@ -93,6 +92,7 @@ var app = {
     },
     onBTenabled: function () {
         // Scan for SensorTags, after Bluetooth was enabled
+        lastConDevice.innerHTML = "<br><br>Last connecte device: <br>" + app.getLastCon();
         ble.scan([], 1, app.oldConnection, app.onError);
     },
 	// Update the List of Devices
@@ -103,7 +103,8 @@ var app = {
     },
 	// Restore old Connection
     oldConnection: function(device) {
-        if(device.id == "B0:B4:48:D2:EC:03")
+        //if(device.id == "B0:B4:48:D2:EC:03")
+		if(device.id == app.getLastCon())
 		{
 			reconnectMessage.innerHTML = "Reconnecting...";
 			app.connect(device.id);
@@ -145,6 +146,11 @@ var app = {
 			app.showDevicePage();
             };
 
+		reconnectMessage.innerHTML = "Connecting...";
+			
+		// Save deviceId as last connected one
+		app.setLastCon(deviceId);
+			
         ble.connect(deviceId, onConnect, app.onError);
     },
 
@@ -184,8 +190,13 @@ var app = {
     },
     onError: function(reason) {
         alert("ERROR: " + reason);
-    }
-    
+    },
+	getLastCon: function() {
+		return localStorage.getItem("lastCon");
+	},
+	setLastCon: function(deviceId) {
+		localStorage.setItem("lastCon", deviceId);
+	}
 };
 
 app.initialize();
