@@ -67,26 +67,30 @@ var app = {
                 navigator.notification.alert("Sorry. Your device does not support BTLE!", function(){navigator.app.exitApp();});
                 return;
             }
-        }, 1000);
-        
-        ble.isEnabled(
-            function() {
-                //BT was already enabled when the app started. this function is called if BT is currently enabled
-                app.onBTenabled();
-            },
-            function() {
-                //this function is called if BT is not enabled
-                navigator.notification.alert("Bluetooth is not enabled on your phone. Please turn it on to continue!", function(){});
-                ble.enable(
+            else
+            {
+                ble.isEnabled(
                     function() {
+                        //BT was already enabled when the app started. this function is called if BT is currently enabled
                         app.onBTenabled();
                     },
                     function() {
-                        navigator.app.exitApp();
-                    }
-                );
+                        //this function is called if BT is not enabled
+                        navigator.notification.alert("Bluetooth is not enabled on your phone. Please turn it on to continue!", function(){});
+                        ble.enable(
+                            function() {
+                                app.onBTenabled();
+                            },
+                            function() {
+                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function(){navigator.app.exitApp();});
+                            }
+                        );
             }
         );
+            }
+        }, 1000);
+        
+        
     },
     onBTenabled: function () {
         // Scan for SensorTags, after Bluetooth was enabled
