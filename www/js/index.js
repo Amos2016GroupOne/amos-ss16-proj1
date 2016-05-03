@@ -115,7 +115,7 @@ var app = {
 	// Show details of a device
     onDiscoverDevice: function(device) {
         var listItem = document.createElement('li'),
-            html = '<b>' + device.name + '</b><br/>' +
+            html = device.name + '<br/>' +
                 'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
                 device.id;
 
