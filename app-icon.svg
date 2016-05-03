@@ -23,20 +23,20 @@
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="188.70561"
-     inkscape:cy="128.13975"
+     inkscape:zoom="0.7"
+     inkscape:cx="362.9551"
+     inkscape:cy="136.71927"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      showgrid="false"
      showguides="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="705"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1020"
+     inkscape:window-height="557"
+     inkscape:window-x="0"
+     inkscape:window-y="41"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata4217">
     <rdf:RDF>
@@ -45,14 +45,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="hintergrund">
+     inkscape:label="hintergrund"
+     transform="translate(0,3.9370079e-6)">
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:12.9778223;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 18.367042,151.20774 17.062905,127.77402 C 47.339525,40.424756 127.11361,65.072204 149.19835,109.13664 c 14.46843,48.89532 -1.38952,77.95025 -31.25969,109.60259 -2.33801,7.68541 -1.86707,13.96632 -0.74138,19.91985 -4.44137,50.26026 -53.717951,59.19059 -72.839515,23.30655"
@@ -69,7 +70,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="controller">
+     inkscape:label="controller"
+     transform="translate(0,3.9370079e-6)">
     <rect
        style="fill:none;stroke:#000000;stroke-width:12.9778223;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4798"
