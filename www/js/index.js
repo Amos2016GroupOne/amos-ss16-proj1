@@ -48,6 +48,8 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.	
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        //onBTenabled is called as soon as the user enables Bluetooth
+        addEventListener('BluetoothStatus.enabled', this.onBTenabled, false);
         SensorTagList.addEventListener('touchstart', this.connect, false);
 		btnRefresh.addEventListener('touchstart', this.refreshSensorTagList, false);
         disconnectButton.addEventListener('touchstart', this.disconnect, false);        
@@ -65,9 +67,34 @@ var app = {
                 navigator.notification.alert("Sorry. Your device does not support BTLE!", function(){navigator.app.exitApp();});
                 return;
             }
+            else
+            {
+                ble.isEnabled(
+                    function() {
+                        //BT was already enabled when the app started. this function is called if BT is currently enabled
+                        app.onBTenabled();
+                    },
+                    function() {
+                        //this function is called if BT is not enabled
+                        navigator.notification.alert("Bluetooth is not enabled on your phone. Please turn it on to continue!", function(){});
+                        ble.enable(
+                            function() {
+                                app.onBTenabled();
+                            },
+                            function() {
+                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function(){navigator.app.exitApp();});
+                            }
+                        );
+            }
+        );
+            }
         }, 1000);
-        // Scan for SensorTags, after startup
-        //app.refreshSensorTagList();
+        
+        
+    },
+    onBTenabled: function () {
+        // Scan for SensorTags, after Bluetooth was enabled
+        app.refreshSensorTagList();
     },
 	// Update the List of Devices
     refreshSensorTagList: function() {
