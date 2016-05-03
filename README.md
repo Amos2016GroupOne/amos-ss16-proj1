@@ -12,7 +12,7 @@ Android:
 
 Install and build:
 
-- npm install -g cordova
+- npm install -g cordova cordova-icon
 - cordova prepare
 - cordova build
 
@@ -20,3 +20,8 @@ Run:
 
 - `cordova emulate` OR `cordova run` OR (if you have no sdk's installed yet: `cordova run browser --target=chromium`
 
+
+
+
+
+To regenerate icons from `app-icon.svg` execute `./generateAppIcons.sh`
