@@ -5,6 +5,7 @@ angular.module('app.controllers', [])
         $scope.devices = [];
 
         $scope.connected = false;
+	$scope.barometer = { temperature : "FREEZING HELL", pressure : "Inside of Jupiter"};
 
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
@@ -47,35 +48,32 @@ angular.module('app.controllers', [])
         }
 
         function onBarometerData(data) {
-            console.log(data);
             var message;
             var a = new Uint8Array(data);
+		$scope.$apply(function () {
 
-
-            $scope.barometer.temperature = app.sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
-            $scope.barometer.pressure = app.sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
-            //0-2 Temp
-            //3-5 Pressure
-            message =
-
-
-                barometerData.innerHTML = message;
-
+            $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
+            $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
+});
         }
-        function disconnect() {
+        
+	$scope.disconnect = function() {
             $scope.connected = false;
             ble.disconnect($scope.deviceId, null, onError);
         }
 
         $scope.refreshSensortags = function () {
-            ble.scan([], 5, onDiscoverDevice, onError);
+	    $scope.devices = [];
+            ble.scan([], 10, onDiscoverDevice, onError);
         }
 
         $scope.connect = function (deviceId) {
 
-console.log(deviceId);
+            console.log(deviceId);
             var onConnect = function () {
+		$scope.$apply(function() {
                 $scope.connected = true;
+});
                 //Subscribe to barometer service
                 ble.startNotification(deviceId, barometer.service, barometer.data, onBarometerData, onError);
 
@@ -95,6 +93,6 @@ console.log(deviceId);
 
         };
 
-        ble.scan([], 1, oldConnection, onError);
+        ble.scan([], 10, oldConnection, onError);
 
     });
