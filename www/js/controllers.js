@@ -1,11 +1,13 @@
 angular.module('app.controllers', [])
 
+    // Controller for Tag View
     .controller('TagCtrl', function ($scope) {
 
         $scope.devices = [];
 
         $scope.connected = false;
-	$scope.barometer = { temperature : "FREEZING HELL", pressure : "Inside of Jupiter"};
+        $scope.currentDevice = null;
+        $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
 
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
@@ -16,7 +18,6 @@ angular.module('app.controllers', [])
         };
 
         function onDiscoverDevice(device) {
-            console.log(device);
             $scope.devices.push(device);
         }
 
@@ -26,11 +27,6 @@ angular.module('app.controllers', [])
 
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
-        }
-
-
-        function sensorBarometerConvert(data) {
-            return (data / 100);
         }
 
         function oldConnection(device) {
@@ -44,26 +40,30 @@ angular.module('app.controllers', [])
         }
 
         function onError(reason) {
-            alert("ERROR: " + reason);
+            console.log("ERROR: " + reason);
         }
 
         function onBarometerData(data) {
             var message;
             var a = new Uint8Array(data);
-		$scope.$apply(function () {
 
-            $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
-            $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
-});
+            function sensorBarometerConvert(data) {
+                return (data / 100);
+            }
+
+            $scope.$apply(function () {
+                $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
+                $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
+            });
         }
-        
-	$scope.disconnect = function() {
+
+        $scope.disconnect = function () {
             $scope.connected = false;
             ble.disconnect($scope.deviceId, null, onError);
         }
 
         $scope.refreshSensortags = function () {
-	    $scope.devices = [];
+            $scope.devices = [];
             ble.scan([], 10, onDiscoverDevice, onError);
         }
 
@@ -71,9 +71,12 @@ angular.module('app.controllers', [])
 
             console.log(deviceId);
             var onConnect = function () {
-		$scope.$apply(function() {
-                $scope.connected = true;
-});
+                // Save deviceId as last connected one
+                setLastCon(deviceId);
+                $scope.$apply(function () {
+                    $scope.connected = true;
+                    $scope.deviceId = deviceId;
+                });
                 //Subscribe to barometer service
                 ble.startNotification(deviceId, barometer.service, barometer.data, onBarometerData, onError);
 
@@ -83,12 +86,6 @@ angular.module('app.controllers', [])
                 ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
                     function () { console.log("Started barometer."); }, onError);
             };
-
-            // Save deviceId as last connected one
-            setLastCon(deviceId);
-
-            $scope.deviceId = deviceId;
-
             ble.connect(deviceId, onConnect, onError);
 
         };
