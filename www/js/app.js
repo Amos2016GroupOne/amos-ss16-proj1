@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
 
-    .run(function ($ionicPlatform, $cordovaBluetoothLE) {
+    .run(function ($ionicPlatform, $cordovaBluetoothLE, Log) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,28 +18,25 @@ angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            
-            console.log("Logging");
 
             $cordovaBluetoothLE.initialize({ request: true }).then(null,
                 function (result) {
                     //Handle errors
-                    Log.show( { message: "Sorry. Your device does not support BTLE!" });
+                    Log.add( "Sorry. Your device does not support BTLE!");
                 },
                 function (obj) {
                     //Handle successes
                     if (obj.status == "disabled") {
                         $cordovaBluetoothLE.enable().then(null, function (obj) {
-                            Log.show( { message: "Enable Error : " + JSON.stringify(obj), datetime: now} );
+                            Log.add( "Enable Error : " + JSON.stringify(obj) );
                         });
                     }
                     else if (obj.status == "enabled") {
-                        Log.show( { message: "Enable Success : " + JSON.stringify(obj), datetime: now} );
+                        Log.add( "Enable Success : " + JSON.stringify(obj) );
                         $rootScope.$broadcast("bleEnabledEvent");
                     }
                 }
             );    
-            console.log("Logging");    
         })
     })
 
