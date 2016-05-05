@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
 
     // Controller for Tag View
     .controller('TagCtrl', function ($scope) {
-
+/*
         $scope.devices = [];
 
         $scope.connected = false;
@@ -17,26 +17,12 @@ angular.module('app.controllers', [])
             period: "F000AA43-0451-4000-B000-000000000000"
         };
 
-        function onDiscoverDevice(device) {
-            $scope.devices.push(device);
-        }
-
         function getLastCon() {
             return localStorage.getItem("lastCon");
         }
 
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
-        }
-
-        function oldConnection(device) {
-            //if(device.id == "B0:B4:48:D2:EC:03")
-            if (device.id == getLastCon()) {
-                $scope.connect(device.id);
-            }
-
-            // Make the List on Startup-Page
-            onDiscoverDevice(device);
         }
 
         function onError(reason) {
@@ -67,15 +53,32 @@ angular.module('app.controllers', [])
             ble.scan([], 10, onDiscoverDevice, onError);
         }
 
-        $scope.connect = function (deviceId) {
 
-            console.log(deviceId);
-            var onConnect = function () {
+        $scope.close = function (address) {
+            var params = { address: address };
+
+            Log.add("Close : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.close(params).then(function (obj) {
+                Log.add("Close Success : " + JSON.stringify(obj));
+            }, function (obj) {
+                Log.add("Close Error : " + JSON.stringify(obj));
+            });
+
+            var device = $scope.devices[address];
+            device.services = {};
+        };
+
+        $scope.connect = function (device) {
+
+            var onConnect = function (obj) {
+                
+                Log.add("Connect Success : " + JSON.stringify(obj));
                 // Save deviceId as last connected one
-                setLastCon(deviceId);
+                setLastCon(device.address);
                 $scope.$apply(function () {
                     $scope.connected = true;
-                    $scope.deviceId = deviceId;
+                    $scope.currentDevice = device;
                 });
                 //Subscribe to barometer service
                 ble.startNotification(deviceId, barometer.service, barometer.data, onBarometerData, onError);
@@ -86,15 +89,60 @@ angular.module('app.controllers', [])
                 ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
                     function () { console.log("Started barometer."); }, onError);
             };
-            ble.connect(deviceId, onConnect, onError);
+            var params = { address: device.address, timeout: 10000 };
+
+            Log.add("Connect : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.connect(params).then(null, function (obj) {
+                Log.add("Connect Error : " + JSON.stringify(obj));
+                $scope.close(params.address); //Best practice is to close on connection error
+            },  onConnect);
 
         };
 
-        ble.scan([], 10, oldConnection, onError);
+        $scope.startScan = function () {
+            var params = {
+                services: [],
+                allowDuplicates: false,
+                scanTimeout: 5000
+            };
 
+            if (window.cordova) {
+                params.scanMode = bluetoothle.SCAN_MODE_LOW_POWER;
+                params.matchMode = bluetoothle.MATCH_MODE_STICKY;
+                params.matchNum = bluetoothle.MATCH_NUM_ONE_ADVERTISEMENT;
+                //params.callbackType = bluetoothle.CALLBACK_TYPE_FIRST_MATCH;
+            }
+
+            Log.add("Start Scan : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.startScan(params).then(function (obj) {
+                Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
+                $scope.firstScan = false;
+            }, function (obj) {
+                Log.add("Start Scan Error : " + JSON.stringify(obj));
+                $scope.firstScan = false;
+            }, function (device) {
+                Log.add("Start Scan Success : " + JSON.stringify(device));
+
+                if (device.status == "scanStarted") return;
+
+                $scope.devices[device.address] = device;
+
+                if (device.address == getLastCon() && $scope.firstScan) {
+                    $scope.connect(device);
+                    $scope.firstScan = false;
+                }
+            });
+        };
+
+        $scope.firstScan = true;
+                $rootScope.$on("bleEnabledEvent", function () {
+            $scope.startScan();
+        })
+        */
     })
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope) {
-    
-    
+   
     });
