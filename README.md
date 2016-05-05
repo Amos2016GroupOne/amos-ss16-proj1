@@ -12,13 +12,15 @@ Android:
 
 Install and build:
 
-- npm install -g cordova cordova-icon
-- cordova prepare
-- cordova build
+- npm install -g cordova cordova-icon ionic bower
+- ionic state restore
+- ionic prepare
+- bower update
+- ionic build
 
 Run:
 
-- `cordova emulate` OR `cordova run` OR (if you have no sdk's installed yet: `cordova run browser --target=chromium`
+- `ionic emulate` OR `ionic run` OR (if you have no sdk's installed yet: `cordova run browser --target=chromium`
 
 
 
