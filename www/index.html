@@ -16,8 +16,9 @@
     under the License.
 -->
 <html>
-    <head>
-		<!--
+
+<head>
+    <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
             https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
         Some notes:
@@ -26,35 +27,42 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-        <meta name="msapplication-tap-highlight" content="no">
-		
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-		
-		
-        <title>SensorTag</title>
-    </head>
-    <body ng-app="helloWorld">
-        <div class="app" ng-controller="HelloController as helloCtrl">
-            <h1>Sensor Tag</h1>
-            
-            <div id="overviewPage">
-				<h2 id="reconnectMessage"></h2>
-                <ul id="SensorTagList"> </ul>
-                <button id="btnRefresh">Scan for Devices</button>
-				<span id="lastConDevice"></span>
-            </div>
-            <div id="devicePage">
-                <div id="barometerData">no data...</div>
-                <button id="disconnectButton">Disconnect</button>
-            </div>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript" src="js/angular.min.js"></script>
-        <script type="text/javascript" src="js/app.js"></script>
-    </body>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="msapplication-tap-highlight" content="no">
+
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script type="text/javascript" src="cordova.js"></script>
+    
+    <!-- your app's js -->
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/controllers.js"></script>
+    <script type="text/javascript" src="js/init.js"></script>
+</head>
+
+<body>
+    <!--
+      The nav bar that will be updated as we navigate between views.
+    -->
+    <ion-nav-bar class="bar-stable">
+        <ion-nav-back-button>
+        </ion-nav-back-button>
+    </ion-nav-bar>
+    <!--
+      The views will be rendered in the <ion-nav-view> directive below
+      Templates are in the /templates folder (but you could also
+      have templates inline in this html file if you'd like).
+    -->
+    <ion-nav-view></ion-nav-view>
+
+</body>
+
 </html>

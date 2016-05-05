@@ -2,3 +2,7 @@
 platforms/
 plugins/
 docker/assets/
+node_modules/
+platforms/
+plugins/
+.vscode/

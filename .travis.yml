@@ -19,10 +19,12 @@ install:
         - echo "Install stage"
         - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
         - sudo apt-get install -y nodejs
-        - sudo npm install -g cordova
+        - sudo npm install -g cordova ionic bower
         # TODO as shown in the inspired by link: use npm i --save ;)
         #- sudo npm i
-        - cordova prepare
+        - ionic state restore
+        - ionic prepare
+        - bower update
 before_script:
         # Commands to excecute before running tests
         - echo "Before script stage"
