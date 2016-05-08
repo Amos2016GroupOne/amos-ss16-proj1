@@ -85,7 +85,7 @@ angular.module('app', ['ionic', 'app.controllers'])
             .state('tab.settings', {
                 url: '/settings',
                 views: {
-                    'tab-tag': {
+                    'tab-settings': {
                         templateUrl: 'templates/tab-settings.html',
                         controller: 'SettingsCtrl'
                     }
