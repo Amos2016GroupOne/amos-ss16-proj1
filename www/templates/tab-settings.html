@@ -2,5 +2,12 @@
     <ion-content class="padding">
         <h1>Settings</h1>
 
+		<ion-toggle ng-model="setting.reconnect" ng-change="update(setting)" toggle-class="toggle-calm">Airplane Mode</ion-toggle>
+
+		<label class="item item-input">
+			<span class="input-label">Scan Duration (seconds)</span>
+			<input type="number" ng-model="setting.duration" ng-change="update(setting)" >
+		</label>
+		
     </ion-content>
 </ion-view>
