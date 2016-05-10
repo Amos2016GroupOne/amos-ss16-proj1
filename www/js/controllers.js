@@ -1,5 +1,4 @@
 angular.module('app.controllers', [])
-
     // Global App Values for Setting
     .value('gl_setting', { startReconnect: '', scanDuration: '' })
 
@@ -12,33 +11,34 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
-
-        // Move to ????? load setting on startup
-        // Initialisiere 
-        function init() {
-            gl_setting.startReconnect = getSetting("reconnect");
-            gl_setting.scanDuration = getSetting("duration");
-
-            // What the hell
-            //$scope.checked_setting.reconnect = true;
-        }
-
-        // Redundant - should access tabCtrl.getSetting
-        function getSetting(name) {
-            var ret = localStorage.getItem(name);
-
-            // Setze Default-Wert
-            if (ret == null) {
-                if (name == "reconnect")
-                    ret = false;
-                else if (name == "duration")
-                    ret = 5;
-            }
-
-            return ret;
-        }
-        // End redundant
-
+       
+		// Move to ????? load setting on startup
+		// Initialisiere 
+		function init () {
+			gl_setting.startReconnect = getSetting("reconnect");
+			gl_setting.scanDuration = getSetting("duration");
+			
+			// What the hell
+			//$scope.checked_setting.reconnect = true;
+		}
+		
+		// Redundant - should access tabCtrl.getSetting
+		function getSetting(name) {
+			var ret = localStorage.getItem(name);
+			
+			// Setze Default-Wert
+			if(ret == null)
+			{
+				if(name == "reconnect")
+					ret = false;
+				else if(name == "duration")
+					ret = 5;
+			}
+			
+			return ret;
+		}
+		// End redundant
+		
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -317,7 +317,6 @@ angular.module('app.controllers', [])
 
 		function getSetting(name) {
 			var ret = localStorage.getItem(name);
-
 			// Setze Default-Wert
 			if(ret == null)
 			{
@@ -326,10 +325,8 @@ angular.module('app.controllers', [])
 				else if(name == "duration")
 					ret = 5;
 			}
-
+			
 			return ret;
 		}
-		
-		init();
 		    
     });
