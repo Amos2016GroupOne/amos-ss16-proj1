@@ -1,8 +1,10 @@
 angular.module('app.controllers', [])
 
-    // Controller for Tag View
-    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log) {
+    // Global App Values for Setting
+    .value('gl_setting', { startReconnect: '', scanDuration: '' })
 
+    // Controller for Tag View
+    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting) {
         $scope.devices = {};
         $scope.scanDevice = true;
         $scope.noDevice = true;
@@ -10,6 +12,32 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
+
+        // Move to ????? load setting on startup
+        // Initialisiere 
+        function init() {
+            gl_setting.startReconnect = getSetting("reconnect");
+            gl_setting.scanDuration = getSetting("duration");
+
+            // What the hell
+            //$scope.checked_setting.reconnect = true;
+        }
+
+        // Redundant - should access tabCtrl.getSetting
+        function getSetting(name) {
+            var ret = localStorage.getItem(name);
+
+            // Setze Default-Wert
+            if (ret == null) {
+                if (name == "reconnect")
+                    ret = false;
+                else if (name == "duration")
+                    ret = 5;
+            }
+
+            return ret;
+        }
+        // End redundant
 
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
@@ -31,7 +59,7 @@ angular.module('app.controllers', [])
             var params = {
                 services: [],
                 allowDuplicates: false,
-                scanTimeout: 5000
+                scanTimeout: gl_setting.scanDuration * 1000
             };
 
             if (window.cordova) {
@@ -54,7 +82,7 @@ angular.module('app.controllers', [])
                 Log.add("Start Scan Success : " + JSON.stringify(device));
 
                 if (device.status == "scanStarted") return;
-               
+
                 $scope.noDevice = false;
                 $scope.devices[device.address] = device;
                 $scope.devices[device.address].services = {};
@@ -252,12 +280,52 @@ angular.module('app.controllers', [])
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
 
-        $scope.firstScan = true;
+        if (gl_setting.startReconnect == "true") {
+            $scope.firstScan = true;
+        }
+        init();
         $rootScope.$on("bleEnabledEvent", function () {
             $scope.startScan();
-        })
+        });
 
     })
+
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope) {
+    .controller('SettingsCtrl', function ($scope, gl_setting) {
+
+		function init() {
+			// Not working
+			$scope.setting.duration = gl_setting.duration;
+		}
+
+		$scope.update = function(setting, val) {
+
+			// Save Reconnect
+			setSetting("reconnect", setting.reconnect);
+			gl_setting.startReconnect = setting.reconnect;
+
+			// Save Duration
+			setSetting("duration", setting.duration);
+			gl_setting.scanDuration = setting.duration;
+
+        };
+
+		function setSetting(name, value) {
+			localStorage.setItem(name, value);
+        }
+
+		function getSetting(name) {
+			var ret = localStorage.getItem(name);
+
+			// Setze Default-Wert
+			if(ret == null)
+			{
+				if(name == "reconnect")
+					ret = false;
+				else if(name == "duration")
+					ret = 5;
+			}
+
+			return ret;
+		}
     });
