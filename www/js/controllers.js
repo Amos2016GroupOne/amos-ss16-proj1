@@ -92,4 +92,9 @@ angular.module('app.controllers', [])
 
         ble.scan([], 10, oldConnection, onError);
 
+    })
+    // Controller for Settings
+    .controller('SettingsCtrl', function ($scope) {
+    
+    
     });
