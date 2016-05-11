@@ -5,9 +5,9 @@
         <div id="overviewPage" ng-if="connected == false">
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
-                <li ng-repeat="device in devices" on-touch="connect(device.id)">
+                <li ng-repeat="(address, device) in devices" on-touch="connect(device)">
                     {{device.name}}
-                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.id}}
+                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
                 </li>
             </ul>
             <button id="btnRefresh" on-touch="refreshSensortags()">Scan for Devices</button>

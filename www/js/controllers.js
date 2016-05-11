@@ -1,12 +1,13 @@
 angular.module('app.controllers', [])
 
     // Controller for Tag View
-    .controller('TagCtrl', function ($scope) {
+    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log) {
 
-        $scope.devices = [];
+        $scope.devices = {};
 
         $scope.connected = false;
         $scope.currentDevice = null;
+        $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
 
         var barometer = {
@@ -17,9 +18,6 @@ angular.module('app.controllers', [])
             period: "F000AA43-0451-4000-B000-000000000000"
         };
 
-        function onDiscoverDevice(device) {
-            $scope.devices.push(device);
-        }
 
         function getLastCon() {
             return localStorage.getItem("lastCon");
@@ -29,72 +27,235 @@ angular.module('app.controllers', [])
             localStorage.setItem("lastCon", deviceId);
         }
 
-        function oldConnection(device) {
-            //if(device.id == "B0:B4:48:D2:EC:03")
-            if (device.id == getLastCon()) {
-                $scope.connect(device.id);
+        $scope.startScan = function () {
+            var params = {
+                services: [],
+                allowDuplicates: false,
+                scanTimeout: 5000
+            };
+
+            if (window.cordova) {
+                params.scanMode = bluetoothle.SCAN_MODE_LOW_POWER;
+                params.matchMode = bluetoothle.MATCH_MODE_STICKY;
+                params.matchNum = bluetoothle.MATCH_NUM_ONE_ADVERTISEMENT;
+                //params.callbackType = bluetoothle.CALLBACK_TYPE_FIRST_MATCH;
             }
 
-            // Make the List on Startup-Page
-            onDiscoverDevice(device);
+            Log.add("Start Scan : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.startScan(params).then(function (obj) {
+                Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
+                $scope.firstScan = false;
+            }, function (obj) {
+                Log.add("Start Scan Error : " + JSON.stringify(obj));
+                $scope.firstScan = false;
+            }, function (device) {
+                Log.add("Start Scan Success : " + JSON.stringify(device));
+
+                if (device.status == "scanStarted") return;
+
+                $scope.devices[device.address] = device;
+                $scope.devices[device.address].services = {};
+                console.log(JSON.stringify($scope.devices));
+
+                if (device.address == getLastCon() && $scope.firstScan) {
+                    $scope.connect(device);
+                    $scope.firstScan = false;
+                }
+            });
+        };
+
+        $scope.connect = function (device) {
+
+            var onConnect = function (obj) {
+
+                Log.add("Connect Success : " + JSON.stringify(obj));
+                // Save deviceId as last connected one
+                setLastCon(device.address);
+
+                $scope.connected = true;
+                $scope.currentDevice = device;
+
+                //Subscribe to barometer service
+                var params = {
+                    address: device.address,
+                    service: barometer.service,
+                    characteristic: barometer.data,
+                    timeout: 5000
+                };
+
+                Log.add("Subscribe : " + JSON.stringify(params));
+
+                $cordovaBluetoothLE.subscribe(params).then(function (obj) {
+                    Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
+                }, function (obj) {
+                    Log.add("Subscribe Error : " + JSON.stringify(obj));
+                }, function (obj) {
+                    //Log.add("Subscribe Success : " + JSON.stringify(obj));
+
+                    if (obj.status == "subscribedResult") {
+                        //Log.add("Subscribed Result");
+                        onBarometerData(obj);
+                        var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+                        Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
+                        Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                    } else if (obj.status == "subscribed") {
+                        Log.add("Subscribed");
+                        //Turn on barometer
+                        var barometerConfig = new Uint8Array(1);
+                        barometerConfig[0] = 0x01;
+                        var params = {
+                            address: device.address,
+                            service: barometer.service,
+                            characteristic: barometer.configuration,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
+                            timeout: 5000
+                        };
+
+                        Log.add("Write : " + JSON.stringify(params));
+
+                        $cordovaBluetoothLE.write(params).then(function (obj) {
+                            Log.add("Write Success : " + JSON.stringify(obj));
+                        }, function (obj) {
+                            Log.add("Write Error : " + JSON.stringify(obj));
+                        });
+                    } else {
+                        Log.add("Unexpected Subscribe Status");
+                    }
+                });
+
+
+            };
+            var params = { address: device.address, timeout: 10000 };
+
+            Log.add("Connect : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.connect(params).then(null, function (obj) {
+                Log.add("Connect Error : " + JSON.stringify(obj));
+                $scope.close(params.address); //Best practice is to close on connection error
+            }, function () {
+                $scope.discover(device.address, onConnect);
+            });
+
+        };
+
+        $rootScope.$on("bleEnabledEvent", function () {
+            $scope.startScan();
+        })
+
+        $scope.refreshSensortags = function () {
+            $scope.devices = {};
+            $scope.startScan();
         }
 
-        function onError(reason) {
-            console.log("ERROR: " + reason);
-        }
+        $scope.close = function (address) {
+            var params = { address: address };
 
-        function onBarometerData(data) {
-            var message;
-            var a = new Uint8Array(data);
+            Log.add("Close : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.close(params).then(function (obj) {
+                Log.add("Close Success : " + JSON.stringify(obj));
+            }, function (obj) {
+                Log.add("Close Error : " + JSON.stringify(obj));
+            });
+
+            var device = $scope.devices[address];
+            device.services = {};
+        };
+
+        function onBarometerData(obj) {
+            var a = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
             function sensorBarometerConvert(data) {
                 return (data / 100);
             }
 
-            $scope.$apply(function () {
-                $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
-                $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
-            });
+            $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
+            $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
         }
 
         $scope.disconnect = function () {
             $scope.connected = false;
-            ble.disconnect($scope.deviceId, null, onError);
+            $scope.close($scope.currentDevice.address);
         }
 
-        $scope.refreshSensortags = function () {
-            $scope.devices = [];
-            ble.scan([], 10, onDiscoverDevice, onError);
-        }
-
-        $scope.connect = function (deviceId) {
-
-            console.log(deviceId);
-            var onConnect = function () {
-                // Save deviceId as last connected one
-                setLastCon(deviceId);
-                $scope.$apply(function () {
-                    $scope.connected = true;
-                    $scope.deviceId = deviceId;
-                });
-                //Subscribe to barometer service
-                ble.startNotification(deviceId, barometer.service, barometer.data, onBarometerData, onError);
-
-                //Turn on barometer
-                var barometerConfig = new Uint8Array(1);
-                barometerConfig[0] = 0x01;
-                ble.write(deviceId, barometer.service, barometer.configuration, barometerConfig.buffer,
-                    function () { console.log("Started barometer."); }, onError);
+        $scope.discover = function (address, afterFunction) {
+            var params = {
+                address: address,
+                timeout: 10000
             };
-            ble.connect(deviceId, onConnect, onError);
 
+            Log.add("Discover : " + JSON.stringify(params));
+
+            $cordovaBluetoothLE.discover(params).then(function (obj) {
+                Log.add("Discover Success : " + JSON.stringify(obj));
+
+                var device = $scope.devices[obj.address];
+
+                var services = obj.services;
+
+                for (var i = 0; i < services.length; i++) {
+                    var service = services[i];
+
+                    addService(service, device);
+
+                    var serviceNew = device.services[service.uuid];
+
+                    var characteristics = service.characteristics;
+
+                    for (var j = 0; j < characteristics.length; j++) {
+                        var characteristic = characteristics[j];
+
+                        addCharacteristic(characteristic, serviceNew);
+
+                        var characteristicNew = serviceNew.characteristics[characteristic.uuid];
+
+                        var descriptors = characteristic.descriptors;
+
+                        for (var k = 0; k < descriptors.length; k++) {
+                            var descriptor = descriptors[k];
+
+                            addDescriptor(descriptor, characteristicNew);
+                        }
+
+                    }
+                }
+                if (afterFunction != undefined) {
+                    afterFunction();
+                }
+            }, function (obj) {
+                Log.add("Discover Error : " + JSON.stringify(obj));
+            });
         };
 
-        ble.scan([], 10, oldConnection, onError);
+        function addService(service, device) {
+            if (device.services[service.uuid] !== undefined) {
+                return;
+            }
+            device.services[service.uuid] = { uuid: service.uuid, characteristics: {} };
+        }
+
+        function addCharacteristic(characteristic, service) {
+            if (service.characteristics[characteristic.uuid] !== undefined) {
+                return;
+            }
+            service.characteristics[characteristic.uuid] = { uuid: characteristic.uuid, descriptors: {}, properties: characteristic.properties };
+        }
+
+        function addDescriptor(descriptor, characteristic) {
+            if (characteristic.descriptors[descriptor.uuid] !== undefined) {
+                return;
+            }
+            characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
+        }
+
+        $scope.firstScan = true;
+        $rootScope.$on("bleEnabledEvent", function () {
+            $scope.startScan();
+        })
 
     })
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope) {
-    
-    
+
     });
