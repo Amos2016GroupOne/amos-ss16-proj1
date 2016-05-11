@@ -144,7 +144,7 @@ angular.module('app.controllers', [])
         })
 
         $scope.refreshSensortags = function () {
-            $scope.devices = [];
+            $scope.devices = {};
             $scope.startScan();
         }
 
