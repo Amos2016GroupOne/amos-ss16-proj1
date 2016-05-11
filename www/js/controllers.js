@@ -295,7 +295,8 @@ angular.module('app.controllers', [])
 
 		function init() {
 			// Not working
-			$scope.setting.duration = gl_setting.duration;
+			//$scope.setting.reconnect = gl_setting.startReconnect;
+			//$scope.setting.durateion = gl_setting.scanDuration;
 		}
 
 		$scope.update = function(setting, val) {
@@ -328,4 +329,7 @@ angular.module('app.controllers', [])
 
 			return ret;
 		}
+		
+		init();
+		    
     });
