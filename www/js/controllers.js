@@ -5,7 +5,7 @@ angular.module('app.controllers', [])
 
         $scope.devices = {};
         $scope.scanDevice = true;
-        $scope.noDevice = false;
+        $scope.noDevice = true;
         $scope.connected = false;
         $scope.currentDevice = null;
         $scope.firstScan = true;
@@ -46,6 +46,7 @@ angular.module('app.controllers', [])
             $cordovaBluetoothLE.startScan(params).then(function (obj) {
                 Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
                 $scope.firstScan = false;
+                $scope.scanDevice = false;
             }, function (obj) {
                 Log.add("Start Scan Error : " + JSON.stringify(obj));
                 $scope.firstScan = false;
@@ -53,7 +54,7 @@ angular.module('app.controllers', [])
                 Log.add("Start Scan Success : " + JSON.stringify(device));
 
                 if (device.status == "scanStarted") return;
-                $scope.scanDevice = false;
+               
                 $scope.noDevice = false;
                 $scope.devices[device.address] = device;
                 $scope.devices[device.address].services = {};
@@ -147,7 +148,7 @@ angular.module('app.controllers', [])
         $scope.refreshSensortags = function () {
             $scope.devices = {};
             $scope.startScan();
-            $scope.noDevice = false;
+            $scope.noDevice = true;
             $scope.scanDevice = true;
         }
 
