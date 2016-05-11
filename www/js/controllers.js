@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Global App Values for Setting
-    .value('gl_setting', { startReconnect: '', scanDuration: '' })
+    .value('gl_setting', { startReconnect: localStorage.getItem("reconnect"), scanDuration: localStorage.getItem("duration") })
 
     // Controller for Tag View
     .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting) {
@@ -11,34 +11,31 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
-       
-		// Move to ????? load setting on startup
-		// Initialisiere 
-		function init () {
-			gl_setting.startReconnect = getSetting("reconnect");
-			gl_setting.scanDuration = getSetting("duration");
-			
-			// What the hell
-			//$scope.checked_setting.reconnect = true;
-		}
-		
-		// Redundant - should access tabCtrl.getSetting
-		function getSetting(name) {
-			var ret = localStorage.getItem(name);
-			
-			// Setze Default-Wert
-			if(ret == null)
-			{
-				if(name == "reconnect")
-					ret = false;
-				else if(name == "duration")
-					ret = 5;
-			}
-			
-			return ret;
-		}
-		// End redundant
-		
+
+
+        function parseBool(val) { return val === true || val === "true" }
+
+        // Redundant - should access tabCtrl.getSetting
+        function getSetting(name) {
+            var ret = localStorage.getItem(name);
+            // Setze Default-Wert
+            if (ret == null) {
+                if (name == "reconnect")
+                    ret = false;
+                else if (name == "duration")
+                    ret = 5;
+
+                localStorage.setItem(name, ret);
+            }
+             if (name == "reconnect")
+                    ret = parseBool(ret);
+
+            return ret;
+        }
+        gl_setting.startReconnect = getSetting("reconnect");
+        gl_setting.scanDuration = getSetting("duration");
+        // End redundant
+
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -77,7 +74,6 @@ angular.module('app.controllers', [])
                 $scope.scanDevice = false;
             }, function (obj) {
                 Log.add("Start Scan Error : " + JSON.stringify(obj));
-                $scope.firstScan = false;
             }, function (device) {
                 Log.add("Start Scan Success : " + JSON.stringify(device));
 
@@ -279,11 +275,11 @@ angular.module('app.controllers', [])
             }
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
-
-        if (gl_setting.startReconnect == "true") {
+$scope.firstScan = false;
+        if (gl_setting.startReconnect == "true" || gl_setting.startReconnect === true) {
             $scope.firstScan = true;
         }
-        init();
+
         $rootScope.$on("bleEnabledEvent", function () {
             $scope.startScan();
         });
@@ -293,40 +289,44 @@ angular.module('app.controllers', [])
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope, gl_setting) {
 
-		function init() {
-			// Not working
-			//$scope.setting.reconnect = gl_setting.startReconnect;
-			//$scope.setting.durateion = gl_setting.scanDuration;
-		}
+        $scope.setting = {};
+        $scope.setting.reconnect = getSetting("reconnect");
+        $scope.setting.duration = getSetting("duration");
 
-		$scope.update = function(setting, val) {
 
-			// Save Reconnect
-			setSetting("reconnect", setting.reconnect);
-			gl_setting.startReconnect = setting.reconnect;
+        $scope.update = function () {
 
-			// Save Duration
-			setSetting("duration", setting.duration);
-			gl_setting.scanDuration = setting.duration;
+            console.log("update called");
+            // Save Reconnect
+            setSetting("reconnect", $scope.setting.reconnect);
+            gl_setting.startReconnect = $scope.setting.reconnect;
+
+            // Save Duration
+            setSetting("duration", $scope.setting.duration);
+            gl_setting.scanDuration = $scope.setting.duration;
 
         };
 
-		function setSetting(name, value) {
-			localStorage.setItem(name, value);
+        function parseBool(val) { return val === true || val === "true" }
+
+        function setSetting(name, value) {
+            localStorage.setItem(name, value);
         }
 
-		function getSetting(name) {
-			var ret = localStorage.getItem(name);
-			// Setze Default-Wert
-			if(ret == null)
-			{
-				if(name == "reconnect")
-					ret = false;
-				else if(name == "duration")
-					ret = 5;
-			}
-			
-			return ret;
-		}
-		    
+        function getSetting(name) {
+            var ret = localStorage.getItem(name);
+            // Setze Default-Wert
+            if (ret == null) {
+                if (name == "reconnect")
+                    ret = false;
+                else if (name == "duration")
+                    ret = 5;
+
+                localStorage.setItem(name, ret);
+            }
+            if (name == "reconnect")
+                    ret = parseBool(ret);
+
+            return ret;
+        }
     });

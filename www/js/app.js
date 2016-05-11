@@ -131,4 +131,18 @@ angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
             add: add,
             clear: clear,
         };
-    });
+    })
+    // https://docs.angularjs.org/error/ngModel/numfmt?p0=10
+    .directive('stringToNumber', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(value) {
+        return '' + value;
+      });
+      ngModel.$formatters.push(function(value) {
+        return parseFloat(value, 10);
+      });
+    }
+  };
+});
