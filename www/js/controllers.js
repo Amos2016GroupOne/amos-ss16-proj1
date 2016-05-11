@@ -1,8 +1,9 @@
 angular.module('app.controllers', [])
+    // Global App Values for Setting
+    .value('gl_setting', { startReconnect: localStorage.getItem("reconnect"), scanDuration: localStorage.getItem("duration") })
 
     // Controller for Tag View
-    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log) {
-
+    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting) {
         $scope.devices = {};
         $scope.scanDevice = true;
         $scope.noDevice = true;
@@ -10,6 +11,30 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
+
+
+        function parseBool(val) { return val === true || val === "true" }
+
+        // Redundant - should access tabCtrl.getSetting
+        function getSetting(name) {
+            var ret = localStorage.getItem(name);
+            // Setze Default-Wert
+            if (ret == null) {
+                if (name == "reconnect")
+                    ret = false;
+                else if (name == "duration")
+                    ret = 5;
+
+                localStorage.setItem(name, ret);
+            }
+             if (name == "reconnect")
+                    ret = parseBool(ret);
+
+            return ret;
+        }
+        gl_setting.startReconnect = getSetting("reconnect");
+        gl_setting.scanDuration = getSetting("duration");
+        // End redundant
 
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
@@ -31,7 +56,7 @@ angular.module('app.controllers', [])
             var params = {
                 services: [],
                 allowDuplicates: false,
-                scanTimeout: 5000
+                scanTimeout: gl_setting.scanDuration * 1000
             };
 
             if (window.cordova) {
@@ -49,12 +74,11 @@ angular.module('app.controllers', [])
                 $scope.scanDevice = false;
             }, function (obj) {
                 Log.add("Start Scan Error : " + JSON.stringify(obj));
-                $scope.firstScan = false;
             }, function (device) {
                 Log.add("Start Scan Success : " + JSON.stringify(device));
 
                 if (device.status == "scanStarted") return;
-               
+
                 $scope.noDevice = false;
                 $scope.devices[device.address] = device;
                 $scope.devices[device.address].services = {};
@@ -251,13 +275,58 @@ angular.module('app.controllers', [])
             }
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
+$scope.firstScan = false;
+        if (gl_setting.startReconnect == "true" || gl_setting.startReconnect === true) {
+            $scope.firstScan = true;
+        }
 
-        $scope.firstScan = true;
         $rootScope.$on("bleEnabledEvent", function () {
             $scope.startScan();
-        })
+        });
 
     })
+
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope) {
+    .controller('SettingsCtrl', function ($scope, gl_setting) {
+
+        $scope.setting = {};
+        $scope.setting.reconnect = getSetting("reconnect");
+        $scope.setting.duration = getSetting("duration");
+
+
+        $scope.update = function () {
+
+            console.log("update called");
+            // Save Reconnect
+            setSetting("reconnect", $scope.setting.reconnect);
+            gl_setting.startReconnect = $scope.setting.reconnect;
+
+            // Save Duration
+            setSetting("duration", $scope.setting.duration);
+            gl_setting.scanDuration = $scope.setting.duration;
+
+        };
+
+        function parseBool(val) { return val === true || val === "true" }
+
+        function setSetting(name, value) {
+            localStorage.setItem(name, value);
+        }
+
+        function getSetting(name) {
+            var ret = localStorage.getItem(name);
+            // Setze Default-Wert
+            if (ret == null) {
+                if (name == "reconnect")
+                    ret = false;
+                else if (name == "duration")
+                    ret = 5;
+
+                localStorage.setItem(name, ret);
+            }
+            if (name == "reconnect")
+                    ret = parseBool(ret);
+
+            return ret;
+        }
     });
