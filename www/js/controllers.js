@@ -4,7 +4,8 @@ angular.module('app.controllers', [])
     .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log) {
 
         $scope.devices = {};
-
+        $scope.scanDevice = true;
+        $scope.noDevice = true;
         $scope.connected = false;
         $scope.currentDevice = null;
         $scope.firstScan = true;
@@ -17,7 +18,6 @@ angular.module('app.controllers', [])
             configuration: "F000AA42-0451-4000-B000-000000000000",
             period: "F000AA43-0451-4000-B000-000000000000"
         };
-
 
         function getLastCon() {
             return localStorage.getItem("lastCon");
@@ -46,6 +46,7 @@ angular.module('app.controllers', [])
             $cordovaBluetoothLE.startScan(params).then(function (obj) {
                 Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
                 $scope.firstScan = false;
+                $scope.scanDevice = false;
             }, function (obj) {
                 Log.add("Start Scan Error : " + JSON.stringify(obj));
                 $scope.firstScan = false;
@@ -53,7 +54,8 @@ angular.module('app.controllers', [])
                 Log.add("Start Scan Success : " + JSON.stringify(device));
 
                 if (device.status == "scanStarted") return;
-
+               
+                $scope.noDevice = false;
                 $scope.devices[device.address] = device;
                 $scope.devices[device.address].services = {};
                 console.log(JSON.stringify($scope.devices));
@@ -146,6 +148,8 @@ angular.module('app.controllers', [])
         $scope.refreshSensortags = function () {
             $scope.devices = {};
             $scope.startScan();
+            $scope.noDevice = true;
+            $scope.scanDevice = true;
         }
 
         $scope.close = function (address) {
@@ -227,7 +231,6 @@ angular.module('app.controllers', [])
                 Log.add("Discover Error : " + JSON.stringify(obj));
             });
         };
-
         function addService(service, device) {
             if (device.services[service.uuid] !== undefined) {
                 return;
@@ -257,5 +260,4 @@ angular.module('app.controllers', [])
     })
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope) {
-
     });

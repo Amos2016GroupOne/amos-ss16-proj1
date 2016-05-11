@@ -10,6 +10,8 @@
                     <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
                 </li>
             </ul>
+            <div ng-if="noDevice == true">No device found</div>
+            <progress ng-if="scanDevice == true"></progress>
             <button id="btnRefresh" on-touch="refreshSensortags()">Scan for Devices</button>
             <span id="lastConDevice"></span>
         </div>
