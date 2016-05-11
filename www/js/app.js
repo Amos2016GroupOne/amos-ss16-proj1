@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
 
-    .run(function ($ionicPlatform, $cordovaBluetoothLE, Log) {
+    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -22,21 +22,41 @@ angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
             $cordovaBluetoothLE.initialize({ request: true }).then(null,
                 function (result) {
                     //Handle errors
-                    Log.add( "Sorry. Your device does not support BTLE!");
+                    Log.add("Init Fail: " + JSON.stringify(result));
+                    navigator.notification.alert("Sorry. Your device does not support BTLE!", function () { navigator.app.exitApp(); });
                 },
                 function (obj) {
                     //Handle successes
                     if (obj.status == "disabled") {
                         $cordovaBluetoothLE.enable().then(null, function (obj) {
-                            Log.add( "Enable Error : " + JSON.stringify(obj) );
+                            Log.add("Enable Error : " + JSON.stringify(obj));
+                            navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
                         });
                     }
                     else if (obj.status == "enabled") {
-                        Log.add( "Enable Success : " + JSON.stringify(obj) );
-                        $rootScope.$broadcast("bleEnabledEvent");
+                        Log.add("Enable Success : " + JSON.stringify(obj));
+
+                        $cordovaBluetoothLE.hasPermission().then(function (obj) {
+                            Log.add("Has Permission Success : " + JSON.stringify(obj));
+                            if (obj.hasPermission == false) {
+                                $cordovaBluetoothLE.requestPermission().then(function (obj) {
+                                    Log.add("Request Permission Success : " + JSON.stringify(obj));
+                                }, function (obj) {
+                                    Log.add("Request Permission Error : " + JSON.stringify(obj));
+                                });
+                            }
+                            else
+                            {
+                                $rootScope.$broadcast("bleEnabledEvent");
+                            }
+                        }, function (obj) {
+                            Log.add("Has Permission Error : " + JSON.stringify(obj));
+                            $rootScope.$broadcast("bleEnabledEvent");
+                        });
+
                     }
                 }
-            );    
+            );
         })
     })
 
