@@ -1,5 +1,5 @@
 {
-  "name": "BLE Remote",
+  "name": "BLE-Remote",
   "version": "1.1.1",
   "description": "BLE Remote: An Evaluation project",
   "dependencies": {
