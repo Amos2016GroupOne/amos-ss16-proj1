@@ -7,8 +7,8 @@ services:
         docker
 android:
         components:
-                - build-tools-23.0.3 # Specify your build tools verison
-                - android-23 # Android Platform Target
+                - build-tools-23.0.3  # Specify your build tools verison
+                - android-23  # Android Platform Target
 env: # Envirement Variables
 global:
 before_install:
@@ -19,9 +19,8 @@ install:
         - echo "Install stage"
         - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
         - sudo apt-get install -y nodejs
-        - sudo npm install -g cordova ionic bower
-        # TODO as shown in the inspired by link: use npm i --save ;)
-        #- sudo npm i
+        - sudo npm install -g cordova ionic bower gulp
+        - npm i  # for installing gulp
         - ionic state restore
         - ionic prepare
         - bower update
