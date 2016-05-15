@@ -9,5 +9,11 @@
 			<input type="number" string-to-number ng-model="settings.duration" ng-change="update()" >
 		</label>
 		
+		<div class="item range">
+		  <i class="icon ion-volume-low"></i>
+			<input type="range" ng-model="setting.volume" ng-change="update()" >
+		  <i class="icon ion-volume-high"></i>
+		</div>
+		
     </ion-content>
 </ion-view>
