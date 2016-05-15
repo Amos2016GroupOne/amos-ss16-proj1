@@ -13,6 +13,8 @@ angular.module('app.services', [])
                     ret = false;
                 else if (name == "duration")
                     ret = 5;
+                else if (name == "volume")
+                    ret = 50;
 
                 localStorage.setItem(name, ret);
             }
@@ -26,7 +28,8 @@ angular.module('app.services', [])
         // Central settings object containing the settings. Its initialized by querying the settings
         var settings = {
             reconnect: getSetting("reconnect"),
-            duration: getSetting("duration")
+            duration: getSetting("duration"),
+            volume: getSetting("volume")
         };
 
         // Function to set settings into Localstorage
@@ -38,6 +41,7 @@ angular.module('app.services', [])
         function persistSettings() {
             setSetting("reconnect", settings.reconnect);
             setSetting("duration", settings.duration);
+            setSetting("volume", settings.volume);
         }
 
         // Return this services interface
