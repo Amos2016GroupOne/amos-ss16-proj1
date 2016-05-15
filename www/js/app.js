@@ -12,7 +12,6 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
                 cordova.plugins.Keyboard.disableScroll(true);
-
             }
             if (window.StatusBar) {
                 // org.apache.cordova.statusbar required
@@ -21,6 +20,12 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
             var bluetoothAlreadyEnabled = false;
 
+			
+			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
+			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
+			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
+			
+			
             $cordovaBluetoothLE.initialize({ request: true }).then(null,
                 function (result) {
                     //Handle errors
