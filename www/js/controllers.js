@@ -3,7 +3,7 @@ angular.module('app.controllers', [])
     .value('gl_setting', { startReconnect: localStorage.getItem("reconnect"), scanDuration: localStorage.getItem("duration") })
 
     // Controller for Tag View
-    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting) {
+    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting, settings) {
         $scope.devices = {};
         $scope.scanDevice = true;
         $scope.noDevice = true;
@@ -13,27 +13,9 @@ angular.module('app.controllers', [])
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
 
 
-        function parseBool(val) { return val === true || val === "true" }
-
-        // Redundant - should access tabCtrl.getSetting
-        function getSetting(name) {
-            var ret = localStorage.getItem(name);
-            // Setze Default-Wert
-            if (ret == null) {
-                if (name == "reconnect")
-                    ret = false;
-                else if (name == "duration")
-                    ret = 5;
-
-                localStorage.setItem(name, ret);
-            }
-             if (name == "reconnect")
-                    ret = parseBool(ret);
-
-            return ret;
-        }
-        gl_setting.startReconnect = getSetting("reconnect");
-        gl_setting.scanDuration = getSetting("duration");
+        
+        gl_setting.startReconnect = settings.getSetting("reconnect");
+        gl_setting.scanDuration = settings.getSetting("duration");
         // End redundant
 
         var barometer = {
@@ -287,46 +269,23 @@ $scope.firstScan = false;
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope, gl_setting) {
+    .controller('SettingsCtrl', function ($scope, gl_setting, settings) {
 
         $scope.setting = {};
-        $scope.setting.reconnect = getSetting("reconnect");
-        $scope.setting.duration = getSetting("duration");
+        $scope.setting.reconnect = settings.getSetting("reconnect");
+        $scope.setting.duration = settings.getSetting("duration");
 
 
         $scope.update = function () {
 
             console.log("update called");
             // Save Reconnect
-            setSetting("reconnect", $scope.setting.reconnect);
+            settings.setSetting("reconnect", $scope.setting.reconnect);
             gl_setting.startReconnect = $scope.setting.reconnect;
 
             // Save Duration
-            setSetting("duration", $scope.setting.duration);
+            settings.setSetting("duration", $scope.setting.duration);
             gl_setting.scanDuration = $scope.setting.duration;
 
         };
-
-        function parseBool(val) { return val === true || val === "true" }
-
-        function setSetting(name, value) {
-            localStorage.setItem(name, value);
-        }
-
-        function getSetting(name) {
-            var ret = localStorage.getItem(name);
-            // Setze Default-Wert
-            if (ret == null) {
-                if (name == "reconnect")
-                    ret = false;
-                else if (name == "duration")
-                    ret = 5;
-
-                localStorage.setItem(name, ret);
-            }
-            if (name == "reconnect")
-                    ret = parseBool(ret);
-
-            return ret;
-        }
     });

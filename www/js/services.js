@@ -23,4 +23,10 @@ angular.module('app', [])
         function setSetting(name, value) {
             localStorage.setItem(name, value);
         }
+        
+        return {
+            getSetting: getSetting,
+            setSetting: setSetting
+        }
+        
     }])
