@@ -12,7 +12,7 @@ Android:
 
 Install and build:
 
-- npm install -g cordova cordova-icon ionic bower
+- npm install -g cordova ionic bower
 - ionic state restore
 - ionic prepare
 - bower update
@@ -20,10 +20,9 @@ Install and build:
 
 Run:
 
-- `ionic emulate` OR `ionic run` OR (if you have no sdk's installed yet: `cordova run browser --target=chromium`
-
-
-
+- `ionic emulate` OR `ionic run`
+- OR `ionic run android --device` to test on connected Android device
+- OR `ionic serve` to test GUI-design in Webbrowser.
 
 
 To regenerate icons from `app-icon.svg` execute `./generateAppIcons.sh`
