@@ -21,6 +21,8 @@ angular.module('app.services', [])
             // Reconnect needs to be stored as a boolean
             if (name == "reconnect")
                 ret = parseBool(ret);
+            else if (name == "volume")
+                ret = parseInt(ret);
 
             return ret;
         }

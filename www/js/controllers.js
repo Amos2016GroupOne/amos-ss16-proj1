@@ -257,7 +257,7 @@ angular.module('app.controllers', [])
             }
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
-        
+
         $scope.firstScan = false;
         if (settings.settings.startReconnect == "true" || settings.settings.startReconnect === true) {
             $scope.firstScan = true;
@@ -277,4 +277,46 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+        //
+        $scope.$on('volumeupbutton', function () {
+            $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+
+                // Update Volume + checks for valid values (0 to 100)
+                var vol = settings.settings.volume;
+                var up = 10;
+
+                // Catch if volume 91 to 100, update to max 100
+                if (vol > 90)
+                    up = 100 - vol;
+                vol = vol + up;
+
+                // Save setting
+                settings.setSetting("volume", vol);
+
+                // Initialise GUI with saved setting values
+                settings.settings.volume = vol;
+
+            });
+        });
+
+        $scope.$on('volumedownbutton', function () {
+            $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+
+                // Update Volume + checks for valid values (0 to 100)
+                var vol = settings.settings.volume;
+                var down = 10;
+
+                // Catch if volume 9 to 0, update to min 0
+                if (vol < 10)
+                    down = vol;
+                vol = vol - down;
+
+                // Save setting
+                settings.setSetting("volume", vol);
+
+                // Initialise GUI with saved setting values
+                settings.settings.volume = vol;
+
+            });
+        });
     });
