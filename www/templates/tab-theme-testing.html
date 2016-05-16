@@ -1,0 +1,108 @@
+<ion-view view-title="theme testing">
+  <ion-content ng-class="{expanded:isExpanded}" class="animate-fade-slide-in padding">
+
+    <ion-toggle toggle-class="toggle-calm">toggle:</ion-toggle>
+
+    for other cool examples see: http://ionicmaterial.com/demo/
+
+    <button class="button button-large button-royal" on-touch="refreshSensortags()">large button</button>
+    <div class="hero no-header flat">
+      <div class="content">
+        <div class="app-icon"></div>
+        <h1>Thronester</h1>
+      </div>
+    </div>
+    <div class="list">
+      <ion-md-input placeholder="Username" highlight-color="balanced" type="text"></ion-md-input>
+      <ion-md-input placeholder="Password" highlight-color="energized" type="password"></ion-md-input>
+    </div>
+    <div class="padding">
+      <button ui-sref="app.profile" class="button button-full button-assertive ink">Login</button>
+    </div>
+    <div class="button-bar social-login">
+      <button class="button button-small button-border icon-left ion-social-google button-assertive-900">Google+</button>
+      <button class="button button-small button-border icon-left ion-social-twitter button-calm-900">Twitter</button>
+      <button class="button button-small button-border icon-left ion-social-facebook button-positive-900">Facebook</button>
+    </div>
+    <hr />
+    <p>
+    <button class="button button-balanced">button-balanced</button>
+    <button class="button button-balanced" disabled>button-balanced</button>
+    </p>
+    <div class="list half">
+      <div ui-sref="app.profile" class="card card-gallery item item-text-wrap">
+        <div class="ink dark-bg">
+          <h2>Where's Elsa?</h2>
+          <img class="full-image" src="img/sansa-snowcastle3.jpg">
+        </div>
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item stable-bg assertive">
+            <i class="icon ion-heart"></i>
+            4
+          </a>
+          <a class="tab-item stable-bg positive-900">
+            <i class="icon ion-chatbubbles"></i>
+            2
+          </a>
+        </div>
+      </div>
+      <div ui-sref="app.profile" class="card card-gallery item item-text-wrap">
+        <div class="ink dark-bg">
+          <h2>Hmm. Hope nobody destroys this!</h2>
+          <img class="full-image" src="img/sansa-snowcastle.png">
+        </div>
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item stable-bg assertive">
+            <i class="icon ion-heart"></i>
+            6
+          </a>
+          <a class="tab-item stable-bg positive-900">
+            <i class="icon ion-chatbubbles"></i>
+            1
+          </a>
+        </div>
+      </div>
+    </div>
+    <h2>Profile</h2>
+    <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
+      <div class="content">
+        <div class="avatar" style="background-image: url('img/daenerys.jpg');"></div>
+        <h3><a class="light">Daenerys Targaryen</a></h3>
+        <h4>dragon_mommy</h4>
+      </div>
+    </div>
+    <div class="tabs tabs-dark tabs-icon-top static">
+      <a ui-sref="app.activity" class="tab-item">
+        <i class="icon ion-arrow-graph-up-right"></i> Activity
+      </a>
+      <a ui-sref="app.friends" class="tab-item">
+        <i class="icon ion-android-people"></i> Friends
+      </a>
+      <a ui-sref="app.gallery" class="tab-item">
+        <i class="icon ion-images"></i> Photos
+      </a>
+    </div>
+    <h4 class="content padding double-padding-x">Following</h4>
+    <div class="list animate-fade-slide-in-right">
+      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
+        <img src="img/jon-snow.jpg">
+        <h2>Jon Snow</h2>
+        <p>Da illest illegitimate</p>
+        <i class="icon ion-chatbubble muted"></i>
+      </a>
+      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
+        <img src="img/sansa.jpg">
+        <h2>Sansa Stark</h2>
+        <p>&amp; Joffrey <strike>sitting</strike> sat in a tree</p>
+        <i class="icon ion-chatbubble muted"></i>
+      </a>
+      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
+        <img src="img/tyrion.jpg">
+        <h2>Tyrion Lannister</h2>
+        <p>B.A.M.F. imp</p>
+        <i class="icon ion-chatbubble muted"></i>
+      </a>
+    </div>
+
+  </ion-content>
+</ion-view>

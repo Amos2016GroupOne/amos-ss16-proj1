@@ -76,6 +76,17 @@ angular.module('app', ['ionic', 'app.controllers', 'ngCordovaBluetoothLE'])
 
             // Each tab has its own nav history stack:
 
+            // A state to test themes on controls.
+            // TODO: maybe remove theme-testing later in production!
+            .state('tab.theme-testing', {
+                url: '/theme-testing',
+                views: {
+                  'tab-theme-testing': {
+                    templateUrl: 'templates/tab-theme-testing.html'
+                  }
+                }
+            })
+
             .state('tab.tag', {
                 url: '/tag',
                 views: {
