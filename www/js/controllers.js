@@ -263,9 +263,9 @@ angular.module('app.controllers', [])
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope, settings) {
 
+        // Link the scope settings to the settings service
         $scope.settings = settings.settings;
 
-        $scope.update = function () {
-            settings.persistSettings();
-        };
+        // Scope update function is the settings service persist function
+        $scope.update = settings.persistSettings();
     });
