@@ -1,4 +1,4 @@
-angular.module('app', [])
+angular.module('app.services', [])
     .factory("settings", [function () {
         function parseBool(val) { return val === true || val === "true" }
 
