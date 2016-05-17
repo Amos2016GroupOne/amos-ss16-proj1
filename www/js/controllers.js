@@ -1,9 +1,6 @@
 angular.module('app.controllers', [])
-    // Global App Values for Setting
-    .value('gl_setting', { startReconnect: localStorage.getItem("reconnect"), scanDuration: localStorage.getItem("duration") })
-
     // Controller for Tag View
-    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, gl_setting, settings) {
+    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, settings) {
         $scope.devices = {};
         $scope.scanDevice = true;
         $scope.noDevice = true;
@@ -11,12 +8,6 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
-
-
-
-        gl_setting.startReconnect = settings.getSetting("reconnect");
-        gl_setting.scanDuration = settings.getSetting("duration");
-        // End redundant
 
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
@@ -38,7 +29,7 @@ angular.module('app.controllers', [])
             var params = {
                 services: [],
                 allowDuplicates: false,
-                scanTimeout: gl_setting.scanDuration * 1000
+                scanTimeout: settings.settings.scanDuration * 1000
             };
 
             if (window.cordova) {
@@ -257,8 +248,9 @@ angular.module('app.controllers', [])
             }
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
+        
         $scope.firstScan = false;
-        if (gl_setting.startReconnect == "true" || gl_setting.startReconnect === true) {
+        if (settings.settings.startReconnect == "true" || settings.settings.startReconnect === true) {
             $scope.firstScan = true;
         }
 
@@ -269,9 +261,9 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope, gl_setting, settings) {
+    .controller('SettingsCtrl', function ($scope, settings) {
 
-        $scope.settings = settings;
+        $scope.settings = settings.settings;
 
         $scope.update = function () {
             settings.persistSettings();

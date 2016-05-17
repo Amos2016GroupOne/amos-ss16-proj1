@@ -37,8 +37,6 @@ angular.module('app.services', [])
 
         }
 
-
-
         return {
             getSetting: getSetting,
             setSetting: setSetting,
