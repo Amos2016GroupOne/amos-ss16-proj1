@@ -13,7 +13,7 @@ angular.module('app.controllers', [])
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
 
 
-        
+
         gl_setting.startReconnect = settings.getSetting("reconnect");
         gl_setting.scanDuration = settings.getSetting("duration");
         // End redundant
@@ -257,7 +257,7 @@ angular.module('app.controllers', [])
             }
             characteristic.descriptors[descriptor.uuid] = { uuid: descriptor.uuid };
         }
-$scope.firstScan = false;
+        $scope.firstScan = false;
         if (gl_setting.startReconnect == "true" || gl_setting.startReconnect === true) {
             $scope.firstScan = true;
         }
@@ -271,21 +271,9 @@ $scope.firstScan = false;
     // Controller for Settings
     .controller('SettingsCtrl', function ($scope, gl_setting, settings) {
 
-        $scope.setting = {};
-        $scope.setting.reconnect = settings.getSetting("reconnect");
-        $scope.setting.duration = settings.getSetting("duration");
-
+        $scope.settings = settings;
 
         $scope.update = function () {
-
-            console.log("update called");
-            // Save Reconnect
-            settings.setSetting("reconnect", $scope.setting.reconnect);
-            gl_setting.startReconnect = $scope.setting.reconnect;
-
-            // Save Duration
-            settings.setSetting("duration", $scope.setting.duration);
-            gl_setting.scanDuration = $scope.setting.duration;
-
+            settings.persistSettings();
         };
     });

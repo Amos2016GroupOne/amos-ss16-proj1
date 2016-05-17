@@ -1,5 +1,11 @@
 angular.module('app.services', [])
     .factory("settings", [function () {
+
+        var settings = {
+            reconnect: getSetting("reconnect"),
+            duration: getSetting("duration")
+        };
+
         function parseBool(val) { return val === true || val === "true" }
 
         // Redundant - should access tabCtrl.getSetting
@@ -19,14 +25,25 @@ angular.module('app.services', [])
 
             return ret;
         }
-        
+
         function setSetting(name, value) {
             localStorage.setItem(name, value);
         }
-        
+
+
+        function persistSettings() {
+            setSetting("reconnect", settings.reconnect);
+            setSetting("duration", settings.duration);
+
+        }
+
+
+
         return {
             getSetting: getSetting,
-            setSetting: setSetting
+            setSetting: setSetting,
+            persistSettings: persistSettings,
+            settings: settings
         }
-        
-    }])
+
+    }]);
