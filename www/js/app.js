@@ -19,6 +19,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
+            var bluetoothAlreadyEnabled = false;
+
             $cordovaBluetoothLE.initialize({ request: true }).then(null,
                 function (result) {
                     //Handle errors
@@ -28,12 +30,29 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 function (obj) {
                     //Handle successes
                     if (obj.status == "disabled") {
-                        $cordovaBluetoothLE.enable().then(null, function (obj) {
-                            Log.add("Enable Error : " + JSON.stringify(obj));
-                            navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
-                        });
+                        var enableFunction = function () {
+                            $cordovaBluetoothLE.enable().then(null, function (obj) {
+                                Log.add("Enable Error : " + JSON.stringify(obj));
+                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
+                            });
+                        }
+                        if (bluetoothAlreadyEnabled) {
+                            navigator.notification.confirm("BLE Remote would like to turn on Bluetooth.", function (buttonIndex) {
+                                switch (buttonIndex) {
+                                    case 1:
+                                        enableFunction();
+                                        break;
+                                    case 2:
+                                        break;
+                                }
+                            }, "Enable Bluetooth", ["Accept", "Cancel"]);
+                        }
+                        else {
+                            enableFunction();
+                        }
                     }
                     else if (obj.status == "enabled") {
+                        bluetoothAlreadyEnabled = true;
                         Log.add("Enable Success : " + JSON.stringify(obj));
 
                         $cordovaBluetoothLE.hasPermission().then(function (obj) {
@@ -45,8 +64,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                                     Log.add("Request Permission Error : " + JSON.stringify(obj));
                                 });
                             }
-                            else
-                            {
+                            else {
                                 $rootScope.$broadcast("bleEnabledEvent");
                             }
                         }, function (obj) {
@@ -85,7 +103,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                     }
                 }
             })
-    
+
             .state('tab.settings', {
                 url: '/settings',
                 views: {
@@ -133,16 +151,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         };
     })
     // https://docs.angularjs.org/error/ngModel/numfmt?p0=10
-    .directive('stringToNumber', function() {
-  return {
-    require: 'ngModel',
-    link: function(scope, element, attrs, ngModel) {
-      ngModel.$parsers.push(function(value) {
-        return '' + value;
-      });
-      ngModel.$formatters.push(function(value) {
-        return parseFloat(value, 10);
-      });
-    }
-  };
-});
+    .directive('stringToNumber', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    return '' + value;
+                });
+                ngModel.$formatters.push(function (value) {
+                    return parseFloat(value, 10);
+                });
+            }
+        };
+    });
