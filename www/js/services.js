@@ -1,50 +1,56 @@
 angular.module('app.services', [])
     .factory("settings", [function () {
 
-        // Parses values into real booleans
-        function parseBool(val) { return val === true || val === "true" }
+        // Central settings object containing the settings. Its initialized by querying the settings
+        var settings = {
+           "reconnect": false,
+           "duration": 5,
+           "volume": 50
+         };
+
+        // Function to set settings into Localstorage
+        function setSetting(name, value) {
+          // Save to local storage as stringified objects. so parsing of e.g. boolean is
+          // much easier
+          localStorage.setItem(name, JSON.stringify(value));
+        }
 
         // Function to query settings by name
+        // TODO: Use settings setter to persist directly on set from view!?!
+        // see https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Functions/set
         function getSetting(name) {
             var ret = localStorage.getItem(name);
             // Set Default-Value
-            if (ret == null) {
-                if (name == "reconnect")
-                    ret = false;
-                else if (name == "duration")
-                    ret = 5;
-                else if (name == "volume")
-                    ret = 50;
-
-                localStorage.setItem(name, ret);
+            try {
+              if (ret == null) {
+                throw("wrong setting");
+              } else {
+                ret = JSON.parse(ret);
+              }
+            } catch (err) {
+              // Catches wrong settings and parse Errors.
+              console.log("could not get setting " + name + " from local storage!");
+              ret = settings[name];
+              setSetting(name, ret);
             }
-            // Reconnect needs to be stored as a boolean
-            if (name == "reconnect")
-                ret = parseBool(ret);
-            else if (name == "volume")
-                ret = parseInt(ret);
 
             return ret;
         }
 
-        // Central settings object containing the settings. Its initialized by querying the settings
-        var settings = {
-            reconnect: getSetting("reconnect"),
-            duration: getSetting("duration"),
-            volume: getSetting("volume")
-        };
-
-        // Function to set settings into Localstorage
-        function setSetting(name, value) {
-            localStorage.setItem(name, value);
+        // Initialize settings!
+        //settings.getOwnPropertyNames().forEach((item) => {
+        for (item in settings) {
+          settings[item] = getSetting(item);
         }
 
         // Persist all settings
         function persistSettings() {
-            setSetting("reconnect", settings.reconnect);
-            setSetting("duration", settings.duration);
-            setSetting("volume", settings.volume);
+          //settings.getOwnPropertyNames().forEach((item) => {
+          for (item in settings) {
+            setSetting(item, settings[item]);
+          }
         }
+
 
         // Return this services interface
         return {
@@ -52,6 +58,6 @@ angular.module('app.services', [])
             setSetting: setSetting,
             persistSettings: persistSettings,
             settings: settings
-        }
+        };
 
     }]);
