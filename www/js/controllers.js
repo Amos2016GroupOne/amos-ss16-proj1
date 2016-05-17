@@ -4,10 +4,13 @@ angular.module('app.controllers', [])
         $scope.devices = {};
         $scope.scanDevice = true;
         $scope.noDevice = true;
-        $scope.connected = false;
-        $scope.currentDevice = null;
+        $scope.dev1Connected = false;
+        $scope.dev2Connected = false;
+        $scope.currentDevice1 = null;
+        $scope.currentDevice2 = null;
         $scope.firstScan = true;
-        $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
+        $scope.barometer = { temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
+                             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter" };
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -67,12 +70,26 @@ angular.module('app.controllers', [])
 
             var onConnect = function (obj) {
 
+                if($scope.dev1Connected && $scope.dev2Connected){
+                    navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function () {});
+                    return;
+                }
+
                 Log.add("Connect Success : " + JSON.stringify(obj));
                 // Save deviceId as last connected one
                 setLastCon(device.address);
 
-                $scope.connected = true;
-                $scope.currentDevice = device;
+                if($scope.dev1Connected == false){
+                    $scope.dev1Connected = true;
+                    $scope.currentDevice1 = device;
+                    $scope.barometer.temperatureDev1 = "FREEZING HELL";
+                    $scope.barometer.pressureDev1 = "Inside of Jupiter";
+                }else{
+                    $scope.dev2Connected = true;
+                    $scope.currentDevice2 = device;
+                    $scope.barometer.temperatureDev2 = "FREEZING HELL";
+                    $scope.barometer.pressureDev2 = "Inside of Jupiter";
+                }
 
                 //Subscribe to barometer service
                 var params = {
@@ -93,7 +110,7 @@ angular.module('app.controllers', [])
 
                     if (obj.status == "subscribedResult") {
                         //Log.add("Subscribed Result");
-                        onBarometerData(obj);
+                        onBarometerData(obj,device);
                         var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                         Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
                         Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
@@ -173,22 +190,44 @@ angular.module('app.controllers', [])
             device.services = {};
         };
 
-        function onBarometerData(obj) {
+        function onBarometerData(obj, device) {
             var a = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
             function sensorBarometerConvert(data) {
                 return (data / 100);
             }
 
-            $scope.barometer.temperature = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
-            $scope.barometer.pressure = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
+            if($scope.currentDevice1.address == device.address){
+                $scope.barometer.temperatureDev1 = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
+                $scope.barometer.pressureDev1 = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
+            }else if ($scope.currentDevice2.address == device.address){
+                $scope.barometer.temperatureDev2 = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
+                $scope.barometer.pressureDev2 = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
+            }else{
+                Log.add("onBarometerData: no matching device" + JSON.stringify(device.address));
+            }
         }
 
-        $scope.disconnect = function () {
-            $scope.connected = false;
-            $scope.close($scope.currentDevice.address);
+        $scope.disconnect = function (device) {
+            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address){
+                $scope.dev1Connected = false;
+                $scope.close($scope.currentDevice1.address);
+            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address){
+                $scope.dev2Connected = false;
+                $scope.close($scope.currentDevice2.address);
+            }
         }
 
+        $scope.isConnected = function (device) {
+            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address){
+                return true;
+            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
         $scope.discover = function (address, afterFunction) {
             var params = {
                 address: address,

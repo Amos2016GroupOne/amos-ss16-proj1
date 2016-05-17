@@ -2,11 +2,12 @@
     <ion-content class="padding">
         <h1>Sensor Tag</h1>
 
-        <div id="overviewPage" ng-if="connected == false">
+        <div id="overviewPage">
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
-                <li ng-repeat="(address, device) in devices" on-touch="connect(device)">
+                <li ng-repeat="(address, device) in devices" ng-if="!isConnected(device)">
                     {{device.name}}
+                    <button on-touch="connect(device)">Connect</button>
                     <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
                 </li>
             </ul>
@@ -16,14 +17,23 @@
             <button ng-if="scanDevice == true" id="btnStopRefresh" on-touch="stopScan()">Stop Scanning</button>
             <span id="lastConDevice"></span>
         </div>
-        <div id="devicePage" ng-if="connected == true">
+        <div id="devicePage" ng-if="dev1Connected == true">
             <div id="barometerData">
+                Device 1: <button on-touch="disconnect(currentDevice1)">Disconnect</button><br/>
                 Temperature <br/> 
-                {{barometer.temperature}} <br/><br/>
+                {{barometer.temperatureDev1}} <br/>
                  Pressure <br/> 
-                {{barometer.pressure}} <br/><br/>
+                {{barometer.pressureDev1}} <br/><br/>
             </div>
-            <button id="disconnectButton" on-touch="disconnect()">Disconnect</button>
+        </div>
+        <div id="devicePage" ng-if="dev2Connected == true">
+            <div id="barometerData">
+                Device 2: <button on-touch="disconnect(currentDevice2)">Disconnect</button><br/>
+                Temperature <br/>
+                {{barometer.temperatureDev2}} <br/>
+                 Pressure <br/>
+                {{barometer.pressureDev2}} <br/><br/>
+            </div>
         </div>
 
 
