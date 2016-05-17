@@ -70,6 +70,11 @@ angular.module('app.controllers', [])
 
             var onConnect = function (obj) {
 
+                if($scope.dev1Connected && $scope.dev2Connected){
+                    navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function () {});
+                    return;
+                }
+
                 Log.add("Connect Success : " + JSON.stringify(obj));
                 // Save deviceId as last connected one
                 setLastCon(device.address);
@@ -204,7 +209,7 @@ angular.module('app.controllers', [])
         }
 
         $scope.disconnect = function (device) {
-            if ($scope.currentDevice1.address == device.address){
+            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address){
                 $scope.dev1Connected = false;
                 $scope.close($scope.currentDevice1.address);
             } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address){
