@@ -5,10 +5,9 @@
         <div id="overviewPage">
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
-                <li ng-repeat="(address, device) in devices">
+                <li ng-repeat="(address, device) in devices" ng-if="!isConnected(device)">
                     {{device.name}}
-                    <button on-touch="connect(device)" ng-if="!isConnected(device)">Connect</button>
-                    <button on-touch="disconnect(device)" ng-if="isConnected(device)">Disconnect</button>
+                    <button on-touch="connect(device)">Connect</button>
                     <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
                 </li>
             </ul>
@@ -20,7 +19,7 @@
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
             <div id="barometerData">
-                Device 1: <br/>
+                Device 1: <button on-touch="disconnect(currentDevice1)">Disconnect</button><br/>
                 Temperature <br/> 
                 {{barometer.temperatureDev1}} <br/>
                  Pressure <br/> 
@@ -29,7 +28,7 @@
         </div>
         <div id="devicePage" ng-if="dev2Connected == true">
             <div id="barometerData">
-                Device 2: <br/>
+                Device 2: <button on-touch="disconnect(currentDevice2)">Disconnect</button><br/>
                 Temperature <br/>
                 {{barometer.temperatureDev2}} <br/>
                  Pressure <br/>
