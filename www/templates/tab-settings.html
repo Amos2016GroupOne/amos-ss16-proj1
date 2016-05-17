@@ -1,19 +1,35 @@
 <ion-view view-title="Settings">
-    <ion-content class="padding">
-        <h1>Settings</h1>
+  <ion-content class="padding">
+    <h1>Settings</h1>
 
-		<ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
+    <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 
-		<label class="item item-input">
-			<span class="input-label">Scan Duration (seconds)</span>
-			<input type="number" string-to-number ng-model="settings.duration" ng-change="update()" >
-		</label>
-		
-		<div class="item range">
-		  <i class="icon ion-volume-low"></i>
-			<input type="range" ng-model="settings.volume" ng-change="update()" min="0" max="100" >
-		  <i class="icon ion-volume-high"></i>
-		</div>
-		
-    </ion-content>
+    <label class="item item-input">
+      <span class="input-label">Scan Duration (seconds)</span>
+      <input type="number" string-to-number ng-model="settings.duration" ng-change="update()" >
+    </label>
+
+      <div class="item">
+        <div class="item range">
+          <i class="icon ion-volume-low"></i>
+          <input type="range" ng-model="settings.volume" ng-change="update()" min="0" max="100" >
+          <i class="icon ion-volume-high"></i>
+        </div>
+        <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" placeholder="Volume Profile Name">
+          </label>
+          <button class="button button-small">
+            Save
+          </button>
+        </div>
+        <div class="list list-inset" ng-show="settings.volumeProfiles > 0" >
+          volumeProfiles:
+          <!--<div class="item" ng-repeat="volumeProfile in settings.volumeProfiles" >-->
+            <!--{{ volumeProfile }}-->
+          <!--</div>-->
+        </div>
+      </div>
+
+  </ion-content>
 </ion-view>
