@@ -267,5 +267,5 @@ angular.module('app.controllers', [])
         $scope.settings = settings.settings;
 
         // Scope update function is the settings service persist function
-        $scope.update = settings.persistSettings();
+        $scope.update = settings.persistSettings;
     });
