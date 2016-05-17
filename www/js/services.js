@@ -5,7 +5,11 @@ angular.module('app.services', [])
         var settings = {
            "reconnect": false,
            "duration": 5,
-           "volume": 50
+           "volume": 50,
+           "volumeProfiles": [
+             { name: "Standard Profile", volume: 50 }
+           ],
+           "currentVolumeProfile": ""
          };
 
         // Function to set settings into Localstorage
