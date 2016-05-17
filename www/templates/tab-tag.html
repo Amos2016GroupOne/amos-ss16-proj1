@@ -5,7 +5,8 @@
         <div id="overviewPage">
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
-                <li ng-repeat="(address, device) in devices" ng-if="!isConnected(device)">
+                <li ng-repeat="(address, device) in devices" >
+                <li ng-repeat="(address, device) in devices" ng-if="device.name=='CC2650 SensorTag' && !isConnected(device)">
                     {{device.name}}
                     <button on-touch="connect(device)">Connect</button>
                     <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
