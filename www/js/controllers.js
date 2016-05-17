@@ -8,7 +8,6 @@ angular.module('app.controllers', [])
         $scope.currentDevice = null;
         $scope.firstScan = true;
         $scope.barometer = { temperature: "FREEZING HELL", pressure: "Inside of Jupiter" };
-
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -147,6 +146,16 @@ angular.module('app.controllers', [])
             $scope.startScan();
             $scope.noDevice = true;
             $scope.scanDevice = true;
+        }
+
+        $scope.stopScan = function () {
+            $scope.scanDevice = false;
+            $scope.firstScan = false;
+            $cordovaBluetoothLE.stopScan().then(function (obj) {
+                Log.add("Stop Scan Success : " + JSON.stringify(obj));
+            }, function (obj) {
+                Log.add("Stop Scan Error : " + JSON.stringify(obj));
+            });
         }
 
         $scope.close = function (address) {
