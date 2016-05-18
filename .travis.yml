@@ -1,4 +1,6 @@
 # inspired by https://thesabbir.com/continuous-integration-with-cordova-android-applications/
+notifications:
+          email: false
 language: android
 sudo: required
 group: stable

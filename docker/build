@@ -19,8 +19,7 @@ set -ue
 
 # This script is always executed in the **root** of your repository
 
-cordova clean
-cordova build
+ionic build
 
 echo
 echo "Copying final artifact to docker assets directory"
