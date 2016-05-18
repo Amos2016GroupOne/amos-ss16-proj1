@@ -9,7 +9,7 @@ angular.module('app.services', [])
            "volumeProfiles": [
              { name: "Standard Profile", volume: 50 }
            ],
-           "currentVolumeProfile": ""
+           "currentVolumeProfile": false
          };
 
         // Function to set settings into Localstorage
@@ -54,7 +54,6 @@ angular.module('app.services', [])
             setSetting(item, settings[item]);
           }
         }
-
 
         // Return this services interface
         return {

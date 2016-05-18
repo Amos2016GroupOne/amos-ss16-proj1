@@ -316,6 +316,34 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+        $scope.newVolumeProfileName = "";
+
+
+        $scope.changeVolume = function() {
+          $scope.settings.currentVolumeProfile = false;
+          $scope.update();
+        }
+
+        $scope.addVolumeProfile = function(name) {
+          // TODO: no duplicates!
+          var newProfile = {name: name, volume: $scope.settings.volume};
+          $scope.settings.volumeProfiles.push(newProfile);
+          $scope.settings.currentVolumeProfile = newProfile;
+          $scope.newVolumeProfileName = "";  // TODO: has no effect!
+        }
+
+        $scope.removeVolumeProfile = function(volumeProfile) {  // TODO
+          console.log("removing volume profile " + volumeProfile.name);
+          $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter((item) => {
+            return item.name !== volumeProfile.name;
+          });
+        }
+
+        $scope.changeVolumeProfile = function() {
+          $scope.settings.volume = $scope.settings.currentVolumeProfile.volume;
+          $scope.update();
+        }
+
         //
         $scope.$on('volumeupbutton', function () {
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
@@ -329,11 +357,10 @@ angular.module('app.controllers', [])
                     up = 100 - vol;
                 vol = vol + up;
 
-                // Save setting
-                settings.setSetting("volume", vol);
-
+                // Save setting and
                 // Initialise GUI with saved setting values
                 settings.settings.volume = vol;
+                $scope.changeVolume();
 
             });
         });
@@ -350,11 +377,10 @@ angular.module('app.controllers', [])
                     down = vol;
                 vol = vol - down;
 
-                // Save setting
-                settings.setSetting("volume", vol);
-
+                // Save setting and
                 // Initialise GUI with saved setting values
                 settings.settings.volume = vol;
+                $scope.changeVolume();
 
             });
         });

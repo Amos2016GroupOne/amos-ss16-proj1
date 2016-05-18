@@ -12,23 +12,32 @@
       <div class="item">
         <div class="item range">
           <i class="icon ion-volume-low"></i>
-          <input type="range" ng-model="settings.volume" ng-change="update()" min="0" max="100" >
+          <input type="range" ng-model="settings.volume" ng-change="changeVolume()" min="0" max="100" >
           <i class="icon ion-volume-high"></i>
         </div>
         <div class="item item-input-inset">
           <label class="item-input-wrapper">
-            <input type="text" placeholder="Volume Profile Name">
+            <input type="text" placeholder="Volume Profile Name" ng-model="newVolumeProfileName">
           </label>
-          <button class="button button-small">
+          <button class="button button-small" ng-click="addVolumeProfile(newVolumeProfileName)">
             Save
           </button>
         </div>
-        <div class="list list-inset" ng-show="settings.volumeProfiles > 0" >
-          volumeProfiles:
-          <!--<div class="item" ng-repeat="volumeProfile in settings.volumeProfiles" >-->
-            <!--{{ volumeProfile }}-->
-          <!--</div>-->
-        </div>
+        <ion-list class="list list-inset" ng-show="settings.volumeProfiles.length > 0">
+          <div class="item item-divider">
+            volumeProfiles:
+          </div>
+          <ion-radio
+               ng-repeat="volumeProfile in settings.volumeProfiles"
+               ng-value="volumeProfile"
+               ng-model="settings.currentVolumeProfile"
+               ng-change="changeVolumeProfile()">
+               <!--<i class="icon ion-edit"></i> too complicated! -->
+               <i class="icon ion-trash-a" style="font-size: 26px; padding-right: 10px;"
+                ng-click="removeVolumeProfile(volumeProfile)"></i>
+               {{ volumeProfile.name }}
+          </ion-radio>
+        </ion-list>
       </div>
 
   </ion-content>
