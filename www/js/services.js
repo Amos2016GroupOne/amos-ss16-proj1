@@ -7,7 +7,9 @@ angular.module('app.services', [])
            "duration": 5,
            "volume": 50,
            "volumeProfiles": [
-             { name: "Standard Profile", volume: 50 }
+             { name: "Home",    volume: 40 },
+             { name: "Office",  volume: 70 },
+             { name: "Outdoor", volume: 90 }
            ],
            "currentVolumeProfile": false
          };
