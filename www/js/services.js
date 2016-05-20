@@ -17,7 +17,8 @@ angular.module('app.services', [])
              { name: "Office",  volume: 70 },
              { name: "Outdoor", volume: 90 }
            ],
-           "currentVolumeProfile": false
+           "currentVolumeProfile": false,
+           "mute": false
          };
 
         var storedSettingsVersion = JSON.parse(localStorage.getItem("settings-version"))
