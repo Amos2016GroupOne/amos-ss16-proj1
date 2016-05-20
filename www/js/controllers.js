@@ -309,15 +309,15 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope, settings) {
+    .controller('SettingsCtrl', function ($scope, Log, settings) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
-        $scope.newVolumeProfileName = "";
 
+        $scope.newVolumeProfileName = "";
 
         $scope.changeVolume = function() {
           $scope.settings.currentVolumeProfile = false;
@@ -343,8 +343,11 @@ angular.module('app.controllers', [])
           $scope.settings.volume = $scope.settings.currentVolumeProfile.volume;
           $scope.update();
         }
-
-        //
+        
+        $scope.unmute = function(){
+            settings.settings.mute = false;
+        };
+    
         $scope.$on('volumeupbutton', function () {
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
@@ -357,10 +360,9 @@ angular.module('app.controllers', [])
                     up = 100 - vol;
                 vol = vol + up;
 
-                // Save setting and
-                // Initialise GUI with saved setting values
-                settings.settings.volume = vol;
-                $scope.changeVolume();
+                settings.settings.volume = vol;   
+                $scope.unmute();
+                $scope.update();
 
             });
         });
@@ -377,10 +379,9 @@ angular.module('app.controllers', [])
                     down = vol;
                 vol = vol - down;
 
-                // Save setting and
-                // Initialise GUI with saved setting values
-                settings.settings.volume = vol;
-                $scope.changeVolume();
+                settings.settings.volume = vol;     
+                $scope.unmute();
+                $scope.update();
 
             });
         });
