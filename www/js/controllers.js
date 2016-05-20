@@ -352,7 +352,8 @@ angular.module('app.controllers', [])
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                var vol = settings.settings.volume;
+                // parse to Int or otherwise it is not if changed per GUI
+                var vol = parseInt(settings.settings.volume);
                 var up = 10;
 
                 // Catch if volume 91 to 100, update to max 100
@@ -360,8 +361,10 @@ angular.module('app.controllers', [])
                     up = 100 - vol;
                 vol = vol + up;
 
-                settings.settings.volume = vol;   
+                settings.settings.volume = vol;
+                //unmute as the user changed the volume
                 $scope.unmute();
+                //persist settings
                 $scope.update();
 
             });
@@ -371,7 +374,8 @@ angular.module('app.controllers', [])
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                var vol = settings.settings.volume;
+                // parse to Int or otherwise it is not if changed per GUI
+                var vol = parseInt(settings.settings.volume);
                 var down = 10;
 
                 // Catch if volume 9 to 0, update to min 0
@@ -379,8 +383,10 @@ angular.module('app.controllers', [])
                     down = vol;
                 vol = vol - down;
 
-                settings.settings.volume = vol;     
+                settings.settings.volume = vol;
+                //unmute as the user changed the volume
                 $scope.unmute();
+                //persist settings
                 $scope.update();
 
             });
