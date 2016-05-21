@@ -16,6 +16,10 @@
             <progress ng-if="scanDevice == true"></progress>
             <button ng-if="scanDevice == false" id="btnRefresh" ng-click="refreshSensortags()">Scan for Devices</button>
             <button ng-if="scanDevice == true" id="btnStopRefresh" ng-click="stopScan()">Stop Scanning</button>
+            <div ng-if="scanDevice == true">
+            <ion-spinner icon="ripple"></ion-spinner>
+            </div>
+            <button id="btnRefresh" on-touch="refreshSensortags()">Scan for Devices</button>
             <span id="lastConDevice"></span>
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
