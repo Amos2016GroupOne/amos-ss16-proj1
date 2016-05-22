@@ -9,21 +9,21 @@
                 <li ng-repeat="(address, device) in devices" ng-if="device.name=='CC2650 SensorTag' && !isConnected(device)">
                     {{device.name}}
                     <button on-touch="connect(device)">Connect</button>
-                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
+                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp; {{device.address}}
                 </li>
             </ul>
             <div ng-if="noDevice == true">No device found</div>
             <progress ng-if="scanDevice == true"></progress>
-            <button ng-if="scanDevice == false" id="btnRefresh" on-touch="refreshSensortags()">Scan for Devices</button>
-            <button ng-if="scanDevice == true" id="btnStopRefresh" on-touch="stopScan()">Stop Scanning</button>
+            <button class="button button-large button-royal" ng-if="scanDevice == false" id="btnRefresh" on-touch="refreshSensortags()">Scan for Devices</button>
+            <button class="button button-large button-royal" ng-if="scanDevice == true" id="btnStopRefresh" on-touch="stopScan()">Stop Scanning</button>
             <span id="lastConDevice"></span>
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
             <div id="barometerData">
                 Device 1: <button on-touch="disconnect(currentDevice1)">Disconnect</button><br/>
-                Temperature <br/> 
+                Temperature <br/>
                 {{barometer.temperatureDev1}} <br/>
-                 Pressure <br/> 
+                 Pressure <br/>
                 {{barometer.pressureDev1}} <br/><br/>
             </div>
         </div>
