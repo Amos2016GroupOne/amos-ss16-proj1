@@ -18,46 +18,39 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-            var bluetoothAlreadyEnabled = false;
-
-			
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
 			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
 			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
 			
-			
-            $cordovaBluetoothLE.initialize({ request: true }).then(null,
+            //disable built in request as we use our own request below because
+            //with the built in request we can not recognize if the request was declined, or at least do not know how
+            $cordovaBluetoothLE.initialize({ request: false }).then(null,
                 function (result) {
                     //Handle errors
                     Log.add("Init Fail: " + JSON.stringify(result));
                     navigator.notification.alert("Sorry. Your device does not support BTLE!", function () { navigator.app.exitApp(); });
                 },
                 function (obj) {
-                    //Handle successes
+                    //Handle successes of initialize
                     if (obj.status == "disabled") {
                         var enableFunction = function () {
                             $cordovaBluetoothLE.enable().then(null, function (obj) {
+                                //there was a failure of the internal enable() function
                                 Log.add("Enable Error : " + JSON.stringify(obj));
-                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
+                                navigator.notification.alert("There was an internal error whenn enabling Bluetooth. This app only works with Bluetooth enabled.",
+                                                             function () { navigator.app.exitApp(); });
                             });
                         }
-                        if (bluetoothAlreadyEnabled) {
-                            navigator.notification.confirm("BLE Remote would like to turn on Bluetooth.", function (buttonIndex) {
-                                switch (buttonIndex) {
-                                    case 1:
-                                        enableFunction();
-                                        break;
-                                    case 2:
-                                        break;
-                                }
-                            }, "Enable Bluetooth", ["Accept", "Cancel"]);
-                        }
-                        else {
-                            enableFunction();
-                        }
+                        //our own request. gets called everytime there was a change to the BT state
+                        navigator.notification.confirm("BLE Remote would like to turn on Bluetooth.", function (buttonIndex) {
+                            if (buttonIndex == 1){
+                                enableFunction();
+                            }else if(buttonIndex == 0 || buttonIndex == 2){
+                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
+                            }
+                        }, "Enable Bluetooth", ["Accept", "Cancel"]);
                     }
                     else if (obj.status == "enabled") {
-                        bluetoothAlreadyEnabled = true;
                         Log.add("Enable Success : " + JSON.stringify(obj));
 
                         $cordovaBluetoothLE.hasPermission().then(function (obj) {
