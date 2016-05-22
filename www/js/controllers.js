@@ -334,7 +334,7 @@ angular.module('app.controllers', [])
 
         $scope.removeVolumeProfile = function(volumeProfile) {  // TODO
           console.log("removing volume profile " + volumeProfile.name);
-          $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter((item) => {
+          $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter( function(item) {
             return item.name !== volumeProfile.name;
           });
         }
