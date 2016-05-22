@@ -51,7 +51,6 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                         }, "Enable Bluetooth", ["Accept", "Cancel"]);
                     }
                     else if (obj.status == "enabled") {
-                        bluetoothAlreadyEnabled = true;
                         Log.add("Enable Success : " + JSON.stringify(obj));
 
                         $cordovaBluetoothLE.hasPermission().then(function (obj) {
