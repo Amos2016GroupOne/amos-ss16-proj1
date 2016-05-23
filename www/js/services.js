@@ -1,8 +1,14 @@
 angular.module('app.services', [])
     .factory("settings", [function () {
-
         // Central settings object containing the settings. Its initialized by querying the settings
+
+        // if settings found in local storage have a version smaller
+        // minCompatibleSettingsVersion they will be cleared.
+        // REMEMBER: increase minCompatibleSettingsversion and settings-version in the
+        // settings-Object if you change the settings object!
+        var minCompatibleSettingsVersion = 1;
         var settings = {
+          "settings-version": 1,
            "reconnect": false,
            "duration": 5,
            "volume": 50,
@@ -14,6 +20,12 @@ angular.module('app.services', [])
            "currentVolumeProfile": false
          };
 
+        var storedSettingsVersion = JSON.parse(localStorage.getItem("settings-version"))
+        if (storedSettingsVersion == null || storedSettingsVersion < minCompatibleSettingsVersion) {
+          localStorage.clear();
+          console.log("Settings stored are incompatible with the current app version and",
+              "were therefore deleted.");
+        }
         // Function to set settings into Localstorage
         function setSetting(name, value) {
           // Save to local storage as stringified objects. so parsing of e.g. boolean is
