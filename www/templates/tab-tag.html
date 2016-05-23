@@ -13,7 +13,9 @@
                 </li>
             </ul>
             <div ng-if="noDevice == true">No device found</div>
-            <progress ng-if="scanDevice == true"></progress>
+            <div ng-if="scanDevice == true">
+            <ion-spinner icon="ripple"></ion-spinner>
+            </div>
             <button ng-if="scanDevice == false" id="btnRefresh" ng-click="refreshSensortags()">Scan for Devices</button>
             <button ng-if="scanDevice == true" id="btnStopRefresh" ng-click="stopScan()">Stop Scanning</button>
             <span id="lastConDevice"></span>
