@@ -31,7 +31,7 @@ angular.module('app.controllers', [])
             var params = {
                 services: [],
                 allowDuplicates: false,
-                scanTimeout: settings.settings.scanDuration * 1000
+                scanTimeout: settings.settings.duration * 1000
             };
 
             if (window.cordova) {
@@ -298,8 +298,9 @@ angular.module('app.controllers', [])
         }
 
         $scope.firstScan = false;
-        if (settings.settings.startReconnect == "true" || settings.settings.startReconnect === true) {
+        if (settings.settings.reconnect == "true" || settings.settings.reconnect === true) {
             $scope.firstScan = true;
+
         }
 
         $rootScope.$on("bleEnabledEvent", function () {
