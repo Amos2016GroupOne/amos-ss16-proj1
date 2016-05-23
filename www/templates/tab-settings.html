@@ -20,9 +20,12 @@
           <div class="item item-divider">
             Volume Profiles:
           </div>
+          <!-- REMEMBERL ng-values are compared by ==. Two objects equal each other in js
+            if they refer to the same object! so we need to compare the objects into a
+            string (JSONify!) -->
           <ion-radio
                ng-repeat="volumeProfile in settings.volumeProfiles"
-               ng-value="volumeProfile"
+               ng-value="volumeProfile|json"
                ng-model="settings.currentVolumeProfile"
                ng-change="changeVolumeProfile()">
                {{ volumeProfile.name }}

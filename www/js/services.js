@@ -6,9 +6,9 @@ angular.module('app.services', [])
         // minCompatibleSettingsVersion they will be cleared.
         // REMEMBER: increase minCompatibleSettingsversion and settings-version in the
         // settings-Object if you change the settings object!
-        var minCompatibleSettingsVersion = 1;
+        var minCompatibleSettingsVersion = 2;
         var settings = {
-          "settings-version": 1,
+          "settings-version": 2,
            "reconnect": false,
            "duration": 5,
            "volume": 50,
