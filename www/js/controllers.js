@@ -309,15 +309,15 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope, settings) {
+    .controller('SettingsCtrl', function ($scope, Log, settings) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
-        $scope.newVolumeProfileName = "";
 
+        $scope.newVolumeProfileName = "";
 
         $scope.changeVolume = function() {
           $scope.settings.currentVolumeProfile = false;
@@ -343,13 +343,35 @@ angular.module('app.controllers', [])
           $scope.settings.volume = $scope.settings.currentVolumeProfile.volume;
           $scope.update();
         }
-
-        //
+        
+        $scope.unmute = function(){
+            settings.settings.mute = false;
+            //persist settings
+            $scope.update();
+        };
+    
+        //called when mute was toggled by pressing the button
+        $scope.muteToggle = function(){
+            if(settings.settings.mute){
+                settings.settings.volBeforeMute = settings.settings.volume;
+                settings.settings.volume = parseInt(0);
+            }else{
+                settings.settings.volume = parseInt(settings.settings.volBeforeMute);
+            }
+            //persist settings
+            $scope.update();
+        }
+    
         $scope.$on('volumeupbutton', function () {
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                var vol = settings.settings.volume;
+                if(settings.settings.mute){
+                    var vol = parseInt(settings.settings.volBeforeMute);
+                }else{
+                    // parse to Int or otherwise it is not if changed per GUI
+                    var vol = parseInt(settings.settings.volume);
+                }
                 var up = 10;
 
                 // Catch if volume 91 to 100, update to max 100
@@ -357,10 +379,11 @@ angular.module('app.controllers', [])
                     up = 100 - vol;
                 vol = vol + up;
 
-                // Save setting and
-                // Initialise GUI with saved setting values
                 settings.settings.volume = vol;
-                $scope.changeVolume();
+                //unmute as the user changed the volume
+                $scope.unmute();
+                //persist settings
+                $scope.update();
 
             });
         });
@@ -369,7 +392,12 @@ angular.module('app.controllers', [])
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                var vol = settings.settings.volume;
+                if(settings.settings.mute){
+                    var vol = parseInt(settings.settings.volBeforeMute);
+                }else{
+                    // parse to Int or otherwise it is not if changed per GUI
+                    var vol = parseInt(settings.settings.volume);
+                }
                 var down = 10;
 
                 // Catch if volume 9 to 0, update to min 0
@@ -377,10 +405,11 @@ angular.module('app.controllers', [])
                     down = vol;
                 vol = vol - down;
 
-                // Save setting and
-                // Initialise GUI with saved setting values
                 settings.settings.volume = vol;
-                $scope.changeVolume();
+                //unmute as the user changed the volume
+                $scope.unmute();
+                //persist settings
+                $scope.update();
 
             });
         });
