@@ -4,11 +4,15 @@
 
     <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 
-    <label class="item item-input">
-      <span class="input-label">Scan Duration (seconds)</span>
-      <input type="number" string-to-number ng-model="settings.duration" ng-change="update()" >
-    </label>
-
+		<div class="item range">
+		  <i class="icon ion-clock"></i>
+			<input type="range" ng-model="settings.duration" ng-change="update()" min="1" max="31" step="5" >
+		  <i class="icon ion-clock"></i>
+		</div>
+	    <div class="item item-divider">
+            Scan Duration: {{settings.duration}} seconds
+        </div>
+	
       <div class="item">
         <div class="item range">
           <i class="icon ion-volume-low"></i>
