@@ -1,16 +1,18 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function ($scope, $rootScope, $cordovaBluetoothLE, Log, settings) {
+    .controller('TagCtrl', function($scope, $rootScope, $cordovaBluetoothLE, Log, settings) {
         $scope.devices = {};
-        $scope.scanDevice = true;
+        $scope.scanDevice = false;
         $scope.noDevice = true;
         $scope.dev1Connected = false;
         $scope.dev2Connected = false;
         $scope.currentDevice1 = null;
         $scope.currentDevice2 = null;
         $scope.firstScan = true;
-        $scope.barometer = { temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
-                             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter" };
+        $scope.barometer = {
+            temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
+            temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
+        };
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -27,7 +29,7 @@ angular.module('app.controllers', [])
             localStorage.setItem("lastCon", deviceId);
         }
 
-        $scope.startScan = function () {
+        $scope.startScan = function() {
             var params = {
                 services: [],
                 allowDuplicates: false,
@@ -41,37 +43,71 @@ angular.module('app.controllers', [])
                 //params.callbackType = bluetoothle.CALLBACK_TYPE_FIRST_MATCH;
             }
 
-            Log.add("Start Scan : " + JSON.stringify(params));
-
-            $cordovaBluetoothLE.startScan(params).then(function (obj) {
-                Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
-                $scope.firstScan = false;
-                $scope.scanDevice = false;
-            }, function (obj) {
-                Log.add("Start Scan Error : " + JSON.stringify(obj));
-            }, function (device) {
-                Log.add("Start Scan Success : " + JSON.stringify(device));
-
-                if (device.status == "scanStarted") return;
-
-                $scope.noDevice = false;
-                $scope.devices[device.address] = device;
-                $scope.devices[device.address].services = {};
-                console.log(JSON.stringify($scope.devices));
-
-                if (device.address == getLastCon() && $scope.firstScan) {
-                    $scope.connect(device);
+            // Function to start scan for devices.
+            // This function populates th $scope.devices variable on results.
+            function startScan() {
+                Log.add("Start Scan : " + JSON.stringify(params));
+                $cordovaBluetoothLE.startScan(params).then(function(obj) {
+                    Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
                     $scope.firstScan = false;
+                    $scope.scanDevice = false;
+                }, function(obj) {
+                    Log.add("Start Scan Error : " + JSON.stringify(obj));
+                }, function(device) {
+                    Log.add("Start Scan Success : " + JSON.stringify(device));
+
+
+                    if (device.status == "scanStarted") {
+                        $scope.scanDevice = true;
+                        return;
+                    }
+
+                    $scope.noDevice = false;
+                    $scope.devices[device.address] = device;
+                    $scope.devices[device.address].services = {};
+                    console.log(JSON.stringify($scope.devices));
+
+                    if (device.address == getLastCon() && $scope.firstScan) {
+                        $scope.connect(device);
+                        $scope.firstScan = false;
+                    }
+                })
+            };
+
+            // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
+            // This has no effect on Android 4 and 5 and iOS
+            $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
+                console.log(JSON.stringify(obj));
+                if (obj.isLocationEnabled) {
+                    startScan();
                 }
-            });
+                else {
+                    navigator.notification.confirm("To scan for devices you need to enable location services. Do you want to do that now?", function(buttonIndex) {
+                        if (buttonIndex == 1) {
+                            $cordovaBluetoothLE.requestLocation().then(function(obj) {
+                                console.log(JSON.stringify(obj));
+                                if (obj.requestLocation) {
+                                    startScan();
+                                }
+                                else {
+                                    navigator.notification.alert("Sorry. Scanning only works with location services enabled.", null);
+                                }
+                            }, null);
+                        } else if (buttonIndex == 0 || buttonIndex == 2) {
+                            navigator.notification.alert("Sorry. Scanning only works with location services enabled.", null);
+                        }
+                    }, "Enable Bluetooth", ["Accept", "Cancel"]);
+                }
+            }, null);
+
         };
 
-        $scope.connect = function (device) {
+        $scope.connect = function(device) {
 
-            var onConnect = function (obj) {
+            var onConnect = function(obj) {
 
-                if($scope.dev1Connected && $scope.dev2Connected){
-                    navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function () {});
+                if ($scope.dev1Connected && $scope.dev2Connected) {
+                    navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function() { });
                     return;
                 }
 
@@ -79,12 +115,12 @@ angular.module('app.controllers', [])
                 // Save deviceId as last connected one
                 setLastCon(device.address);
 
-                if($scope.dev1Connected == false){
+                if ($scope.dev1Connected == false) {
                     $scope.dev1Connected = true;
                     $scope.currentDevice1 = device;
                     $scope.barometer.temperatureDev1 = "FREEZING HELL";
                     $scope.barometer.pressureDev1 = "Inside of Jupiter";
-                }else{
+                } else {
                     $scope.dev2Connected = true;
                     $scope.currentDevice2 = device;
                     $scope.barometer.temperatureDev2 = "FREEZING HELL";
@@ -101,16 +137,16 @@ angular.module('app.controllers', [])
 
                 Log.add("Subscribe : " + JSON.stringify(params));
 
-                $cordovaBluetoothLE.subscribe(params).then(function (obj) {
+                $cordovaBluetoothLE.subscribe(params).then(function(obj) {
                     Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
-                }, function (obj) {
+                }, function(obj) {
                     Log.add("Subscribe Error : " + JSON.stringify(obj));
-                }, function (obj) {
+                }, function(obj) {
                     //Log.add("Subscribe Success : " + JSON.stringify(obj));
 
                     if (obj.status == "subscribedResult") {
                         //Log.add("Subscribed Result");
-                        onBarometerData(obj,device);
+                        onBarometerData(obj, device);
                         var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                         Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
                         Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
@@ -129,9 +165,9 @@ angular.module('app.controllers', [])
 
                         Log.add("Write : " + JSON.stringify(params));
 
-                        $cordovaBluetoothLE.write(params).then(function (obj) {
+                        $cordovaBluetoothLE.write(params).then(function(obj) {
                             Log.add("Write Success : " + JSON.stringify(obj));
-                        }, function (obj) {
+                        }, function(obj) {
                             Log.add("Write Error : " + JSON.stringify(obj));
                         });
                     } else {
@@ -145,44 +181,39 @@ angular.module('app.controllers', [])
 
             Log.add("Connect : " + JSON.stringify(params));
 
-            $cordovaBluetoothLE.connect(params).then(null, function (obj) {
+            $cordovaBluetoothLE.connect(params).then(null, function(obj) {
                 Log.add("Connect Error : " + JSON.stringify(obj));
                 $scope.close(params.address); //Best practice is to close on connection error
-            }, function () {
+            }, function() {
                 $scope.discover(device.address, onConnect);
             });
 
         };
 
-        $rootScope.$on("bleEnabledEvent", function () {
-            $scope.startScan();
-        })
-
-        $scope.refreshSensortags = function () {
+        $scope.refreshSensortags = function() {
             $scope.devices = {};
             $scope.startScan();
             $scope.noDevice = true;
-            $scope.scanDevice = true;
         }
 
-        $scope.stopScan = function () {
+        $scope.stopScan = function() {
             $scope.scanDevice = false;
             $scope.firstScan = false;
-            $cordovaBluetoothLE.stopScan().then(function (obj) {
+            $cordovaBluetoothLE.stopScan().then(function(obj) {
                 Log.add("Stop Scan Success : " + JSON.stringify(obj));
-            }, function (obj) {
+            }, function(obj) {
                 Log.add("Stop Scan Error : " + JSON.stringify(obj));
             });
         }
 
-        $scope.close = function (address) {
+        $scope.close = function(address) {
             var params = { address: address };
 
             Log.add("Close : " + JSON.stringify(params));
 
-            $cordovaBluetoothLE.close(params).then(function (obj) {
+            $cordovaBluetoothLE.close(params).then(function(obj) {
                 Log.add("Close Success : " + JSON.stringify(obj));
-            }, function (obj) {
+            }, function(obj) {
                 Log.add("Close Error : " + JSON.stringify(obj));
             });
 
@@ -197,38 +228,38 @@ angular.module('app.controllers', [])
                 return (data / 100);
             }
 
-            if($scope.currentDevice1.address == device.address){
+            if ($scope.currentDevice1.address == device.address) {
                 $scope.barometer.temperatureDev1 = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
                 $scope.barometer.pressureDev1 = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
-            }else if ($scope.currentDevice2.address == device.address){
+            } else if ($scope.currentDevice2.address == device.address) {
                 $scope.barometer.temperatureDev2 = sensorBarometerConvert(a[0] | (a[1] << 8) | (a[2] << 16)) + "°C";
                 $scope.barometer.pressureDev2 = sensorBarometerConvert(a[3] | (a[4] << 8) | (a[5] << 16)) + "hPa";
-            }else{
+            } else {
                 Log.add("onBarometerData: no matching device" + JSON.stringify(device.address));
             }
         }
 
-        $scope.disconnect = function (device) {
-            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address){
+        $scope.disconnect = function(device) {
+            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address) {
                 $scope.dev1Connected = false;
                 $scope.close($scope.currentDevice1.address);
-            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address){
+            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address) {
                 $scope.dev2Connected = false;
                 $scope.close($scope.currentDevice2.address);
             }
         }
 
-        $scope.isConnected = function (device) {
-            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address){
+        $scope.isConnected = function(device) {
+            if ($scope.dev1Connected && $scope.currentDevice1.address == device.address) {
                 return true;
-            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address){
+            } else if ($scope.dev2Connected && $scope.currentDevice2.address == device.address) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        $scope.discover = function (address, afterFunction) {
+        $scope.discover = function(address, afterFunction) {
             var params = {
                 address: address,
                 timeout: 10000
@@ -236,7 +267,7 @@ angular.module('app.controllers', [])
 
             Log.add("Discover : " + JSON.stringify(params));
 
-            $cordovaBluetoothLE.discover(params).then(function (obj) {
+            $cordovaBluetoothLE.discover(params).then(function(obj) {
                 Log.add("Discover Success : " + JSON.stringify(obj));
 
                 var device = $scope.devices[obj.address];
@@ -272,7 +303,7 @@ angular.module('app.controllers', [])
                 if (afterFunction != undefined) {
                     afterFunction();
                 }
-            }, function (obj) {
+            }, function(obj) {
                 Log.add("Discover Error : " + JSON.stringify(obj));
             });
         };
@@ -303,14 +334,15 @@ angular.module('app.controllers', [])
 
         }
 
-        $rootScope.$on("bleEnabledEvent", function () {
+        $rootScope.$on("bleEnabledEvent", function() {
+            console.log("BLE Enabled Event");
             $scope.startScan();
         });
 
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function ($scope, Log, settings) {
+    .controller('SettingsCtrl', function($scope, Log, settings) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
@@ -321,50 +353,50 @@ angular.module('app.controllers', [])
         $scope.newVolumeProfileName = "";
 
         $scope.changedVolume = function() {
-          $scope.settings.currentVolumeProfile = false;
-          $scope.settings.mute = false;
-          $scope.update();
+            $scope.settings.currentVolumeProfile = false;
+            $scope.settings.mute = false;
+            $scope.update();
         }
 
         $scope.addVolumeProfile = function(name) {
-          // TODO: no duplicates!
-          var newProfile = {name: name, volume: $scope.settings.volume};
-          $scope.settings.volumeProfiles.push(newProfile);
-          $scope.settings.currentVolumeProfile = newProfile;
-          $scope.newVolumeProfileName = "";  // TODO: has no effect!
+            // TODO: no duplicates!
+            var newProfile = { name: name, volume: $scope.settings.volume };
+            $scope.settings.volumeProfiles.push(newProfile);
+            $scope.settings.currentVolumeProfile = newProfile;
+            $scope.newVolumeProfileName = "";  // TODO: has no effect!
         }
 
         $scope.removeVolumeProfile = function(volumeProfile) {  // TODO
-          console.log("removing volume profile " + volumeProfile.name);
-          $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter( function(item) {
-            return item.name !== volumeProfile.name;
-          });
+            console.log("removing volume profile " + volumeProfile.name);
+            $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter(function(item) {
+                return item.name !== volumeProfile.name;
+            });
         }
 
         $scope.changeVolumeProfile = function() {
-          $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
-          $scope.update();
+            $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
+            $scope.update();
         }
 
         //called when mute was toggled by pressing the button
-        $scope.muteToggle = function(){
-            if(settings.settings.mute){
+        $scope.muteToggle = function() {
+            if (settings.settings.mute) {
                 settings.settings.volBeforeMute = settings.settings.volume;
                 settings.settings.volume = parseInt(0);
-            }else{
+            } else {
                 settings.settings.volume = parseInt(settings.settings.volBeforeMute);
             }
             //persist settings
             $scope.update();
         }
 
-        $scope.$on('volumeupbutton', function () {
-            $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+        $scope.$on('volumeupbutton', function() {
+            $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                if(settings.settings.mute){
+                if (settings.settings.mute) {
                     var vol = parseInt(settings.settings.volBeforeMute);
-                }else{
+                } else {
                     // parse to Int or otherwise it is not if changed per GUI
                     var vol = parseInt(settings.settings.volume);
                 }
@@ -382,13 +414,13 @@ angular.module('app.controllers', [])
             });
         });
 
-        $scope.$on('volumedownbutton', function () {
-            $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+        $scope.$on('volumedownbutton', function() {
+            $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
-                if(settings.settings.mute){
+                if (settings.settings.mute) {
                     var vol = parseInt(settings.settings.volBeforeMute);
-                }else{
+                } else {
                     // parse to Int or otherwise it is not if changed per GUI
                     var vol = parseInt(settings.settings.volume);
                 }
