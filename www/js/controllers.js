@@ -186,10 +186,6 @@ angular.module('app.controllers', [])
 
         };
 
-        $rootScope.$on("bleEnabledEvent", function () {
-            $scope.startScan();
-        })
-
         $scope.refreshSensortags = function () {
             $scope.devices = {};
             $scope.startScan();
@@ -335,6 +331,7 @@ angular.module('app.controllers', [])
         }
 
         $rootScope.$on("bleEnabledEvent", function () {
+            console.log("BLE Enabled Event");
             $scope.startScan();
         });
 
