@@ -320,8 +320,9 @@ angular.module('app.controllers', [])
 
         $scope.newVolumeProfileName = "";
 
-        $scope.changeVolume = function() {
+        $scope.changedVolume = function() {
           $scope.settings.currentVolumeProfile = false;
+          $scope.settings.mute = false;
           $scope.update();
         }
 
@@ -344,13 +345,7 @@ angular.module('app.controllers', [])
           $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
           $scope.update();
         }
-        
-        $scope.unmute = function(){
-            settings.settings.mute = false;
-            //persist settings
-            $scope.update();
-        };
-    
+
         //called when mute was toggled by pressing the button
         $scope.muteToggle = function(){
             if(settings.settings.mute){
@@ -362,7 +357,7 @@ angular.module('app.controllers', [])
             //persist settings
             $scope.update();
         }
-    
+
         $scope.$on('volumeupbutton', function () {
             $scope.$apply(function () {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
@@ -381,10 +376,8 @@ angular.module('app.controllers', [])
                 vol = vol + up;
 
                 settings.settings.volume = vol;
-                //unmute as the user changed the volume
-                $scope.unmute();
-                //persist settings
-                $scope.update();
+                //unmute as the user changed the volume and persist
+                $scope.changedVolume();
 
             });
         });
@@ -407,10 +400,8 @@ angular.module('app.controllers', [])
                 vol = vol - down;
 
                 settings.settings.volume = vol;
-                //unmute as the user changed the volume
-                $scope.unmute();
-                //persist settings
-                $scope.update();
+                //unmute as the user changed the volume and persist
+                $scope.changedVolume();
 
             });
         });
