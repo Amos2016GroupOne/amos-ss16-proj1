@@ -20,5 +20,5 @@
 FROM osrgroup/amos-downloader-base-image:1.0
 MAINTAINER s.friedemann@gmx.net
 
-ENV HTML_INDEX_FILE android-debug.apk
+ENV HTML_INDEX_FILE android-release-unsigned.apk
 ADD assets/$HTML_INDEX_FILE /var/www/html/$HTML_INDEX_FILE
