@@ -9,6 +9,9 @@
 			<input type="range" ng-model="settings.duration" ng-change="update()" min="1" max="31" step="5" >
 		  <i class="icon ion-clock"></i>
 		</div>
+	    <div class="item item-divider">
+            Scan Duration: {{settings.duration}} seconds
+        </div>
 	
       <div class="item">
         <div class="item range">
@@ -35,3 +38,4 @@
       </div>
 
   </ion-content>
+</ion-view>
