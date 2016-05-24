@@ -43,6 +43,8 @@ angular.module('app.controllers', [])
                 //params.callbackType = bluetoothle.CALLBACK_TYPE_FIRST_MATCH;
             }
 
+            // Function to start scan for devices.
+            // This function populates th $scope.devices variable on results.
             function startScan() {
                 Log.add("Start Scan : " + JSON.stringify(params));
                 $cordovaBluetoothLE.startScan(params).then(function(obj) {
@@ -72,6 +74,8 @@ angular.module('app.controllers', [])
                 })
             };
 
+            // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
+            // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
                 console.log(JSON.stringify(obj));
                 if (obj.isLocationEnabled) {
