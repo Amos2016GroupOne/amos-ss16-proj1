@@ -13,10 +13,12 @@ Android:
 Install and build:
 
 - npm install -g cordova ionic bower gulp
+- npm install
 - ionic state restore
 - ionic prepare
 - bower update
 - ionic build
+- gulp
 
 Run:
 
