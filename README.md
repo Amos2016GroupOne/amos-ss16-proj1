@@ -17,8 +17,8 @@ Install and build:
 - ionic state restore
 - ionic prepare
 - bower update
-- ionic build
 - gulp
+- ionic build
 
 Run:
 
