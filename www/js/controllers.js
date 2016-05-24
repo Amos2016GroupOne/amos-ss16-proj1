@@ -227,7 +227,7 @@ angular.module('app.controllers', [])
                 return false;
             }
         }
-        
+
         $scope.discover = function (address, afterFunction) {
             var params = {
                 address: address,
@@ -341,7 +341,7 @@ angular.module('app.controllers', [])
         }
 
         $scope.changeVolumeProfile = function() {
-          $scope.settings.volume = $scope.settings.currentVolumeProfile.volume;
+          $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
           $scope.update();
         }
         
