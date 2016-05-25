@@ -73,7 +73,7 @@ angular.module('app.controllers', [])
                     }
                 })
             };
-
+                
             // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
             // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
@@ -98,8 +98,12 @@ angular.module('app.controllers', [])
                         }
                     }, "Enable Bluetooth", ["Accept", "Cancel"]);
                 }
-            }, null);
-
+            }, function(err)
+               {
+                 // We are probably on IOS need to explicitly check it
+                 console.log(JSON.stringify(err))
+                 startScan();
+               });
         };
 
         $scope.connect = function(device) {
@@ -192,6 +196,7 @@ angular.module('app.controllers', [])
         };
 
         $scope.refreshSensortags = function() {
+            console.log("This function is being called");
             $scope.devices = {};
             $scope.startScan();
             $scope.noDevice = true;
