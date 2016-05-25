@@ -6,10 +6,10 @@
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
                 <li ng-repeat="(address, device) in devices" >
-                <li ng-repeat="(address, device) in devices" ng-if="device.name=='CC2650 SensorTag' && !isConnected(device)">
+                <li ng-repeat="(address, device) in devices" ng-if="(device.name=='CC2650 SensorTag' || device.name=='SensorTag 2.0') && !isConnected(device)">
                     {{device.name}}
                     <button class="button button-royal" ng-click="connect(device)">Connect</button>
-                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp {{device.address}}
+                    <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp; {{device.address}}
                 </li>
             </ul>
             <div ng-if="noDevice == true">No device found</div>
