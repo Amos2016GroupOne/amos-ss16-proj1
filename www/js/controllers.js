@@ -183,6 +183,7 @@ angular.module('app.controllers', [])
 
             $cordovaBluetoothLE.connect(params).then(null, function(obj) {
                 Log.add("Connect Error : " + JSON.stringify(obj));
+                 navigator.notification.alert("Connection failed. Please try again.", null);
                 $scope.close(params.address); //Best practice is to close on connection error
             }, function() {
                 $scope.discover(device.address, onConnect);
