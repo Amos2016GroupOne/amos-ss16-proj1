@@ -447,6 +447,10 @@ angular.module('app.controllers', [])
 	
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, Log, settings) {
-
+		$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+		$scope.series = ['Series A'];
+		$scope.data = [
+			[28, 48, 40, 19, 86, 27, 90]
+		];
         
     });
