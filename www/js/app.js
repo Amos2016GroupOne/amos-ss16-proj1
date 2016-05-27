@@ -102,12 +102,22 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 }
             })
 
-            .state('tab.settings', {
+			.state('tab.settings', {
                 url: '/settings',
                 views: {
                     'tab-settings': {
                         templateUrl: 'templates/tab-settings.html',
                         controller: 'SettingsCtrl'
+                    }
+                }
+            })
+			
+            .state('tab.graph', {
+                url: '/graph',
+                views: {
+                    'tab-graph': {
+                        templateUrl: 'templates/tab-graph.html',
+                        controller: 'GraphCtrl'
                     }
                 }
             });

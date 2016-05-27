@@ -443,4 +443,10 @@ angular.module('app.controllers', [])
 
             });
         });
+    })
+	
+	// Controller for Settings
+    .controller('GraphCtrl', function($scope, Log, settings) {
+
+        
     });
