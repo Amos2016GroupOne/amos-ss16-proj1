@@ -189,14 +189,15 @@ angular.module('app.controllers', [])
                         };*/
                         
                         //Turn on accelerometer
-                       
+                        
                         var accelerometerConfig = new Uint16Array(1);
                         accelerometerConfig[0] = 0x007F;
+                        
                         var params = {
                             address: device.address,
                             service: accelerometer.service,
                             characteristic: accelerometer.configuration,
-                            value: accelerometerConfig,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(accelerometerConfig),
                             timeout: 5000
                         };
                         
