@@ -1,1 +1,33 @@
 /* Empty. Add your own CSS if you like */
+
+#tooltip span {
+    position: absolute;
+    left: 50%;
+    width:140px;
+    padding: 6px;
+    margin-left: -76px;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    visibility: hidden;
+    border-radius: 5px;
+} 
+
+#tooltip span:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    width: 0; height: 0;
+    border-top: 8px solid black;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+}
+
+#tooltip:hover span {
+    visibility: visible;
+    opacity: 0.8;
+    /*bottom: 30px;*/
+    z-index: 999;
+}

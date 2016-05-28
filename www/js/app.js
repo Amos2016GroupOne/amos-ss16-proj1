@@ -172,4 +172,19 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 });
             }
         };
+    })
+
+    .directive('tooltip', function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var tooltipSpan = document.getElementById('tooltip-span');
+            window.onmousemove = function (e) {
+                var x = e.offsetX,
+                    y = e.offsetY;
+                tooltipSpan.style.top = (y - 40) + 'px';
+                tooltipSpan.style.left = (x + 0) + 'px';
+            };
+        }
+      };
     });
