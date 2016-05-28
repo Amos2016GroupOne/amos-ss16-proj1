@@ -178,15 +178,19 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
       return {
         restrict: 'A',
         link: function(scope, element, attrs) {
+			//The following line has the problem that you can use this directive only with one span called
+			//tooltip-span. If you create more than one tooltip directives the two ids interfere and only one tooltip works
             var tooltipSpan = document.getElementById('tooltip-span');
-			var tooltip = document.getElementById('tooltip');
-			var volumeSlider = document.getElementById('volumeSlider');
+			//var tooltip = document.getElementById('tooltip');
+			//var volumeSlider = document.getElementById('volumeSlider');
             window.ondrag = function (event) {
-				console.log(JSON.stringify(event.gesture.center));
-				console.log(JSON.stringify(element[0].offsetLeft));
+				//console.log(JSON.stringify(event.gesture.center));
+				//console.log(JSON.stringify(element[0].offsetLeft));
+				//this gets the current position of the finger (probably absolute to the screen but I am not sure)
                 var x = event.gesture.center.pageX,
                     y = event.gesture.center.pageY;
                 tooltipSpan.style.top =  0 + 'px';
+				//element[0].offsetLeft is the offset to the parent element but not the whole screen. But I am not sure
                 tooltipSpan.style.left =  (x - element[0].offsetLeft)  + 'px';
             };
         }
