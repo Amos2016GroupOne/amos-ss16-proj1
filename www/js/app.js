@@ -179,11 +179,15 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         restrict: 'A',
         link: function(scope, element, attrs) {
             var tooltipSpan = document.getElementById('tooltip-span');
-            window.onmousemove = function (e) {
-                var x = e.offsetX,
-                    y = e.offsetY;
-                tooltipSpan.style.top = (y - 40) + 'px';
-                tooltipSpan.style.left = (x + 0) + 'px';
+			var tooltip = document.getElementById('tooltip');
+			var volumeSlider = document.getElementById('volumeSlider');
+            window.ondrag = function (event) {
+				console.log(JSON.stringify(event.gesture.center));
+				console.log(JSON.stringify(element[0].offsetLeft));
+                var x = event.gesture.center.pageX,
+                    y = event.gesture.center.pageY;
+                tooltipSpan.style.top =  0 + 'px';
+                tooltipSpan.style.left =  (x - element[0].offsetLeft)  + 'px';
             };
         }
       };
