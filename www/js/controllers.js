@@ -355,6 +355,21 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+    
+        $scope.optionjo = {
+            start: 3,  //start point of the slider bar
+            end: 218,  //end point of the slider bar
+            handles: [19, 60],  //init point of two handles
+            outFormatter: function(value, decimals) {
+                if (value.point) {
+                    return 'Jo1: ' + value.point;
+                } else {
+                    return 'Jo2: ' + (value.end - value.start).toFixed(decimals);
+                }
+            }//formatter of hint message
+        };
+    
+        $scope.valjo = {};
 
         $scope.newVolumeProfileName = "";
 
