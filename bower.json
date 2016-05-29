@@ -3,6 +3,7 @@
   "private": "true",
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.3.0",
-    "ng-cordova-ble" : "randdusing/ng-cordova-bluetoothle"
+    "ng-cordova-ble": "randdusing/ng-cordova-bluetoothle",
+	"angularjs-slider": "^2.14.0"
   }
 }
