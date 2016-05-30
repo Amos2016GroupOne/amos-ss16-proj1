@@ -144,12 +144,12 @@ angular.module('app.controllers', [])
                 }
 
                 //Subscribe to barometer service
-                /*var params = {
+                var params = {
                     address: device.address,
                     service: barometer.service,
                     characteristic: barometer.data,
                     timeout: 5000
-                };*/
+                };
                 
                 //Subscribe to accelerometer service
                 var params = {
@@ -157,7 +157,7 @@ angular.module('app.controllers', [])
                 service: accelerometer.service,
                 characteristic: accelerometer.data,
                 timeout: 5000
-                }
+                };
 
                 Log.add("Subscribe : " + JSON.stringify(params));
 
@@ -178,7 +178,7 @@ angular.module('app.controllers', [])
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
                         //Turn on barometer
-                        /*var barometerConfig = new Uint8Array(1);
+                        var barometerConfig = new Uint8Array(1);
                         barometerConfig[0] = 0x01;
                         var params = {
                             address: device.address,
@@ -186,13 +186,19 @@ angular.module('app.controllers', [])
                             characteristic: barometer.configuration,
                             value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
                             timeout: 5000
-                        };*/
+                        };
+                        
+                        $cordovaBluetoothLE.write(params).then(function(obj) {
+                                Log.add("Write Success : " + JSON.stringify(obj));
+                                }, function(obj) {
+                                Log.add("Write Error : " + JSON.stringify(obj));
+                                });
                         
                         //Turn on accelerometer
-                        
-                        var accelerometerConfig = new Uint16Array(1);
-                        accelerometerConfig[0] = 0x007F;
-                        
+                        var accelerometerConfig = new Uint8Array(2);
+                        accelerometerConfig[0] = 0x7F;
+                        accelerometerConfig[1] = 0x00;
+                                                           
                         var params = {
                             address: device.address,
                             service: accelerometer.service,
@@ -201,15 +207,23 @@ angular.module('app.controllers', [])
                             timeout: 5000
                         };
                         
-                        /*var periodConfig = new Uint8Array(1);
-                        periodConfig[0] = 0x0A;
+                        $cordovaBluetoothLE.write(params).then(function(obj) {
+                                    Log.add("Write Success : " + JSON.stringify(obj));
+                                    }, function(obj) {
+                                    Log.add("Write Error : " + JSON.stringify(obj));
+                        });
+                                                           
+
+                        
+                        var periodConfig = new Uint8Array(1);
+                        periodConfig[0] = 0xFF;
                         var params = {
                             address: device.address,
                             service: accelerometer.service,
-                            characteristic: accelerometer.configuration,
+                            characteristic: accelerometer.period,
                             value: $cordovaBluetoothLE.bytesToEncodedString(periodConfig),
                             timeout: 5000
-                        };*/
+                        };
                                                            
 
                         Log.add("Write : " + JSON.stringify(params));
@@ -294,17 +308,17 @@ angular.module('app.controllers', [])
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
             
                 function sensorAccelerometerConvert(data) {
-                    return data / (32768/2);
+                    return data / 16;
                 }
                 
                 if ($scope.currentDevice1.address == device.address) {
-                    $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[3]) + "<br/>" +
-                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + "<br/>" +
-                                                             "Z: " + sensorAccelerometerConvert(acc[5]);
+                    $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[0]) + ", " +
+                                                             "Y: " + sensorAccelerometerConvert(acc[1]) + ", " +
+                                                             "Z: " + sensorAccelerometerConvert(acc[2]);
                 } else if(scope.currentDevice2.address == device.address) {
-                    $scope.accelerometer.accelerometerDev2 = "X: " + sensorAccelerometerConvert(acc[3]) + "<br/>" +
-                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + "<br/>" +
-                                                             "Z: " + sensorAccelerometerConvert(acc[5]);
+                    $scope.accelerometer.accelerometerDev2 = "X: " + sensorAccelerometerConvert(acc[0]) + ", " +
+                                                             "Y: " + sensorAccelerometerConvert(acc[1]) + ", " +
+                                                             "Z: " + sensorAccelerometerConvert(acc[2]);
                 } else {
                     Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
                 }
