@@ -361,6 +361,11 @@ angular.module('app.controllers', [])
       		return value + ' s';
     	}
 
+		//this is used by the volume slider. It adds '%' to the tooltip of the slider
+		$scope.volumeSliderLabel = function(value) {
+      		return value + '%';
+    	}
+		
         $scope.newVolumeProfileName = "";
 
         $scope.changedVolume = function() {

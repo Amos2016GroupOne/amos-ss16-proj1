@@ -11,7 +11,8 @@
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
 			 <!-- minLimit prevents the slider to actually be settable to 0 although 0 is displayed
-			      translate refers to a function which modifies the String of the label-->
+			      translate refers to a function which modifies the String of the label
+				  onChange calls the specified method when there was a change to the rz-slider-model -->
 			<rzslider rz-slider-model="settings.duration" rz-slider-options="{floor: 0, minLimit: 1, ceil: 60, step: 5, onChange: update,
 																			 translate: durationSliderLabel, hideLimitLabels: true}"></rzslider>
 		  <i class="icon ion-clock"></i>
@@ -20,7 +21,8 @@
       <div class="item">
         <div class="item range">
           <i class="icon ion-volume-low"></i>
-            <rzslider rz-slider-model="settings.volume" rz-slider-options="{floor: 0, ceil: 100, onChange: changedVolume, hideLimitLabels: true}"></rzslider>
+            <rzslider rz-slider-model="settings.volume" rz-slider-options="{floor: 0, ceil: 100, onChange: changedVolume,
+																		   translate: volumeSliderLabel, hideLimitLabels: true}"></rzslider>
           <i class="icon ion-volume-high"></i>
         </div>
         <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">Mute</ion-toggle>
