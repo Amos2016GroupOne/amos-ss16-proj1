@@ -12,7 +12,7 @@ Android:
 
 Install and build:
 
-- npm install -g cordova ionic bower gulp
+- npm install -g cordova ionic bower gulp karma-cli
 - npm install
 - ionic state restore
 - bower update
