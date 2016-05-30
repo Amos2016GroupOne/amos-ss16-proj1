@@ -2,6 +2,10 @@
   "name": "BLE-Remote",
   "version": "1.1.1",
   "description": "BLE Remote: An Evaluation project",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Amos2016GroupOne/amos-ss16-proj1.git"
+  },
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
