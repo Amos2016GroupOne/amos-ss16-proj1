@@ -14,7 +14,7 @@ angular.module('app.controllers', [])
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
         $scope.accelerometer = {
-            accelerometerDev1: "TEST 1"
+                accelerometerDev1: "", accelerometerDev2: ""
         };
                 
         var barometer = {
@@ -178,7 +178,7 @@ angular.module('app.controllers', [])
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
                         //Turn on barometer
-                        var barometerConfig = new Uint8Array(1);
+                        /*var barometerConfig = new Uint8Array(1);
                         barometerConfig[0] = 0x01;
                         var params = {
                             address: device.address,
@@ -192,7 +192,7 @@ angular.module('app.controllers', [])
                                 Log.add("Write Success : " + JSON.stringify(obj));
                                 }, function(obj) {
                                 Log.add("Write Error : " + JSON.stringify(obj));
-                                });
+                                });*/
                         
                         //Turn on accelerometer
                         var accelerometerConfig = new Uint8Array(2);
@@ -216,7 +216,7 @@ angular.module('app.controllers', [])
 
                         
                         var periodConfig = new Uint8Array(1);
-                        periodConfig[0] = 0xFF;
+                        periodConfig[0] = 0x64;
                         var params = {
                             address: device.address,
                             service: accelerometer.service,
@@ -308,17 +308,19 @@ angular.module('app.controllers', [])
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
             
                 function sensorAccelerometerConvert(data) {
-                    return data / 16;
+                    // http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#Accelerometer
+                    var a = (data * 1.0) / 64;
+                    return a.toFixed(0);
                 }
                 
                 if ($scope.currentDevice1.address == device.address) {
-                    $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[0]) + ", " +
-                                                             "Y: " + sensorAccelerometerConvert(acc[1]) + ", " +
-                                                             "Z: " + sensorAccelerometerConvert(acc[2]);
+                    $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[3]) + ", " +
+                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + ", " +
+                                                             "Z: " + sensorAccelerometerConvert(acc[5]) * -1;
                 } else if(scope.currentDevice2.address == device.address) {
-                    $scope.accelerometer.accelerometerDev2 = "X: " + sensorAccelerometerConvert(acc[0]) + ", " +
-                                                             "Y: " + sensorAccelerometerConvert(acc[1]) + ", " +
-                                                             "Z: " + sensorAccelerometerConvert(acc[2]);
+                    $scope.accelerometer.accelerometerDev2 = "X: " + sensorAccelerometerConvert(acc[3]) + ", " +
+                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + ", " +
+                                                             "Z: " + sensorAccelerometerConvert(acc[5]) * -1;
                 } else {
                     Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
                 }
