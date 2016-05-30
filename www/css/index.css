@@ -1,1 +1,40 @@
 /* Empty. Add your own CSS if you like */
+
+
+/*style the rz-bubble (=the tooltip) element*/
+/*This means: for all rzsliders that are defined in the html 
+ * style its .rz-bubble element like this: */
+rzslider .rz-bubble {
+  position: absolute;
+  bottom: 18px;
+  color: #dddddd;
+  background: #000000;
+  line-height: 14px;
+  text-align: center;
+  visibility: hidden;
+  border-radius: 6px;
+  padding: 4px 4px 4px 4px;
+  cursor: default;
+}
+
+/*style add the triangle to the bubble*/
+rzslider .rz-bubble:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  width: 0; height: 0;
+  border-top: 8px solid #000000;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+
+/*hove would be better but does not work for some reason*/
+/*unhide the element when rzpointer is in focus
+ * problem: rz-active stay in focus even after the drag action
+ * but this is part of the rzslider implementation*/
+rzslider .rz-active:focus ~ .rz-bubble {
+  visibility: visible;
+  z-index: 999;
+}
