@@ -10,9 +10,14 @@ Android:
 - Android SDK
 - JDK 1.8
 
+E2E Tests:
+- Protractor
+- Java for Selenium
+- Firefox
+
 Install and build:
 
-- npm install -g cordova ionic bower gulp karma-cli
+- npm install -g cordova ionic bower gulp karma-cli protractor
 - npm install
 - ionic state restore
 - bower update
