@@ -1,9 +1,7 @@
 describe('SettingsCtrl:', function() {
-  localStorage.clear();
-
   var controller,
   LogMock,
-  settingsMock,  // Will be filled by a real settings service!
+  settingsMock,
   $scope;
 
   // Load the App Module as a mock.
@@ -18,10 +16,37 @@ describe('SettingsCtrl:', function() {
 
 
   // Instantiate the Controller and Mocks
+  beforeEach(inject(function() {
+    settingsMock = {
+      getSetting: function(s){
+        return this.settings[s];
+      },
+      setSetting: function(s, val){
+        this.settings[s] = val;
+      },
+      persistSettings: function(){
+      },
+      settings: {
+        "settings-version": 2,
+        "reconnect": false,
+        "duration": 5,
+        "volume": 50,
+        "volumeProfiles": [
+          { name: "Home",    volume: 40 },
+          { name: "Office",  volume: 70 },
+          { name: "Outdoor", volume: 90 }
+        ],
+        "currentVolumeProfile": false,
+        "mute": false,
+        "volBeforeMute": 50
+      }
+    };
+
+  }));
+
   // Using angular-mocks inject() for having all the provieders ($...) available!
-  beforeEach(inject(function($rootScope, $controller, settings) {
+  beforeEach(inject(function($rootScope, $controller) {
     LogMock = { };
-    settingsMock = settings;
 
     $scope = $rootScope.$new();
     controller = $controller('SettingsCtrl',{
@@ -30,63 +55,51 @@ describe('SettingsCtrl:', function() {
       'settings': settingsMock
     });
 
-
   }));
 
-  describe('Volume', function() {
-    it('should be set to 50 by default', inject(function() {
-      // as $scope is a private member of settings, we cannot access it via the controller variable
-      expect($scope.settings.volume).toBe(50);
-    }));
-  });
+  // for easy muting:
+  function muteHelper(mute) {
+    $scope.settings.mute = mute;
+    $scope.muteToggle();
+  }
 
-  describe('VolumeProfile', function() {
-    it('changes to home, volume should be set to 40.', inject(function() {
-      expect($scope.settings.currentVolumeProfile).toBe(false);
-
-      $scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[0]);
-      $scope.changeVolumeProfile();
-
-      expect($scope.settings.volume).toBe(40);
-    }));
-  });
+  // for easy volume set:
+  function setVolume(vol) {
+    $scope.settings.volume = vol;
+    $scope.changedVolume();
+  }
 
   describe('Muting', function() {
+
     it('should set volume to 0', function() {
-      $scope.settings.mute = true;
-      $scope.muteToggle();
+      muteHelper(true);
       expect($scope.settings.volume).toBe(0);
     });
 
     it('should restore volume profile', function() {
       $scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[1]);
       $scope.changeVolumeProfile();
-      $scope.settings.mute = true;
-      $scope.muteToggle();
-      $scope.settings.mute = false;
-      $scope.muteToggle();
-      expect($scope.settings.volume).toBe(70);
+      var old = $scope.settings.volume;
+      muteHelper(true);
+      expect($scope.settings.mute).toBe(true);
+      muteHelper(false);
+      expect($scope.settings.volume).toBe(old);
       expect($scope.settings.currentVolumeProfile).toBe(JSON.stringify($scope.settings.volumeProfiles[1]));
     });
 
     it('should unmute on volumeChange', function() {
-      $scope.settings.mute = true;
-      $scope.muteToggle();
+      muteHelper(true);
       expect($scope.settings.mute).toBe(true);
-      $scope.settings.volume = 55;
-      $scope.changedVolume();
+      setVolume(55);
       expect($scope.settings.mute).toBe(false);
     });
 
     it('should restore volume before on unmute', function() {
-      $scope.settings.volume = 55;
-      $scope.changedVolume();
+      setVolume(55);
       expect($scope.settings.volume).toBe(55);
-      $scope.settings.mute = true;
-      $scope.muteToggle();
+      muteHelper(true);
       expect($scope.settings.mute).toBe(true);
-      $scope.settings.mute = false;
-      $scope.muteToggle();
+      muteHelper(false);
       expect($scope.settings.mute).toBe(false);
       expect($scope.settings.volume).toBe(55);
     });
@@ -94,6 +107,18 @@ describe('SettingsCtrl:', function() {
   });
 
   describe('VolumeHardButtons', function() {
+
+    it('should unmute', function(){
+      muteHelper(true);
+      expect($scope.settings.mute).toBe(true);
+      $scope.$emit('volumeupbutton');
+      expect($scope.settings.mute).toBe(false);
+      muteHelper(true);
+      expect($scope.settings.mute).toBe(true);
+      $scope.$emit('volumedownbutton');
+      expect($scope.settings.mute).toBe(false);
+    });
+
     it('should change the volume in the right direction', function() {
       var old = $scope.settings.volume;
       $scope.$emit('volumeupbutton');
@@ -104,16 +129,15 @@ describe('SettingsCtrl:', function() {
     });
 
     it('should be capped', function() {
-      $scope.settings.volume = 0;
-      $scope.changedVolume();
+      setVolume(0);
       $scope.$emit('volumedownbutton');
       expect($scope.settings.volume).toBe(0);
 
-      $scope.settings.volume = 100;
-      $scope.changedVolume();
+      setVolume(100);
       $scope.$emit('volumeupbutton');
       expect($scope.settings.volume).toBe(100);
     });
+
   });
 
 });
