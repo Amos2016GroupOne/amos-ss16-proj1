@@ -14,38 +14,11 @@ describe('SettingsCtrl:', function() {
     $urlRouterProvider.deferIntercept();
   }));
 
-
   // Instantiate the Controller and Mocks
-  beforeEach(inject(function() {
-    settingsMock = {
-      getSetting: function(s){
-        return this.settings[s];
-      },
-      setSetting: function(s, val){
-        this.settings[s] = val;
-      },
-      persistSettings: function(){
-      },
-      settings: {
-        "settings-version": 2,
-        "reconnect": false,
-        "duration": 5,
-        "volume": 50,
-        "volumeProfiles": [
-          { name: "Home",    volume: 40 },
-          { name: "Office",  volume: 70 },
-          { name: "Outdoor", volume: 90 }
-        ],
-        "currentVolumeProfile": false,
-        "mute": false,
-        "volBeforeMute": 50
-      }
-    };
-
-  }));
-
-  // Using angular-mocks inject() for having all the provieders ($...) available!
+  // Using angular-mocks inject() for having all the providers ($...) available!
   beforeEach(inject(function($rootScope, $controller) {
+
+    settingsMock = MockFactory.createNewSettingsMock();
     LogMock = { };
 
     $scope = $rootScope.$new();

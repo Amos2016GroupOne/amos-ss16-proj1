@@ -1,9 +1,3 @@
-function deleteProperties(obj) {
-    for (p in obj) {
-      delete obj[p];
-    }
-}
-
 describe('settings service:', function() {
 
   beforeEach(function () {
