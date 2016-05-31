@@ -12,6 +12,7 @@
   karma start unit-tests.conf.js --log-level debug
 
 
-
+## E2E-testing
+- seems to be possible with http://tombuyse.com/end-to-end-testing-an-ionic-application-with-appium-and-protractor/
 
 

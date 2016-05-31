@@ -7,6 +7,8 @@ function deleteProperties(obj) {
 describe('settings service:', function() {
 
   beforeEach(function () {
+    // Unfortunately spying or mocking local storage does not work properly in all browsers.
+    // So we do not mock it but clear it before every test.
     localStorage.clear();
   });
 
@@ -23,14 +25,11 @@ describe('settings service:', function() {
   }));
 
 
+  // Get the real Settings service.
   beforeEach(inject(function(_settings_) {
     s = _settings_;
   }));
 
-            //getSetting: getSetting,
-            //setSetting: setSetting,
-            //persistSettings: persistSettings,
-            //settings: settings
   it('should set and persist settings', function() {
     expect(s.getSetting('foo')).toBe(undefined);
     s.setSetting('foo',{bar:42});
@@ -50,5 +49,9 @@ describe('settings service:', function() {
     deleteProperties(s.settings);
     expect(s.getSetting('volume')).toBe(42);
   });
+
+  //it('should restore default settings when localStorage version is outdated', function() {
+
+  //});
 
 });
