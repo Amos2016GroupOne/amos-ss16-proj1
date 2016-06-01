@@ -98,6 +98,10 @@ angular.module('app.services', [])
 
   function retrieveData(type)
   {
+    if(dataStorage[type] == undefined)
+    {
+      dataStorage[type] = [];
+    }
     return dataStorage[type];
   }
 
