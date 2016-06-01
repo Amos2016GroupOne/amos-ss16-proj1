@@ -7,7 +7,7 @@
 # first argument: outputpath relative to www/res/icons
 # second argument: width=height in px
 function convert {
-        inkscape -z -e www/res/icons/$1 -w $2 -h $2 app-icon.svg
+        inkscape -z -e www/res/icons/$1 -w $2 -h $2 themes/standard.app-icon.svg
 }
 
 mkdir -p www/res
