@@ -307,6 +307,8 @@ angular.module('app.controllers', [])
         function onAccelerometerData(obj,device) {
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
+
+
                 function sensorAccelerometerConvert(data) {
 
                     var a = data / (32768 / 2);
@@ -315,26 +317,35 @@ angular.module('app.controllers', [])
 
                 function convertAllData(data)
                 {
-
                   // convert the data to 16 bit. the data consist of 2bytes.
                   var converted = [];
-                  var b = new Uint16Array(3);
-                  for(i = 0; i < 6; i += 2)
+                  var b = new Uint16Array(6);
+
+                  for(i = 0; i < 12; i++)
                   {
-                    b[i/2] = (data[i] << 8);
+                      console.log("data " + i + " is " + data[i]);
                   }
 
-                  for(i = 1; i < 6; i += 2)
+                  for(i = 0; i < 12; i += 2)
+                  {
+                      b[i/2] = (data[i] << 8);
+                      console.log("B " + i/2 + " is now " + b[i/2]);
+                  }
+
+                  for(i = 1; i < 12; i += 2)
                   {
                       b[(i - 1)/2] += (data[i]);
+                      console.log("B " + (i-1)/2 + " is now " + b[(i-1)/2]);
                   }
 
-                  for(i = 0; i < 3; i++)
+                  for(i = 0; i < 12; i++)
                   {
                       converted.push(sensorAccelerometerConvert(b[i]));
                   }
                   return converted;
                 }
+
+                console.log("Convert all data!");
 
                 acc = convertAllData(acc);
 
@@ -342,13 +353,13 @@ angular.module('app.controllers', [])
                 dataStorage.storeData("accelerometer-time", new Date());
 
                 if ($scope.currentDevice1.address == device.address) {
-                    $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[3]) + ", " +
-                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + ", " +
-                                                             "Z: " + sensorAccelerometerConvert(acc[5]) * -1;
+                    $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
                 } else if(scope.currentDevice2.address == device.address) {
-                    $scope.accelerometer.accelerometerDev2 = "X: " + sensorAccelerometerConvert(acc[3]) + ", " +
-                                                             "Y: " + sensorAccelerometerConvert(acc[4]) + ", " +
-                                                             "Z: " + sensorAccelerometerConvert(acc[5]) * -1;
+                    $scope.accelerometer.accelerometerDev2 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
                 } else {
                     Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
                 }
