@@ -93,7 +93,7 @@ angular.module('app.services', [])
     {
       dataStorage[type] = [];
     }
-		dataStorage[type].push_back(data);
+		dataStorage[type].push(data);
 	}
 
 	return {
