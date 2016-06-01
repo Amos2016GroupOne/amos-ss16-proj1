@@ -82,14 +82,18 @@ angular.module('app.services', [])
     }])
    .factory("dataStorage", [function() {
 	//TODO Use LokiDB with LokiCordovaFSAdapter
-	var dataStorage = [];
+	var dataStorage = {};
 
 
 	// This function stores data in the database.
 	// The current implementation is just a stub
 	function storeData(type, data)
 	{
-		dataStorage.push_back(data);
+    if(dataStorage[type] === undefined)
+    {
+      dataStorage[type] = [];
+    }
+		dataStorage[type].push_back(data);
 	}
 
 	return {
