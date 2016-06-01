@@ -10,6 +10,7 @@ done
 echo
 echo [standard]
 read tmp
+# For a default choice:
 choice=${tmp:-standard}
 
 if [ -e "./themes/$choice.app.scss" ]
