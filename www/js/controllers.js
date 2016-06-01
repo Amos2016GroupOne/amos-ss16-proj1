@@ -308,35 +308,34 @@ angular.module('app.controllers', [])
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
                 function sensorAccelerometerConvert(data) {
-                
+
                     var a = data / (32768 / 2);
                     return a;
                 }
 
                 function convertAllData(data)
-                
-                
+                {
+
                   // convert the data to 16 bit. the data consist of 2bytes.
-                
                   var converted = [];
                   var b = new Uint16Array(3);
                   for(i = 0; i < 6; i += 2)
                   {
                     b[i/2] = (data[i] << 8);
                   }
-                
-                for(i = 1; i < 6; i += 2)
-                {
-                    b[(i - 1)/2] += (data[i]);
+
+                  for(i = 1; i < 6; i += 2)
+                  {
+                      b[(i - 1)/2] += (data[i]);
+                  }
+
+                  for(i = 0; i < 3; i++)
+                  {
+                      converted.push(sensorAccelerometerConvert(b[i]));
+                  }
+                  return converted;
                 }
-                
-                for(i = 0; i < 3; i++)
-                {
-                    converted.push_back(sensorAccelerometerConvert(b[i]));
-                }
-                return converted;
-                }
-                
+
                 acc = convertAllData(acc);
 
                 dataStorage.storeData("accelerometer", acc);
