@@ -355,7 +355,17 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+	
+		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
+		$scope.durationSliderLabel = function(value) {
+      		return value + ' s';
+    	}
 
+		//this is used by the volume slider. It adds '%' to the tooltip of the slider
+		$scope.volumeSliderLabel = function(value) {
+      		return value + '%';
+    	}
+		
         $scope.newVolumeProfileName = "";
 
         $scope.changedVolume = function() {
