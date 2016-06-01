@@ -7,10 +7,15 @@
             A bar chart
         </div>
         <div class="item item-text-wrap">
-            <canvas id="bar" class="chart chart-bar" data="data" labels="labels" legend="true" series="series" options="{showTooltips: true}"></canvas>
+            <canvas id="bar" class="chart chart-bar" data="data" labels="labels"
+             legend="true" series="series" options="{showTooltips: true}"
+             ng-mousedown="beginDrag($event)"
+             ng-mouseup="stopDrag($event)"
+             ng-mouseleave="stopDrag($event)"
+             ng-mousemove="mouseMove($event)"></canvas>
         </div>
     </div>
-    		
+
 
   </ion-content>
 </ion-view>
