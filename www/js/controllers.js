@@ -352,7 +352,7 @@ angular.module('app.controllers', [])
                 var date = new Date();
 
                 dataStorage.storeData("accelerometer", acc[1]);
-                dataStorage.storeData("accelerometer-time", "time");
+                dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
                 $rootScope.$broadcast("newAccelerometerData");
 
