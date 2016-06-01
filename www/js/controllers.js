@@ -352,6 +352,8 @@ angular.module('app.controllers', [])
                 dataStorage.storeData("accelerometer", acc);
                 dataStorage.storeData("accelerometer-time", new Date());
 
+                $rootScope.$broadcast("newAccelerometerData");
+
                 if ($scope.currentDevice1.address == device.address) {
                     $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
                                                              "Y: " + acc[4] + ", " +
@@ -603,6 +605,17 @@ angular.module('app.controllers', [])
     }
 
     createAndSetDataSlice();
+
+    // If we receive new data then update the graph
+    $rootScope.$on("newAccelerometerData", function() {
+      // Initialize the current start point
+      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100;
+
+      // If less than 100 data points are available set the startpoint to 0
+      if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+
+      createAndSetDataSlice();
+    });
 
     })
 
