@@ -24,6 +24,9 @@ Install and build:
 - ionic prepare
 - ionic build
 
+Test:
+- npm test
+
 Run:
 
 - `ionic emulate` OR `ionic run`
