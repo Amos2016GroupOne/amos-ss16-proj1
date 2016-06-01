@@ -363,6 +363,7 @@ angular.module('app.controllers', [])
                 } else {
                     Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
                 }
+
         }
 
         $scope.disconnect = function(device) {
@@ -576,12 +577,32 @@ angular.module('app.controllers', [])
     })
 
 	// Controller for Settings
-    .controller('GraphCtrl', function($scope, Log, settings) {
-		$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-		$scope.series = ['Series A'];
-		$scope.data = [
-			[28, 48, 40, 19, 86, 27, 90]
-		];
+    .controller('GraphCtrl', function($scope, Log, settings, dataStorage) {
+		$scope.labels = [];
+		$scope.series = ['Device'];
+		$scope.data = [];
+
+    // Initialize the current start point
+    $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100;
+
+    // If less than 100 data points are available set the startpoint to 0
+    if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+
+    // This function extracs a 100 item data slice from the data starting at $scope.currentStartPoint
+    // This data slice is set as the chart data.
+    function createAndSetDataSlice()
+    {
+      var start = $scope.currentStartPoint;
+      var end = start + 100;
+
+      $scope.data = [];
+      $scope.data.push_back(dataStorage.retrieveData("accelerometer").slice(start,end));
+
+      $scope.labels = [];
+      $scope.labels.push_back(dataStorage.retrieveData("accelerometer-time").slice(start, end));
+    }
+
+    createAndSetDataSlice();
 
     })
 
