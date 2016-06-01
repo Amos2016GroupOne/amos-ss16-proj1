@@ -606,16 +606,58 @@ angular.module('app.controllers', [])
 
     createAndSetDataSlice();
 
+    $scope.barOffset = 0;
+
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
       // Initialize the current start point
-      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100;
+      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100 + $scope.barOffset;
 
       // If less than 100 data points are available set the startpoint to 0
       if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
 
       createAndSetDataSlice();
     });
+
+    // Variables relating to dragging
+    $scope.dragging = false;
+    $scope.startX = 0;
+    $scope.currentDrag = 0;
+
+    // The width of a single bar in the bar graph
+    var widthOfBar = angular.element("#bar").attr("width");
+
+    console.log("Width of bar is " + widthOfBar);
+
+    // When starting drag set dragging to true and log the startPosition
+    $scope.startDrag = function($event) {
+      $scope.dragging = true;
+      $scope.startX = $event.clientX;
+    };
+
+    // When stopping the dragging set dragging to false and persist the barOffset
+    $scope.stopDrag = function($event) {
+      $scope.dragging = false;
+      $scope.currentDrag = $scope.barOffset;
+    };
+
+    // On mouse move we need to update the dragging
+    $scope.mouseMove($event) = function($event) {
+      // Only do something if currently dragging
+      if($scope.dragging)
+      {
+        // The number of bars we've dragged is dependent on the space moved and
+        // the width of a single bar
+        var numberOfBars = ($event.clientX - $scope.startX / widthOfBar);
+        // A positive offset doesn't make any sense
+        if(numberOfBars + $scope.currentDrag > 0) {
+          $scope.barOffset = 0;
+        }
+        else {
+          $scope.barOffset = numberOfBars + $scope.currentDrag;
+        }
+      }
+    };
 
     })
 
