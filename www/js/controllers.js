@@ -308,22 +308,38 @@ angular.module('app.controllers', [])
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
                 function sensorAccelerometerConvert(data) {
-                    // http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#Accelerometer
-                    var a = (data * 1.0) / 64;
-                    return a.toFixed(0);
+                
+                    var a = data / (32768 / 2);
+                    return a;
                 }
 
                 function convertAllData(data)
-                {
+                
+                
+                  // convert the data to 16 bit. the data consist of 2bytes.
+                
                   var converted = [];
-                  for(i = 0; i < 3; i++)
+                  var b = new Uint16Array(3);
+                  for(i = 0; i < 6; i += 2)
                   {
-                    converted.push_back(sensorAccelerometerConvert(data[i]));
+                    b[i/2] = (data[i] << 8);
                   }
-                  return data;
+                
+                for(i = 1; i < 6; i += 2)
+                {
+                    b[(i - 1)/2] += (data[i]);
                 }
+                
+                for(i = 0; i < 3; i++)
+                {
+                    converted.push_back(sensorAccelerometerConvert(b[i]));
+                }
+                return converted;
+                }
+                
+                acc = convertAllData(acc);
 
-                dataStorage.storeData("accelerometer", convertAllData(acc));
+                dataStorage.storeData("accelerometer", acc);
                 dataStorage.storeData("accelerometer-time", new Date());
 
                 if ($scope.currentDevice1.address == device.address) {
