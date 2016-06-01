@@ -349,8 +349,10 @@ angular.module('app.controllers', [])
 
                 acc = convertAllData(acc);
 
-                dataStorage.storeData("accelerometer", acc);
-                dataStorage.storeData("accelerometer-time", new Date());
+                var date = new Date();
+
+                dataStorage.storeData("accelerometer", acc[1]);
+                dataStorage.storeData("accelerometer-time", "time");
 
                 $rootScope.$broadcast("newAccelerometerData");
 
@@ -579,13 +581,13 @@ angular.module('app.controllers', [])
     })
 
 	// Controller for Settings
-    .controller('GraphCtrl', function($scope, Log, settings, dataStorage) {
+    .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
 		$scope.labels = [];
 		$scope.series = ['Device'];
-		$scope.data = [];
+		$scope.data = [ [] ];
 
     // Initialize the current start point
-    $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100;
+    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer")).length - 10);
 
     // If less than 100 data points are available set the startpoint to 0
     if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
@@ -595,13 +597,9 @@ angular.module('app.controllers', [])
     function createAndSetDataSlice()
     {
       var start = $scope.currentStartPoint;
-      var end = start + 100;
-
-      $scope.data = [];
-      $scope.data.push_back(dataStorage.retrieveData("accelerometer").slice(start,end));
-
-      $scope.labels = [];
-      $scope.labels.push_back(dataStorage.retrieveData("accelerometer-time").slice(start, end));
+      var end = start + 10;
+      $scope.data[0] = dataStorage.retrieveData("accelerometer").slice(start,end);
+      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
     }
 
     createAndSetDataSlice();
@@ -611,7 +609,7 @@ angular.module('app.controllers', [])
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
       // Initialize the current start point
-      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 100 + $scope.barOffset;
+      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 10 + $scope.barOffset;
 
       // If less than 100 data points are available set the startpoint to 0
       if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
@@ -624,7 +622,7 @@ angular.module('app.controllers', [])
     $scope.startX = 0;
     $scope.currentDrag = 0;
 
-    // The width of a single bar in the bar graph
+    // The width of a singe bar in the bar graph
     var widthOfBar = angular.element("#bar").attr("width");
 
     console.log("Width of bar is " + widthOfBar);
@@ -642,7 +640,7 @@ angular.module('app.controllers', [])
     };
 
     // On mouse move we need to update the dragging
-    $scope.mouseMove($event) = function($event) {
+    $scope.mouseMove = function($event) {
       // Only do something if currently dragging
       if($scope.dragging)
       {
