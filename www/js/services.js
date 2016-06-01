@@ -96,8 +96,13 @@ angular.module('app.services', [])
 		dataStorage[type].push(data);
 	}
 
+  function retrieveData(type)
+  {
+    return dataStorage[type];
+  }
+
 	return {
-		data: dataStorage,
-		storeData: storeData
+		storeData: storeData,
+    retrieveData: retrieveData
 	}
     }]);
