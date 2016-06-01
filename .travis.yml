@@ -22,7 +22,7 @@ install:
         - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
         - sudo apt-get install -y nodejs
         - sudo npm install -g cordova ionic bower gulp
-        - npm i  # for installing gulp
+        - npm i  # for installing gulp and other stuff
         - ionic state restore
         - ionic prepare
         - bower update
@@ -36,7 +36,8 @@ script:
         - echo "Starting build"
         - docker/build
         #- cordova run browser
-        # TODO^^ test cases!
+        - echo "Running unit tests"
+        - npm test
 after_success:
         # You can do thing after success
         - echo "Build success"

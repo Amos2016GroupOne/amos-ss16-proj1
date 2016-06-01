@@ -2,6 +2,10 @@
   "name": "BLE-Remote",
   "version": "1.1.1",
   "description": "BLE Remote: An Evaluation project",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Amos2016GroupOne/amos-ss16-proj1.git"
+  },
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
@@ -12,6 +16,13 @@
   "devDependencies": {
     "bower": "^1.3.3",
     "gulp-util": "^2.2.14",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-ng-html2js-preprocessor": "^1.0.0",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "phantomjs-prebuilt": "^2.1.7",
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
@@ -28,5 +39,8 @@
       "platform": "android",
       "locator": "browser"
     }
-  ]
+  ],
+  "scripts": {
+          "test": "./node_modules/.bin/karma start tests/unit-tests.conf.js --single-run --browsers PhantomJS"
+  }
 }
