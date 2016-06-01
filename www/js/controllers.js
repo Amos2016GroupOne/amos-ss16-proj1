@@ -315,14 +315,16 @@ angular.module('app.controllers', [])
 
                 function convertAllData(data)
                 {
+                  var converted = [];
                   for(i = 0; i < 3; i++)
                   {
-                    data[i] = sensorAccelerometerConvert(data[i]);
+                    converted.push_back(sensorAccelerometerConvert(data[i]));
                   }
                   return data;
                 }
 
                 dataStorage.storeData("accelerometer", convertAllData(acc));
+                dataStorage.storeData("accelerometer-time", new Date());
 
                 if ($scope.currentDevice1.address == device.address) {
                     $scope.accelerometer.accelerometerDev1 = "X: " + sensorAccelerometerConvert(acc[3]) + ", " +
