@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       '../www/lib/ionic/js/ionic.bundle.js',
       '../www/lib/ng-cordova-ble/ng-cordova-bluetoothle.js',
+      '../www/lib/angularjs-slider/dist/rzslider.js',
       '../www/lib/moment.min.js',
       '../www/js/**/*.js',
       '../www/lib/angular-mocks/angular-mocks.js',
