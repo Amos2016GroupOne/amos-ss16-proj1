@@ -17,7 +17,9 @@ E2E Tests:
 
 Install and build:
 
-- npm install -g cordova ionic bower gulp karma-cli protractor
+- npm install -g cordova ionic bower gulp karma-cli protractor cordova-icon
+  - to run cordova-icon you need `imagemagick`
+  - to run the theme selector script you need `inkscape`
 - npm install
 - ionic state restore
 - bower update
