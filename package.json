@@ -32,7 +32,8 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    "cordova-plugin-bluetoothle"
+    "cordova-plugin-bluetoothle",
+    "cordova-plugin-dbmeter"
   ],
   "cordovaPlatforms": [
     {
@@ -41,6 +42,6 @@
     }
   ],
   "scripts": {
-          "test": "./node_modules/.bin/karma start tests/unit-tests.conf.js --single-run --browsers PhantomJS"
+    "test": "./node_modules/.bin/karma start tests/unit-tests.conf.js --single-run --browsers PhantomJS"
   }
 }
