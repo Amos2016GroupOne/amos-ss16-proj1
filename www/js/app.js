@@ -18,6 +18,18 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
+			//Get the BCP 47 language tag for the client's current language.
+			if(typeof navigator.globalization !== "undefined") {
+			//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
+                navigator.globalization.getPreferredLanguage(function(language) {
+                        Log.add("getPreferredLanguage success: preferred language is: " + language.value);
+                    }, function(error) {
+                        Log.add("getPreferredLanguage error:" + error);
+                    });
+            } else {
+
+			}
+
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
 			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
 			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
