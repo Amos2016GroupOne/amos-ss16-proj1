@@ -561,7 +561,7 @@ angular.module('app.controllers', [])
             $scope.update();
         }
 
-        //called when mute was toggled by pressing the button
+        // called when mute was toggled by pressing the button
         $scope.muteToggle = function() {
             if (settings.settings.mute) {
                 settings.settings.volBeforeMute = settings.settings.volume;
@@ -572,8 +572,46 @@ angular.module('app.controllers', [])
                 settings.settings.volume = parseInt(settings.settings.volBeforeMute);
 				settings.settings.currentVolumeProfile = settings.settings.volProfileBeforeMute;
             }
-            //persist settings
+            // persist settings
             $scope.update();
+        }
+
+        $scope.decibel = "[not measured yet]";
+        $scope.decibelToggle = function() {
+          // TODO: maybe put DBMeter in a service!
+
+          // persist settings
+          $scope.update();
+
+          if ($scope.settings.isListeningDecibel === true) {
+            var delayCounter = 0,
+                DELAY = 10;  // * 100 ms
+            console.log('starting db...');
+            DBMeter.start(function(dB){
+              // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
+              if (delayCounter === 0) {
+                // refresh datamodel and format
+                $scope.decibel = dB.toFixed(0);
+                //console.log('loudness: '+dB);
+              }
+              delayCounter = (delayCounter + 1) % DELAY;
+            }, function(e){
+              console.log('code: ' + e.code + ', message: ' + e.message);
+            });
+          } else {
+            console.log('stopping db...');
+            DBMeter.stop(function(){
+              console.log("DBMeter well stopped");
+            }, function(e){
+              console.log('code: ' + e.code + ', message: ' + e.message);
+            });
+          }
+
+        }
+
+        // catch stupid browsers!
+        if (typeof DBMeter !== 'undefined') {
+          $scope.decibelToggle();
         }
 
         $scope.$on('volumeupbutton', function() {
@@ -624,7 +662,6 @@ angular.module('app.controllers', [])
             });
         });
     })
-
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
 		$scope.labels = [];
@@ -759,44 +796,4 @@ angular.module('app.controllers', [])
                 $ionicTabsDelegate.select(selected - 1);
             }
         }
-
-        $scope.decibel = "[not measured yet]";
-        // TODO: make it a setting:
-        $scope.isListeningDecibel = true;
-        $scope.decibelToggle = function() {
-          // TODO: maybe put DBMeter in a service!
-          if ($scope.isListeningDecibel === true) {
-
-            var delayCounter = 0,
-                DELAY = 10;
-            console.log('starting db...');
-            DBMeter.start(function(dB){
-              // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
-              delayCounter = (delayCounter + 1) % DELAY;
-              if (delayCounter === 0) {
-                // refresh datamodel and format
-                $scope.decibel = dB.toFixed(0);
-                //console.log('loudness: '+dB);
-              }
-            }, function(e){
-              console.log('code: ' + e.code + ', message: ' + e.message);
-            });
-
-
-
-          } else {
-            console.log('stopping db...');
-            DBMeter.stop(function(){
-              console.log("DBMeter well stopped");
-            }, function(e){
-              console.log('code: ' + e.code + ', message: ' + e.message);
-            });
-          }
-        }
-
-        // catch stupid browsers!
-        if (typeof DBMeter !== 'undefined') {
-          $scope.decibelToggle();
-        }
-
     });

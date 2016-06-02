@@ -20,7 +20,8 @@ angular.module('app.services', [])
            "currentVolumeProfile": false,
            "mute": false,
            "volBeforeMute": 50,
-		   "volProfileBeforeMute": false
+		       "volProfileBeforeMute": false,
+           "isListeningDecibel": true
          };
 
         var storedSettingsVersion = JSON.parse(localStorage.getItem("settings-version"))
