@@ -391,6 +391,7 @@ angular.module('app.controllers', [])
 
         $scope.changeVolumeProfile = function() {
             $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
+			$scope.settings.mute = false;
             $scope.update();
         }
 
@@ -398,9 +399,12 @@ angular.module('app.controllers', [])
         $scope.muteToggle = function() {
             if (settings.settings.mute) {
                 settings.settings.volBeforeMute = settings.settings.volume;
+				settings.settings.volProfileBeforeMute = settings.settings.currentVolumeProfile;
                 settings.settings.volume = parseInt(0);
+				$scope.settings.currentVolumeProfile = false; //deselects any volume profile
             } else {
                 settings.settings.volume = parseInt(settings.settings.volBeforeMute);
+				settings.settings.currentVolumeProfile = settings.settings.volProfileBeforeMute;
             }
             //persist settings
             $scope.update();

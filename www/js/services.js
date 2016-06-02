@@ -6,9 +6,9 @@ angular.module('app.services', [])
         // minCompatibleSettingsVersion they will be cleared.
         // REMEMBER: increase minCompatibleSettingsversion and settings-version in the
         // settings-Object if you change the settings object!
-        var minCompatibleSettingsVersion = 2;
+        var minCompatibleSettingsVersion = 3;
         var settings = {
-          "settings-version": 2,
+          "settings-version": 3,
            "reconnect": false,
            "duration": 5,
            "volume": 50,
@@ -19,7 +19,8 @@ angular.module('app.services', [])
            ],
            "currentVolumeProfile": false,
            "mute": false,
-           "volBeforeMute": 50
+           "volBeforeMute": 50,
+		   "volProfileBeforeMute": false
          };
 
         var storedSettingsVersion = JSON.parse(localStorage.getItem("settings-version"))
