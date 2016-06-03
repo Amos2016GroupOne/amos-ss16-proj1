@@ -60,6 +60,28 @@ describe('SettingsCtrl:', function() {
       expect($scope.settings.currentVolumeProfile).toBe(JSON.stringify($scope.settings.volumeProfiles[1]));
     });
 
+	it('should deselect volume profiles', function() {
+		muteHelper(false);
+		$scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[1]);
+		$scope.changeVolumeProfile();
+		//when muting now no profile should be selected anymore
+		muteHelper(true);
+		for(var i = 0; i<$scope.settings.volumeProfiles.length; i++){
+			JSON.stringify($scope.settings.volumeProfiles[1])
+			expect($scope.settings.currentVolumeProfile).not.toBe(JSON.stringify($scope.settings.volumeProfiles[i]));
+		}
+	});
+
+	it('should reselect volume profiles', function() {
+		muteHelper(false);
+		$scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[1]);
+		$scope.changeVolumeProfile();
+		muteHelper(true);
+		//when unmuting now the profile should be selected again
+		muteHelper(false);
+		expect($scope.settings.currentVolumeProfile).toBe(JSON.stringify($scope.settings.volumeProfiles[1]));
+	});
+
     it('should unmute on volumeChange', function() {
       muteHelper(true);
       expect($scope.settings.mute).toBe(true);

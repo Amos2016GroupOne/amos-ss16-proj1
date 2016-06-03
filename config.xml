@@ -64,5 +64,6 @@
     <plugin name="cordova-plugin-bluetooth-status" spec="~1.0.4" />
     <plugin name="cordova-plugin-dialogs" spec="~1.2.1" />
     <plugin name="cordova-plugin-bluetoothle" spec="~4.0.0" />
+	<plugin name="cordova-plugin-device-motion" spec="~1.2.1" />
 
 </widget>
