@@ -178,7 +178,7 @@ angular.module('app.controllers', [])
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
                         //Turn on barometer
-                        /*var barometerConfig = new Uint8Array(1);
+                        var barometerConfig = new Uint8Array(1);
                         barometerConfig[0] = 0x01;
                         var params = {
                             address: device.address,
@@ -192,7 +192,7 @@ angular.module('app.controllers', [])
                                 Log.add("Write Success : " + JSON.stringify(obj));
                                 }, function(obj) {
                                 Log.add("Write Error : " + JSON.stringify(obj));
-                                });*/
+                                });
 
                         //Turn on accelerometer
                         var accelerometerConfig = new Uint8Array(2);
