@@ -578,7 +578,6 @@ angular.module('app.controllers', [])
 
         $scope.decibel = "[not measured yet]";
         $scope.decibelToggle = function() {
-          // TODO: maybe put DBMeter in a service!
 
           // persist settings
           $scope.update();
@@ -593,6 +592,14 @@ angular.module('app.controllers', [])
                 // refresh datamodel and format
                 $scope.decibel = dB.toFixed(0);
                 //console.log('loudness: '+dB);
+
+                // Select another volume profile if it is loud!
+                if (dB > 90 && !$scope.settings.mute) {
+                  // set profile to outdoor as it is soo loud ;)
+                  $scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[2]);
+                  $scope.changeVolumeProfile();
+                }
+
               }
               delayCounter = (delayCounter + 1) % DELAY;
             }, function(e){
