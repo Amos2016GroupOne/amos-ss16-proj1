@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $cordovaBluetoothLE, Log, settings, dataStorage) {
+    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, Log, settings, dataStorage) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -13,6 +13,7 @@ angular.module('app.controllers', [])
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
+        
         $scope.accelerometer = {
                 accelerometerDev1: "", accelerometerDev2: ""
         };
@@ -24,6 +25,7 @@ angular.module('app.controllers', [])
             configuration: "F000AA42-0451-4000-B000-000000000000",
             period: "F000AA43-0451-4000-B000-000000000000"
         };
+        
         var accelerometer = {
                 service: "F000AA80-0451-4000-B000-000000000000",
                 data: "F000AA81-0451-4000-B000-000000000000", // read 3 bytes X, Y, Z
