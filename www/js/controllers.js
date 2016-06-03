@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, Log, settings, dataStorage) {
+    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, Log, settings, dataStorage) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -13,11 +13,11 @@ angular.module('app.controllers', [])
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
-
         $scope.accelerometer = {
                 accelerometerDev1: "", accelerometerDev2: ""
         };
 
+		$scope.motionOn = false;
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -510,6 +510,67 @@ angular.module('app.controllers', [])
             console.log("BLE Enabled Event");
             $scope.startScan();
         });
+
+
+
+		// watch Acceleration options
+		$scope.options = {
+			frequency: 100, // Measure every 100ms
+			deviation : 25  // We'll use deviation to determine the shake event, best values in the range between 25 and 30
+		};
+
+		// Current measurements
+		$scope.measurements = {
+			x : null,
+			y : null,
+			z : null,
+			timestamp : null
+		}
+
+		// Previous measurements
+		$scope.previousMeasurements = {
+			x : null,
+			y : null,
+			z : null,
+			timestamp : null
+		}
+
+		// Watcher object
+		$scope.watch = null;
+
+		// Start measurements when Cordova device is ready
+		$ionicPlatform.ready(function() {
+
+			//Start Watching method
+			$scope.startWatching = function() {
+
+				$scope.motionOn = true;
+
+				// Device motion configuration
+				$scope.watch = $cordovaDeviceMotion.watchAcceleration($scope.options);
+
+				// Device motion initilaization
+				$scope.watch.then(null, function(error) {
+					console.log('Error');
+				},function(result) {
+
+					// Set current data
+					$scope.measurements.x = result.x.toFixed(2);
+					$scope.measurements.y = result.y.toFixed(2);
+					$scope.measurements.z = result.z.toFixed(2);
+					//$scope.motion.timestamp = result.timestamp;
+
+				});
+			};
+
+			// Stop watching method
+			$scope.stopWatching = function() {
+				$scope.watch.clearWatch();
+				$scope.motionOn = false;
+			}
+
+
+		});
 
     })
 
