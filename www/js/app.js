@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log, settings) {
         $ionicPlatform.ready(function () {
@@ -117,7 +117,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         })
     })
 
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
 
         // Ionic uses AngularUI Router which uses the concept of states
         // Learn more here: https://github.com/angular-ui/ui-router
@@ -166,6 +166,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
+	
+		$translateProvider.translations('en', {
+			'SETTINGS': 'Settings',
+		});
+
+		$translateProvider.translations('de', {
+			'SETTINGS': 'Einstellungen',
+		});
+
+		$translateProvider.preferredLanguage('en');
 
     })
     // Adopted from ng-cordova-ble example
