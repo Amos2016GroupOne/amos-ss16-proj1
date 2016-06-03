@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova'])
 
-    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log) {
+    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log, settings) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,16 +18,25 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			//Get the BCP 47 language tag for the client's current language.
+			//Get the BCP 47 language tag for the client's current language. For example "en-US"
+			//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
 			if(typeof navigator.globalization !== "undefined") {
 			//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
                 navigator.globalization.getPreferredLanguage(function(language) {
-                        Log.add("getPreferredLanguage success: preferred language is: " + language.value);
-                    }, function(error) {
+						//value is a string already
+						var lang = language.value;
+						//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
+						lang = lang.toLowerCase();
+						Log.add("getPreferredLanguage success: preferred language is: " + lang);
+						//set language setting
+						settings.settings.language = lang;
+					}, function(error) {
                         Log.add("getPreferredLanguage error:" + error);
+						settings.settings.language = "en-us";
                     });
             } else {
-
+				//fallback if the navigator object is missing. Should never happen on actual devices
+				settings.settings.language = "en-us";
 			}
 
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
