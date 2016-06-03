@@ -393,7 +393,10 @@ angular.module('app.controllers', [])
 					$scope.measurements.x = result.x.toFixed(2);
 					$scope.measurements.y = result.y.toFixed(2);
 					$scope.measurements.z = result.z.toFixed(2);
-					//$scope.motion.timestamp = result.timestamp; 
+					//$scope.motion.timestamp = result.timestamp;                 
+					
+					// Detect a shake  
+					$scope.detectShake(result);  
 	 
 				});     
 			};      
@@ -404,7 +407,42 @@ angular.module('app.controllers', [])
 				$scope.motionOn = false;
 			}       
 	 
-				 
+			// Detect shake method      
+			$scope.detectShake = function(result) { 
+	 
+				//Object to hold measurement difference between current and old data
+				var measurementsChange = {};
+	 
+				// Calculate measurement change only if we have two sets of data, current and old
+				if ($scope.previousMeasurements.x !== null) {
+					measurementsChange.x = Math.abs($scope.previousMeasurements.x, result.x);
+					measurementsChange.y = Math.abs($scope.previousMeasurements.y, result.y);
+					measurementsChange.z = Math.abs($scope.previousMeasurements.z, result.z);
+				}
+	 
+				// If measurement change is bigger then predefined deviation
+				if (measurementsChange.x + measurementsChange.y + measurementsChange.z > $scope.options.deviation) {
+					$scope.stopWatching();  // Stop watching because it will start triggering like hell
+					console.log('Shake detected'); // shake detected
+					setTimeout($scope.startWatching(), 1000);  // Again start watching after 1 sex
+	 
+					// Clean previous measurements after succesfull shake detection, so we can do it next time
+					$scope.previousMeasurements = { 
+						x: null, 
+						y: null, 
+						z: null
+					}               
+	 
+				} else {
+					// On first measurements set it as the previous one
+					$scope.previousMeasurements = {
+						x: result.x,
+						y: result.y,
+						z: result.z
+					}
+				}           
+	 
+			}	 
 		});
 
     })
