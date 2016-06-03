@@ -20,8 +20,8 @@ install:
         # Specify what and how to install
         - echo "Install stage"
         - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
-        - sudo apt-get install -y nodejs
-        - sudo npm install -g cordova ionic bower gulp
+        - sudo apt-get install -y nodejs inkscape
+        - sudo npm install -g cordova ionic bower gulp cordova-icon
         - npm i  # for installing gulp and other stuff
         - ionic state restore
         - ionic prepare
