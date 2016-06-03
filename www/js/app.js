@@ -39,6 +39,26 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 				settings.settings.language = "en-us";
 			}
 
+			//Returns the BCP 47 compliant locale identifier. For example "en-US"
+			//Android does not distinguish between "language" and "locale" so this will be the same as above
+			if(typeof navigator.globalization !== "undefined") {
+				navigator.globalization.getLocaleName(function (locale) {
+						//value is a string already
+						var locale = locale.value;
+						//depending on the phone the string may be uppercase or lowercase. Prevent problems by lowercasing everything
+						locale = locale.toLowerCase();
+						Log.add("getLocaleName success: preferred locale is: " + locale);
+						//set language setting
+						settings.settings.locale = locale;
+					}, function (error) {
+						Log.add("getLocaleName error:" + error);
+						settings.settings.locale = "en-us";
+				});
+			} else {
+				//fallback if the navigator object is missing. Should never happen on actual devices
+				settings.settings.locale = "en-us";
+			}
+
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
 			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
 			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
