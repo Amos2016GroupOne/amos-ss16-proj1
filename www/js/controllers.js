@@ -307,10 +307,7 @@ angular.module('app.controllers', [])
         function onAccelerometerData(obj,device) {
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
-
-
                 function sensorAccelerometerConvert(data) {
-
                     var a = data / (32768 / 2);
                     return a;
                 }
@@ -319,26 +316,15 @@ angular.module('app.controllers', [])
                 {
                   // convert the data to 16 bit. the data consist of 2bytes.
                   var converted = [];
-                  var b = new Uint16Array(6);
+                  var b = new Uint16Array(9);
 
-                  for(i = 0; i < 12; i++)
+                  for(i = 0; i < 18; i += 2)
                   {
-                      console.log("data " + i + " is " + data[i]);
-                  }
-
-                  for(i = 0; i < 12; i += 2)
-                  {
-                      b[i/2] = (data[i] << 8);
+                      b[i/2] = (data[i]) | (data[i+1] << 8);
                       console.log("B " + i/2 + " is now " + b[i/2]);
                   }
 
-                  for(i = 1; i < 12; i += 2)
-                  {
-                      b[(i - 1)/2] += (data[i]);
-                      console.log("B " + (i-1)/2 + " is now " + b[(i-1)/2]);
-                  }
-
-                  for(i = 0; i < 12; i++)
+                  for(i = 0; i < 9; i++)
                   {
                       converted.push(sensorAccelerometerConvert(b[i]));
                   }
@@ -351,7 +337,10 @@ angular.module('app.controllers', [])
 
                 var date = new Date();
 
-                dataStorage.storeData("accelerometer", acc[1]);
+                dataStorage.storeData("accelerometer-x", acc[3]);
+                dataStorage.storeData("accelerometer-y", acc[4]);
+                dataStorage.storeData("accelerometer-z", acc[5]);
+
                 dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
                 $rootScope.$broadcast("newAccelerometerData");
@@ -583,11 +572,11 @@ angular.module('app.controllers', [])
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
 		$scope.labels = [];
-		$scope.series = ['Device'];
-		$scope.data = [ [] ];
+		$scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
+		$scope.data = [  [] ];
 
     // Initialize the current start point
-    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer")).length - 10);
+    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - 10);
 
     // If less than 100 data points are available set the startpoint to 0
     if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
@@ -598,7 +587,9 @@ angular.module('app.controllers', [])
     {
       var start = $scope.currentStartPoint;
       var end = start + 10;
-      $scope.data[0] = dataStorage.retrieveData("accelerometer").slice(start,end);
+      //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
+      //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
+      $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
       $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
     }
 
@@ -609,7 +600,7 @@ angular.module('app.controllers', [])
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
       // Initialize the current start point
-      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer").length - 10 + $scope.barOffset;
+      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer-time").length - 10 + $scope.barOffset;
 
       // If less than 100 data points are available set the startpoint to 0
       if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
