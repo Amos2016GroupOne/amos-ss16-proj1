@@ -38,7 +38,18 @@
                 {{barometer.pressureDev2}} <br/><br/>
             </div>
         </div>
-
+		<div>
+			<br><br>
+			<h2>Smartphon Motions:</h2>
+			<button class="button button-royal" ng-if="motionOn == false" id="btnMotionStart" ng-click="startWatching()">Show Motion</button>
+            <button class="button button-royal" ng-if="motionOn == true" id="btnMotionStop" ng-click="stopWatching()">Hide Motion</button>
+			<ul ng-if="motionOn == true">
+				<li>X: {{measurements.x}}</li>
+				<li>Y: {{measurements.y}}</li>
+				<li>Z: {{measurements.z}}</li>
+			</ul>
+		</div>
+		
 
     </ion-content>
 </ion-view>
