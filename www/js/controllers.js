@@ -85,6 +85,137 @@ angular.module('app.controllers', [])
                 })
             };
 
+            function subscribeBarometer(device)
+            {
+              //Subscribe to barometer service
+              var barometerParams = {
+                  address: device.address,
+                  service: barometer.service,
+                  characteristic: barometer.data,
+                  timeout: 5000
+              };
+
+              $cordovaBluetoothLE.subscribe(barometerParams).then(function(obj) {
+                  Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
+              }, function(obj) {
+                  Log.add("Subscribe Error : " + JSON.stringify(obj));
+              }, function(obj) {
+                  //Log.add("Subscribe Success : " + JSON.stringify(obj));
+                  onAccelerometerData(obj, device);
+                  if (obj.status == "subscribedResult") {
+                      Log.add("Subscribed Result");
+
+                      onBarometerData(obj, device);
+
+                      var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+                      Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
+                      Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                  } else if (obj.status == "subscribed") {
+                      Log.add("Subscribed");
+                      //Turn on barometer
+                      var barometerConfig = new Uint8Array(1);
+                      barometerConfig[0] = 0x01;
+                      var params = {
+                          address: device.address,
+                          service: barometer.service,
+                          characteristic: barometer.configuration,
+                          value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
+                          timeout: 5000
+                      };
+
+                      $cordovaBluetoothLE.write(params).then(function(obj) {
+                              Log.add("Write Success : " + JSON.stringify(obj));
+                              }, function(obj) {
+                              Log.add("Write Error : " + JSON.stringify(obj));
+                              });
+
+                      Log.add("Write : " + JSON.stringify(params));
+
+                      $cordovaBluetoothLE.write(params).then(function(obj) {
+                          Log.add("Write Success : " + JSON.stringify(obj));
+                      }, function(obj) {
+                          Log.add("Write Error : " + JSON.stringify(obj));
+                      });
+                  } else {
+                      Log.add("Unexpected Subscribe Status");
+                  }
+              });
+            }
+
+            function subscribeAccelerometer(device)
+            {
+                              //Subscribe to accelerometer service
+                              var accelerometerParams = {
+                              address: device.address,
+                              service: accelerometer.service,
+                              characteristic: accelerometer.data,
+                              timeout: 5000
+                              };
+
+                              Log.add("Subscribe : " + JSON.stringify(accelerometerParams));
+
+                              $cordovaBluetoothLE.subscribe(accelerometerParams).then(function(obj) {
+                                  Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
+                              }, function(obj) {
+                                  Log.add("Subscribe Error : " + JSON.stringify(obj));
+                              }, function(obj) {
+                                  //Log.add("Subscribe Success : " + JSON.stringify(obj));
+
+                                  if (obj.status == "subscribedResult") {
+                                      Log.add("Subscribed Result");
+                                      onAccelerometerData(obj, device);
+
+                                      var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+                                      Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
+                                      Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                                  } else if (obj.status == "subscribed") {
+                                      Log.add("Subscribed");
+
+                                      //Turn on accelerometer
+                                      var accelerometerConfig = new Uint8Array(2);
+                                      accelerometerConfig[0] = 0x7F;
+                                      accelerometerConfig[1] = 0x00;
+
+                                      var params = {
+                                          address: device.address,
+                                          service: accelerometer.service,
+                                          characteristic: accelerometer.configuration,
+                                          value: $cordovaBluetoothLE.bytesToEncodedString(accelerometerConfig),
+                                          timeout: 5000
+                                      };
+
+                                      $cordovaBluetoothLE.write(params).then(function(obj) {
+                                                  Log.add("Write Success : " + JSON.stringify(obj));
+                                                  }, function(obj) {
+                                                  Log.add("Write Error : " + JSON.stringify(obj));
+                                      });
+
+
+
+                                      var periodConfig = new Uint8Array(1);
+                                      periodConfig[0] = 0x64;
+                                      var params = {
+                                          address: device.address,
+                                          service: accelerometer.service,
+                                          characteristic: accelerometer.period,
+                                          value: $cordovaBluetoothLE.bytesToEncodedString(periodConfig),
+                                          timeout: 5000
+                                      };
+
+
+                                      Log.add("Write : " + JSON.stringify(params));
+
+                                      $cordovaBluetoothLE.write(params).then(function(obj) {
+                                          Log.add("Write Success : " + JSON.stringify(obj));
+                                      }, function(obj) {
+                                          Log.add("Write Error : " + JSON.stringify(obj));
+                                      });
+                                  } else {
+                                      Log.add("Unexpected Subscribe Status");
+                                  }
+                              });
+            }
+
             // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
             // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
@@ -143,103 +274,8 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
 
-                //Subscribe to barometer service
-                var params = {
-                    address: device.address,
-                    service: barometer.service,
-                    characteristic: barometer.data,
-                    timeout: 5000
-                };
-
-                //Subscribe to accelerometer service
-                var params = {
-                address: device.address,
-                service: accelerometer.service,
-                characteristic: accelerometer.data,
-                timeout: 5000
-                };
-
-                Log.add("Subscribe : " + JSON.stringify(params));
-
-                $cordovaBluetoothLE.subscribe(params).then(function(obj) {
-                    Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
-                }, function(obj) {
-                    Log.add("Subscribe Error : " + JSON.stringify(obj));
-                }, function(obj) {
-                    //Log.add("Subscribe Success : " + JSON.stringify(obj));
-
-                    if (obj.status == "subscribedResult") {
-                        //Log.add("Subscribed Result");
-                        //onBarometerData(obj, device);
-                        onAccelerometerData(obj, device);
-                        var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
-                        Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
-                        Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
-                    } else if (obj.status == "subscribed") {
-                        Log.add("Subscribed");
-                        //Turn on barometer
-                        var barometerConfig = new Uint8Array(1);
-                        barometerConfig[0] = 0x01;
-                        var params = {
-                            address: device.address,
-                            service: barometer.service,
-                            characteristic: barometer.configuration,
-                            value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
-                            timeout: 5000
-                        };
-
-                        $cordovaBluetoothLE.write(params).then(function(obj) {
-                                Log.add("Write Success : " + JSON.stringify(obj));
-                                }, function(obj) {
-                                Log.add("Write Error : " + JSON.stringify(obj));
-                                });
-
-                        //Turn on accelerometer
-                        var accelerometerConfig = new Uint8Array(2);
-                        accelerometerConfig[0] = 0x7F;
-                        accelerometerConfig[1] = 0x00;
-
-                        var params = {
-                            address: device.address,
-                            service: accelerometer.service,
-                            characteristic: accelerometer.configuration,
-                            value: $cordovaBluetoothLE.bytesToEncodedString(accelerometerConfig),
-                            timeout: 5000
-                        };
-
-                        $cordovaBluetoothLE.write(params).then(function(obj) {
-                                    Log.add("Write Success : " + JSON.stringify(obj));
-                                    }, function(obj) {
-                                    Log.add("Write Error : " + JSON.stringify(obj));
-                        });
-
-
-
-                        var periodConfig = new Uint8Array(1);
-                        periodConfig[0] = 0x64;
-                        var params = {
-                            address: device.address,
-                            service: accelerometer.service,
-                            characteristic: accelerometer.period,
-                            value: $cordovaBluetoothLE.bytesToEncodedString(periodConfig),
-                            timeout: 5000
-                        };
-
-
-                        Log.add("Write : " + JSON.stringify(params));
-
-                        $cordovaBluetoothLE.write(params).then(function(obj) {
-                            Log.add("Write Success : " + JSON.stringify(obj));
-                        }, function(obj) {
-                            Log.add("Write Error : " + JSON.stringify(obj));
-                        });
-                    } else {
-                        Log.add("Unexpected Subscribe Status");
-                    }
-                });
-
-
-            };
+                subscribeBarometer(device);
+              };
             var params = { address: device.address, timeout: 10000 };
 
             Log.add("Connect : " + JSON.stringify(params));
