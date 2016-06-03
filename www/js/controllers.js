@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $cordovaBluetoothLE, Log, settings) {
+    .controller('TagCtrl', function($scope, $rootScope, $cordovaBluetoothLE, Log, settings, dataStorage) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -13,12 +13,23 @@ angular.module('app.controllers', [])
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
+        $scope.accelerometer = {
+                accelerometerDev1: "", accelerometerDev2: ""
+        };
+
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
             notification: "F0002902-0451-4000-B000-000000000000",
             configuration: "F000AA42-0451-4000-B000-000000000000",
             period: "F000AA43-0451-4000-B000-000000000000"
+        };
+        var accelerometer = {
+                service: "F000AA80-0451-4000-B000-000000000000",
+                data: "F000AA81-0451-4000-B000-000000000000", // read 3 bytes X, Y, Z
+                notification: "F0002902-0451-4000-B000-000000000000",
+                configuration: "F000AA82-0451-4000-B000-000000000000",
+                period: "F000AA83-0451-4000-B000-000000000000"
         };
 
         function getLastCon() {
@@ -73,7 +84,7 @@ angular.module('app.controllers', [])
                     }
                 })
             };
-                
+
             // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
             // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
@@ -124,6 +135,7 @@ angular.module('app.controllers', [])
                     $scope.currentDevice1 = device;
                     $scope.barometer.temperatureDev1 = "FREEZING HELL";
                     $scope.barometer.pressureDev1 = "Inside of Jupiter";
+                    $scope.accelerometer.accelerometerDev1 = "TEST";
                 } else {
                     $scope.dev2Connected = true;
                     $scope.currentDevice2 = device;
@@ -139,6 +151,14 @@ angular.module('app.controllers', [])
                     timeout: 5000
                 };
 
+                //Subscribe to accelerometer service
+                var params = {
+                address: device.address,
+                service: accelerometer.service,
+                characteristic: accelerometer.data,
+                timeout: 5000
+                };
+
                 Log.add("Subscribe : " + JSON.stringify(params));
 
                 $cordovaBluetoothLE.subscribe(params).then(function(obj) {
@@ -150,14 +170,15 @@ angular.module('app.controllers', [])
 
                     if (obj.status == "subscribedResult") {
                         //Log.add("Subscribed Result");
-                        onBarometerData(obj, device);
+                        //onBarometerData(obj, device);
+                        onAccelerometerData(obj, device);
                         var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                         Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
                         Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
                         //Turn on barometer
-                        var barometerConfig = new Uint8Array(1);
+                        /*var barometerConfig = new Uint8Array(1);
                         barometerConfig[0] = 0x01;
                         var params = {
                             address: device.address,
@@ -166,6 +187,44 @@ angular.module('app.controllers', [])
                             value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
                             timeout: 5000
                         };
+
+                        $cordovaBluetoothLE.write(params).then(function(obj) {
+                                Log.add("Write Success : " + JSON.stringify(obj));
+                                }, function(obj) {
+                                Log.add("Write Error : " + JSON.stringify(obj));
+                                });*/
+
+                        //Turn on accelerometer
+                        var accelerometerConfig = new Uint8Array(2);
+                        accelerometerConfig[0] = 0x7F;
+                        accelerometerConfig[1] = 0x00;
+
+                        var params = {
+                            address: device.address,
+                            service: accelerometer.service,
+                            characteristic: accelerometer.configuration,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(accelerometerConfig),
+                            timeout: 5000
+                        };
+
+                        $cordovaBluetoothLE.write(params).then(function(obj) {
+                                    Log.add("Write Success : " + JSON.stringify(obj));
+                                    }, function(obj) {
+                                    Log.add("Write Error : " + JSON.stringify(obj));
+                        });
+
+
+
+                        var periodConfig = new Uint8Array(1);
+                        periodConfig[0] = 0x64;
+                        var params = {
+                            address: device.address,
+                            service: accelerometer.service,
+                            characteristic: accelerometer.period,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(periodConfig),
+                            timeout: 5000
+                        };
+
 
                         Log.add("Write : " + JSON.stringify(params));
 
@@ -243,6 +302,67 @@ angular.module('app.controllers', [])
             } else {
                 Log.add("onBarometerData: no matching device" + JSON.stringify(device.address));
             }
+        }
+
+        function onAccelerometerData(obj,device) {
+            var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+
+
+
+                function sensorAccelerometerConvert(data) {
+
+                    var a = data / (32768 / 2);
+                    return a;
+                }
+
+                function convertAllData(data)
+                {
+                  // convert the data to 16 bit. the data consist of 2bytes.
+                  var converted = [];
+                  var b = new Uint16Array(6);
+
+                  for(i = 0; i < 12; i++)
+                  {
+                      console.log("data " + i + " is " + data[i]);
+                  }
+
+                  for(i = 0; i < 12; i += 2)
+                  {
+                      b[i/2] = (data[i] << 8);
+                      console.log("B " + i/2 + " is now " + b[i/2]);
+                  }
+
+                  for(i = 1; i < 12; i += 2)
+                  {
+                      b[(i - 1)/2] += (data[i]);
+                      console.log("B " + (i-1)/2 + " is now " + b[(i-1)/2]);
+                  }
+
+                  for(i = 0; i < 12; i++)
+                  {
+                      converted.push(sensorAccelerometerConvert(b[i]));
+                  }
+                  return converted;
+                }
+
+                console.log("Convert all data!");
+
+                acc = convertAllData(acc);
+
+                dataStorage.storeData("accelerometer", acc);
+                dataStorage.storeData("accelerometer-time", new Date());
+
+                if ($scope.currentDevice1.address == device.address) {
+                    $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
+                } else if(scope.currentDevice2.address == device.address) {
+                    $scope.accelerometer.accelerometerDev2 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
+                } else {
+                    Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
+                }
         }
 
         $scope.disconnect = function(device) {
@@ -355,7 +475,7 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
-	
+
 		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
 		$scope.durationSliderLabel = function(value) {
       		return value + ' s';
@@ -365,7 +485,7 @@ angular.module('app.controllers', [])
 		$scope.volumeSliderLabel = function(value) {
       		return value + '%';
     	}
-		
+
         $scope.newVolumeProfileName = "";
 
         $scope.changedVolume = function() {
@@ -454,7 +574,7 @@ angular.module('app.controllers', [])
             });
         });
     })
-	
+
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, Log, settings) {
 		$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
@@ -462,7 +582,7 @@ angular.module('app.controllers', [])
 		$scope.data = [
 			[28, 48, 40, 19, 86, 27, 90]
 		];
-        
+
     })
 
     .controller('TabCtrl', function ($scope, $ionicTabsDelegate) {
