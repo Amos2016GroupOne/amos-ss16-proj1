@@ -23,7 +23,7 @@ angular.module('app.services', [])
 		   "volProfileBeforeMute": false,
            "isListeningDecibel": true,
 		   "language": "en-us",
-		   "locale": "en-US"
+		   "locale": "en-us"
          };
 
         var storedSettingsVersion = angular.fromJson(localStorage.getItem("settings-version"))
