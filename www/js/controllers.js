@@ -85,7 +85,7 @@ angular.module('app.controllers', [])
                 })
             };
 
-            function subscribeBarometer(device)
+            $scope.subscribeBarometer = function(device)
             {
               //Subscribe to barometer service
               var barometerParams = {
@@ -101,7 +101,6 @@ angular.module('app.controllers', [])
                   Log.add("Subscribe Error : " + JSON.stringify(obj));
               }, function(obj) {
                   //Log.add("Subscribe Success : " + JSON.stringify(obj));
-                  onAccelerometerData(obj, device);
                   if (obj.status == "subscribedResult") {
                       Log.add("Subscribed Result");
 
@@ -140,9 +139,9 @@ angular.module('app.controllers', [])
                       Log.add("Unexpected Subscribe Status");
                   }
               });
-            }
+            };
 
-            function subscribeAccelerometer(device)
+            $scope.subscribeAccelerometer = function(device)
             {
                               //Subscribe to accelerometer service
                               var accelerometerParams = {
@@ -193,7 +192,7 @@ angular.module('app.controllers', [])
 
 
                                       var periodConfig = new Uint8Array(1);
-                                      periodConfig[0] = 0x64;
+                                      periodConfig[0] = 0x0A;
                                       var params = {
                                           address: device.address,
                                           service: accelerometer.service,
@@ -274,7 +273,8 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
 
-                subscribeBarometer(device);
+               // $scope.subscribeBarometer(device);
+                $scope.subscribeAccelerometer(device);
               };
             var params = { address: device.address, timeout: 10000 };
 
@@ -352,12 +352,12 @@ angular.module('app.controllers', [])
                 {
                   // convert the data to 16 bit. the data consist of 2bytes.
                   var converted = [];
-                  var b = new Uint16Array(9);
+                  var b = new Int16Array(9);
 
                   for(i = 0; i < 18; i += 2)
                   {
                       b[i/2] = (data[i]) | (data[i+1] << 8);
-                      console.log("B " + i/2 + " is now " + b[i/2]);
+                      //console.log("B " + i/2 + " is now " + b[i/2]);
                   }
 
                   for(i = 0; i < 9; i++)
