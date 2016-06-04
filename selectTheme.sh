@@ -23,3 +23,5 @@ then
 else
         echo "Theme $choice does not exist!"
 fi
+
+gulp
