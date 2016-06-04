@@ -9,6 +9,7 @@ angular.module('app.controllers', [])
         $scope.currentDevice1 = null;
         $scope.currentDevice2 = null;
         $scope.firstScan = true;
+        
         $scope.barometer = {
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
@@ -24,7 +25,7 @@ angular.module('app.controllers', [])
         function getLastCon() {
             return localStorage.getItem("lastCon");
         }
-
+        
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
         }
@@ -109,6 +110,10 @@ angular.module('app.controllers', [])
         $scope.connect = function(device) {
 
             var onConnect = function(obj) {
+                
+                //The app will stop scanning if the device already connected
+                $scope.stopScan();
+                var outOfRange = false; // true if the device is out of range, false if the device is near
 
                 if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function() { });
@@ -147,13 +152,48 @@ angular.module('app.controllers', [])
                     Log.add("Subscribe Error : " + JSON.stringify(obj));
                 }, function(obj) {
                     //Log.add("Subscribe Success : " + JSON.stringify(obj));
-
+                   
+                                                           
                     if (obj.status == "subscribedResult") {
                         //Log.add("Subscribed Result");
+                        
+                        //Read the RSSI of the device to determine the signal strength
+                        var params = {address: device.address, timeout: 1000};
+                        $cordovaBluetoothLE.rssi(params).then(function(obj) {
+                                Log.add("RSSI Success : " + JSON.stringify(obj));
+                                checkRSSI(obj.rssi);
+                            }, function(obj) {
+                        Log.add("RSSI Error : " + JSON.stringify(obj));
+                        });
+                        
+                        //Check the value of the RSSI
+                        function checkRSSI(data) {
+                            Log.add("Out of Range: " + data);
+                            var value = "" + data;
+                            var num = parseInt(value);
+                            
+                            /*if the RSSI value is smaller than -80dB then it will be consider out of range
+                            because it's considered not good
+                             http://www.metageek.com/training/resources/understanding-rssi.html
+                             */
+                            if(num < -80) {
+                                outOfRange = true;
+                            }
+                        }
+                        
+                        Log.add("In Range: " + outOfRange);
+                        
+                        if(outOfRange) {
+                            navigator.notification.alert("The device is out of range. Please move the device closer!", null);
+                            $scope.disconnect(device);
+                        }
+                        else {
                         onBarometerData(obj, device);
                         var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                         Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
                         Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                        }
+                        
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
                         //Turn on barometer
@@ -182,6 +222,8 @@ angular.module('app.controllers', [])
 
             };
             var params = { address: device.address, timeout: 10000 };
+            
+            
 
             Log.add("Connect : " + JSON.stringify(params));
 
