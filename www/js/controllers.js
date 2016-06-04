@@ -9,6 +9,7 @@ angular.module('app.controllers', [])
         $scope.currentDevice1 = null;
         $scope.currentDevice2 = null;
         $scope.firstScan = true;
+        
         $scope.barometer = {
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
@@ -37,7 +38,7 @@ angular.module('app.controllers', [])
         function getLastCon() {
             return localStorage.getItem("lastCon");
         }
-
+        
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
         }
@@ -265,6 +266,10 @@ angular.module('app.controllers', [])
         $scope.connect = function(device) {
 
             var onConnect = function(obj) {
+                
+                //The app will stop scanning if the device already connected
+                $scope.stopScan();
+                var outOfRange = false; // true if the device is out of range, false if the device is near
 
                 if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
@@ -292,7 +297,10 @@ angular.module('app.controllers', [])
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
 
               };
+                
             var params = { address: device.address, timeout: 10000 };
+            
+            
 
             Log.add("Connect : " + JSON.stringify(params));
 
