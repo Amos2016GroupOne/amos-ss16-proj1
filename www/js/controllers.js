@@ -591,7 +591,7 @@ angular.module('app.controllers', [])
               if (delayCounter === 0) {
                 // refresh datamodel and format
                 $scope.decibel = dB.toFixed(0);
-                //console.log('loudness: '+dB);
+                console.log('loudness: '+dB.toFixed(0));
 
                 // Select another volume profile if it is loud!
                 if (dB > 90 && !$scope.settings.mute) {
@@ -599,6 +599,8 @@ angular.module('app.controllers', [])
                   $scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[2]);
                   $scope.changeVolumeProfile();
                 }
+				//manual apply is needed, looks like angular does not fire apply here
+				$scope.$apply();
 
               }
               delayCounter = (delayCounter + 1) % DELAY;
