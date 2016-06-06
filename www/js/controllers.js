@@ -9,6 +9,7 @@ angular.module('app.controllers', [])
         $scope.currentDevice1 = null;
         $scope.currentDevice2 = null;
         $scope.firstScan = true;
+        var outOfRange = false; // true if the device is out of range, false if the device is near
         
         $scope.barometer = {
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
@@ -29,6 +30,32 @@ angular.module('app.controllers', [])
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
         }
+                
+        //Read the current RSSI of the device
+        function readRSSI(address) {
+            var params = {address: address, timeout: 1000};
+            $cordovaBluetoothLE.rssi(params).then(function(obj) {
+                Log.add("RSSI Success : " + JSON.stringify(obj));
+                    checkRSSI(obj.rssi);
+            }, function(obj) {
+                Log.add("RSSI Error : " + JSON.stringify(obj));
+            });
+        }
+        
+        //Check the value of the RSSI
+        function checkRSSI(data) {
+            Log.add("RSSI value: " + data);
+            var value = "" + data;
+            var num = parseInt(value);
+                
+            /*if the RSSI value is smaller than -80dB then it will be consider out of range
+                 because packet delivery is not so reliable anymore
+                 http://www.metageek.com/training/resources/understanding-rssi.html
+            */
+            if(num < -50) {
+                outOfRange = true;
+            }
+        }
 
         $scope.startScan = function() {
             var params = {
@@ -47,6 +74,7 @@ angular.module('app.controllers', [])
             // Function to start scan for devices.
             // This function populates th $scope.devices variable on results.
             function startScan() {
+                
                 Log.add("Start Scan : " + JSON.stringify(params));
                 $cordovaBluetoothLE.startScan(params).then(function(obj) {
                     Log.add("Start Scan Auto Stop : " + JSON.stringify(obj));
@@ -56,22 +84,21 @@ angular.module('app.controllers', [])
                     Log.add("Start Scan Error : " + JSON.stringify(obj));
                 }, function(device) {
                     Log.add("Start Scan Success : " + JSON.stringify(device));
-
-
+                    
                     if (device.status == "scanStarted") {
                         $scope.scanDevice = true;
                         return;
                     }
-
+                                                           
                     $scope.noDevice = false;
                     $scope.devices[device.address] = device;
                     $scope.devices[device.address].services = {};
                     console.log(JSON.stringify($scope.devices));
-
+                    
                     if (device.address == getLastCon() && $scope.firstScan) {
                         $scope.connect(device);
                         $scope.firstScan = false;
-                    }
+                        }
                 })
             };
                 
@@ -108,12 +135,15 @@ angular.module('app.controllers', [])
         };
 
         $scope.connect = function(device) {
-
+                
             var onConnect = function(obj) {
+                
+                
+                outOfRange = false;
+                readRSSI(device.address);
                 
                 //The app will stop scanning if the device already connected
                 $scope.stopScan();
-                var outOfRange = false; // true if the device is out of range, false if the device is near
 
                 if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function() { });
@@ -150,6 +180,8 @@ angular.module('app.controllers', [])
                     Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
                 }, function(obj) {
                     Log.add("Subscribe Error : " + JSON.stringify(obj));
+                        navigator.notification.alert("The device is interrupted!", null);
+                        $scope.disconnect(device);
                 }, function(obj) {
                     //Log.add("Subscribe Success : " + JSON.stringify(obj));
                    
@@ -157,36 +189,19 @@ angular.module('app.controllers', [])
                     if (obj.status == "subscribedResult") {
                         //Log.add("Subscribed Result");
                         
-                        //Read the RSSI of the device to determine the signal strength
-                        var params = {address: device.address, timeout: 1000};
-                        $cordovaBluetoothLE.rssi(params).then(function(obj) {
-                                Log.add("RSSI Success : " + JSON.stringify(obj));
-                                checkRSSI(obj.rssi);
-                            }, function(obj) {
-                        Log.add("RSSI Error : " + JSON.stringify(obj));
-                        });
+                        //Read the currrent RSSI of the device to determine the signal strength
+                        readRSSI(device.address);
+                        Log.add("Out of range: " + outOfRange);
                         
-                        //Check the value of the RSSI
-                        function checkRSSI(data) {
-                            Log.add("Out of Range: " + data);
-                            var value = "" + data;
-                            var num = parseInt(value);
-                            
-                            /*if the RSSI value is smaller than -80dB then it will be consider out of range
-                            because it's considered not good
-                             http://www.metageek.com/training/resources/understanding-rssi.html
-                             */
-                            if(num < -80) {
-                                outOfRange = true;
-                            }
-                        }
-                        
-                        Log.add("In Range: " + outOfRange);
-                        
+                        /*if the device is out of range an error message will appear and the device disconnected,
+                          else the data will be shown
+                        */
                         if(outOfRange) {
                             navigator.notification.alert("The device is out of range. Please move the device closer!", null);
                             $scope.disconnect(device);
+                            outOfRange = false;
                         }
+                                                           
                         else {
                         onBarometerData(obj, device);
                         var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
@@ -312,11 +327,13 @@ angular.module('app.controllers', [])
                 address: address,
                 timeout: 10000
             };
-
+                
             Log.add("Discover : " + JSON.stringify(params));
-
+        
             $cordovaBluetoothLE.discover(params).then(function(obj) {
                 Log.add("Discover Success : " + JSON.stringify(obj));
+                
+                
 
                 var device = $scope.devices[obj.address];
 
@@ -348,13 +365,16 @@ angular.module('app.controllers', [])
 
                     }
                 }
+            
                 if (afterFunction != undefined) {
-                    afterFunction();
-                }
+                        afterFunction();
+                    }
+                
             }, function(obj) {
                 Log.add("Discover Error : " + JSON.stringify(obj));
-            });
+                });
         };
+                
         function addService(service, device) {
             if (device.services[service.uuid] !== undefined) {
                 return;
