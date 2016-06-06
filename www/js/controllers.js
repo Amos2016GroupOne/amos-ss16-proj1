@@ -705,8 +705,8 @@ angular.module('app.controllers', [])
     
         // The number of bars we've dragged is dependent on the space moved and
         // the width of a single bar
-        // Number of bars will be negative if dragging to the left.
-        var numberOfBars = ($event.gesture.deltaX / widthOfBar);
+        // Number of bars should be positive if dragging to the left.
+        var numberOfBars = ($event.gesture.deltaX / widthOfBar) * -2;
         
         Log.add("Number of Bars: " + numberOfBars);
         
