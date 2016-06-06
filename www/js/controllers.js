@@ -556,8 +556,11 @@ angular.module('app.controllers', [])
         }
 
         $scope.changeVolumeProfile = function() {
+
             $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
 			$scope.settings.mute = false;
+            $scope.settings.volume = angular.fromJson($scope.settings.currentVolumeProfile).volume;
+
             $scope.update();
         }
 
@@ -591,16 +594,19 @@ angular.module('app.controllers', [])
               if (delayCounter === 0) {
                 // refresh datamodel and format
                 $scope.decibel = dB.toFixed(0);
-                console.log('loudness: '+dB.toFixed(0));
+                //console.log('loudness: '+dB.toFixed(0));
 
                 // Select another volume profile if it is loud!
-                if (dB > 90 && !$scope.settings.mute) {
+                if (dB > 85 && !$scope.settings.mute) {
                   // set profile to outdoor as it is soo loud ;)
-                  $scope.settings.currentVolumeProfile = JSON.stringify($scope.settings.volumeProfiles[2]);
+                  // REM: The json filter that is used in tab-settings.html for the options automatically
+                  // does prettyfication. To set the current volume profile we must set the pretty flag as well:
+                  $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
                   $scope.changeVolumeProfile();
                 }
-				//manual apply is needed, looks like angular does not fire apply here
-				$scope.$apply();
+
+                //manual apply is needed, looks like angular does not fire apply here
+                $scope.$apply();
 
               }
               delayCounter = (delayCounter + 1) % DELAY;
@@ -670,6 +676,7 @@ angular.module('app.controllers', [])
 
             });
         });
+
     })
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {

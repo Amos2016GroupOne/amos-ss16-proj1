@@ -24,7 +24,7 @@ angular.module('app.services', [])
            "isListeningDecibel": true
          };
 
-        var storedSettingsVersion = JSON.parse(localStorage.getItem("settings-version"))
+        var storedSettingsVersion = angular.fromJson(localStorage.getItem("settings-version"))
         if (storedSettingsVersion == null || storedSettingsVersion < minCompatibleSettingsVersion) {
           localStorage.clear();
           console.log("Settings stored are incompatible with the current app version and",
@@ -34,7 +34,9 @@ angular.module('app.services', [])
         function setSetting(name, value) {
           // Save to local storage as stringified objects. so parsing of e.g. boolean is
           // much easier
-          localStorage.setItem(name, JSON.stringify(value));
+          // use angular.toJson as angular overrides JSON.stringify to automatically
+          // include hash properties. We do not want this.
+          localStorage.setItem(name, angular.toJson(value));
         }
 
         // Function to query settings by name
@@ -47,7 +49,7 @@ angular.module('app.services', [])
               if (ret == null) {
                 throw("wrong setting");
               } else {
-                ret = JSON.parse(ret);
+                ret = angular.fromJson(ret);
               }
             } catch (err) {
               // Catches wrong settings and parse Errors.
@@ -85,7 +87,6 @@ angular.module('app.services', [])
    .factory("dataStorage", [function() {
 	//TODO Use LokiDB with LokiCordovaFSAdapter
 	var dataStorage = {};
-
 
 	// This function stores data in the database.
 	// The current implementation is just a stub
