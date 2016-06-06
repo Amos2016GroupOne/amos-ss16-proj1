@@ -52,7 +52,7 @@ angular.module('app.controllers', [])
                  because packet delivery is not so reliable anymore
                  http://www.metageek.com/training/resources/understanding-rssi.html
             */
-            if(num < -50) {
+            if(num < -80) {
                 outOfRange = true;
             }
         }
