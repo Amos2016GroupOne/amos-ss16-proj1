@@ -8,12 +8,33 @@ describe('SettingsCtrl:', function() {
 
   // Load the App Module as a mock.
   // This will also make all app intern services available per inject()
-  beforeEach(module('app'));
+  beforeEach(module('app', function ($provide, $translateProvider) {
+
+	  //use a custom Loader for angular-translate. Otherwise some test will fail with
+	  //"Error: Unexpected request: GET en-us.json"
+	  //why this has to be done is explained in detail here:
+	  //https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
+      $translateProvider.translations('en-us', {
+		"LANGUAGE": "language"
+	  });
+	  $translateProvider.translations('de-de', {
+	    "LANGUAGE": "Sprache"
+	  });
+
+  }));
 
   // Disable template caching
   beforeEach(module(function($provide, $urlRouterProvider) {
     $provide.value('$ionicTemplateCache', function(){} );
     $urlRouterProvider.deferIntercept();
+  }));
+
+  // Store references to $rootScope and $compile
+  // so they are available to all tests in this describe block
+  beforeEach(inject(function(_$compile_, _$rootScope_){
+    // The injector unwraps the underscores (_) from around the parameter names when matching
+    $compile = _$compile_;
+    $rootScope = _$rootScope_;
   }));
 
   // Instantiate the Controller and Mocks
@@ -51,6 +72,29 @@ describe('SettingsCtrl:', function() {
     $scope.settings.isListeningDecibel = val;
     $scope.decibelToggle();
   }
+
+  function setLanguage(lang) {
+	$scope.settings.language = lang;
+	$scope.changeLanguage();
+  }
+
+  describe('Translation', function(){
+	
+	it('should translate to currently set language', function(){
+	    setLanguage('en-us');
+		// Compile a piece of HTML containing the translate filter
+		var element = $compile("<div>{{ 'LANGUAGE' | translate }}</div>")($rootScope);
+		// fire all the watches, so the scope expression {{ 'LANGUAGE' | translate }} will be evaluated
+		$rootScope.$digest();
+		// Check that the compiled element contains the templated content
+		expect(element.html()).toContain("language");
+		setLanguage('de-de');
+		var element = $compile("<div>{{ 'LANGUAGE' | translate }}</div>")($rootScope);
+		$rootScope.$digest();
+		expect(element.html()).toContain("Sprache");
+	});
+
+  });
 
   describe('Muting', function() {
 
