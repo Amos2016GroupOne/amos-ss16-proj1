@@ -153,6 +153,7 @@ a project better use `angular.toJson` and `angular.fromJson`
 - Building up a radio group that uses objects as values:
 html:
 
+```html
     <ion-radio
     ng-repeat="volumeProfile in settings.volumeProfiles"
     ng-value="volumeProfile|json"
@@ -160,10 +161,11 @@ html:
     ng-change="changeVolumeProfile()">
     {{ volumeProfile.name }}
     </ion-radio>
+```
 
-    controller.js:
+controller.js:
 
-
+```js
     var settings = {
       ...
       "volumeProfiles": [
@@ -175,6 +177,7 @@ html:
 
     // to set the controller to a value:
     settings.currentVolumeProfile = angular.toJson(settings.volumeProfiles[0], true);
+```
 
 As === operator on objects evaluates to true just if both
 operands __refer__ to the same we must save the values as json (see `...|json`-filter).
