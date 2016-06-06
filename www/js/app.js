@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
-    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log, settings) {
+    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log, settings, availableLanguages, defaultLanguage, $translate) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,25 +18,42 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			//Get the BCP 47 language tag for the client's current language. For example "en-US"
-			//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
-			if(typeof navigator.globalization !== "undefined") {
-			//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
-                navigator.globalization.getPreferredLanguage(function(language) {
-						//value is a string already
-						var lang = language.value;
-						//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
-						lang = lang.toLowerCase();
-						Log.add("getPreferredLanguage success: preferred language is: " + lang);
-						//set language setting
-						settings.settings.language = lang;
-					}, function(error) {
-                        Log.add("getPreferredLanguage error:" + error);
-						settings.settings.language = "en-us";
-                    });
-            } else {
-				//fallback if the navigator object is missing. Should never happen on actual devices
-				settings.settings.language = "en-us";
+			var lang;
+			//either its the first run or the user set this in the settings himself. Use the system language:
+			if(settings.settings.language == "system"){
+				//Get the BCP 47 language tag for the client's current language. For example "en-US"
+				//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
+				if(typeof navigator.globalization !== "undefined") {
+				//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
+					navigator.globalization.getPreferredLanguage(function(language) {
+							//value is a string already
+							lang = language.value;
+							//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
+							lang = lang.toLowerCase();
+							Log.add("getPreferredLanguage success: preferred language is: " + lang);
+							//if the language exists in the lang folder, then apply the language now
+							var langExists = false;
+							for(var i=0; i<availableLanguages.length; i++){
+								if(availableLanguages[i] == lang){
+									//let angular-translate know that from now on this language has to be used
+									$translate.use(lang);
+									langExists = true;
+									break;
+								}
+							}
+							if(langExists == false){
+								Log.add("Preferred Language does not exists");
+								Log.add("Using default language: " + defaultLanguage);
+							}
+						}, function(error) {
+							//default language is already set in the config block. So no need to do anything here
+							Log.add("getPreferredLanguage error: " + error);
+							Log.add("Using default language: " + defaultLanguage);
+						});
+				}else{
+					//default language is already set in the config block. So no need to do anything here
+					Log.add("navigator.globalization undefined. Using default language: " + defaultLanguage);
+				}
 			}
 
 			//Returns the BCP 47 compliant locale identifier. For example "en-US"
@@ -117,7 +134,11 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         })
     })
 
-    .config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
+	//add languages here if you add a new language to the lang folder
+	.constant('availableLanguages', ['en-us', 'de-de'])
+	.constant('defaultLanguage', 'en-us')
+
+    .config(function ($stateProvider, $urlRouterProvider, $translateProvider, defaultLanguage) {
 
         // Ionic uses AngularUI Router which uses the concept of states
         // Learn more here: https://github.com/angular-ui/ui-router
@@ -167,11 +188,12 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
 	
+		//This means: load the language file lang/{preferredLanguage}.json
 		$translateProvider.useStaticFilesLoader({
 			prefix: 'lang/',
 			suffix: '.json'
 		});
-		$translateProvider.preferredLanguage('en-us');
+		$translateProvider.preferredLanguage(defaultLanguage);
 
     })
     // Adopted from ng-cordova-ble example
