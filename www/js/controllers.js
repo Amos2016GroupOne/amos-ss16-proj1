@@ -659,7 +659,7 @@ angular.module('app.controllers', [])
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
         $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
-        
+        Log.add("Dragged is : " + $scope.dragged);
       // Initialize the current start point if not dragged
       if(!$scope.dragged)
       {
@@ -679,6 +679,16 @@ angular.module('app.controllers', [])
     // Variables relating to dragging
     $scope.dragging = false;
     $scope.startOffset = 0;
+    
+    $scope.followGraph = function()
+    {
+        $scope.dragged = false;
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
+        
+        // Update the start offset. We are following the graph at this point.
+        $scope.startOffset = $scope.currentStartPoint; 
+        createAndSetDataSlice();
+    }
 
     // When starting drag set dragging to true and log the startPosition
     $scope.startDrag = function($event) {
