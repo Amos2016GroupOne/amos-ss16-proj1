@@ -7,9 +7,13 @@
 	    <div class="item item-divider">
         	{{ 'LANGUAGE' | translate }}
         </div>
-	    <div class="item">
-        	{{settings.language}}
-        </div>
+	    <ion-radio
+			ng-repeat="lang in availableLanguages"
+			ng-value="lang"
+			ng-model="settings.language"
+			ng-change="changeLanguage()">
+			{{ lang }}
+        </ion-radio>
         <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 	  	<div class="item item-divider">
             Scan Duration

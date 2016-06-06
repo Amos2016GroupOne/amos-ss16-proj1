@@ -19,7 +19,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             }
 
 			var lang;
-			//either its the first run or the user set this in the settings himself. Use the system language:
+			//If this is true its the first run. So use the system language:
 			if(settings.settings.language == "system"){
 				//Get the BCP 47 language tag for the client's current language. For example "en-US"
 				//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
@@ -35,6 +35,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 							var langExists = false;
 							for(var i=0; i<availableLanguages.length; i++){
 								if(availableLanguages[i] == lang){
+									settings.settings.language = lang;
 									//let angular-translate know that from now on this language has to be used
 									$translate.use(lang);
 									langExists = true;
@@ -42,18 +43,25 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 								}
 							}
 							if(langExists == false){
+								//default language is already set in the config block. So no need to do $translate.use() here
+								settings.settings.language = defaultLanguage;
 								Log.add("Preferred Language does not exists");
 								Log.add("Using default language: " + defaultLanguage);
 							}
 						}, function(error) {
-							//default language is already set in the config block. So no need to do anything here
+							//default language is already set in the config block. So no need to do $translate.use() here
+							settings.settings.language = defaultLanguage;
 							Log.add("getPreferredLanguage error: " + error);
 							Log.add("Using default language: " + defaultLanguage);
 						});
 				}else{
-					//default language is already set in the config block. So no need to do anything here
+					//default language is already set in the config block. So no need to do $translate.use() here
+					settings.settings.language = defaultLanguage;
 					Log.add("navigator.globalization undefined. Using default language: " + defaultLanguage);
 				}
+			}else{
+				//let angular-translate know that from now on this language has to be used
+				$translate.use(settings.settings.language);
 			}
 
 			//Returns the BCP 47 compliant locale identifier. For example "en-US"

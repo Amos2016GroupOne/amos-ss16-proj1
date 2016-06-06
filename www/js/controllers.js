@@ -613,13 +613,21 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings) {
+    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings, $translate, availableLanguages) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+
+		//get the list of all languages that are available as json file
+		$scope.availableLanguages = availableLanguages;
+
+		$scope.changeLanguage = function() {
+            $translate.use($scope.settings.language);
+            $scope.update();
+        }
 
 		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
 		$scope.durationSliderLabel = function(value) {
