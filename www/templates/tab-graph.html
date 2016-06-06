@@ -9,10 +9,10 @@
         <div class="item item-text-wrap">
             <canvas id="bar" class="chart chart-bar" data="data" labels="labels"
              legend="true" series="series" options="{showTooltips: true}"
-             ng-mousedown="beginDrag($event)"
-             ng-mouseup="stopDrag($event)"
-             ng-mouseleave="stopDrag($event)"
-             ng-mousemove="mouseMove($event)"></canvas>
+             on-touch="startDrag($event)"
+             on-drag-left="mouseMove($event)"
+             on-drag-right="mouseMove($event)"
+             on-release="stopDrag($event)"></canvas>
         </div>
     </div>
 

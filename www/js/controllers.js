@@ -199,7 +199,7 @@ angular.module('app.controllers', [])
                         $cordovaBluetoothLE.write(params).then(function (obj) {
                             Log.add("Write Success : " + JSON.stringify(obj));
                             var periodConfig = new Uint8Array(1);
-                            periodConfig[0] = 0x0A;
+                            periodConfig[0] = 0x64;
                             var params = {
                                 address: device.address,
                                 service: accelerometer.service,
@@ -627,9 +627,15 @@ angular.module('app.controllers', [])
 		$scope.labels = [];
 		$scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
 		$scope.data = [  [] ];
+        
+    $scope.numberOfDatapoints = 10;
 
     // Initialize the current start point
-    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - 10);
+    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
+    $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
+    
+    // This variable is true when the user dragged the graph to any location other than the end.
+    $scope.dragged = false;
 
     // If less than 100 data points are available set the startpoint to 0
     if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
@@ -639,7 +645,7 @@ angular.module('app.controllers', [])
     function createAndSetDataSlice()
     {
       var start = $scope.currentStartPoint;
-      var end = start + 10;
+      var end = start + $scope.numberOfDatapoints;
       //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
       //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
       $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
@@ -652,10 +658,19 @@ angular.module('app.controllers', [])
 
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
-      // Initialize the current start point
-      $scope.currentStartPoint = dataStorage.retrieveData("accelerometer-time").length - 10 + $scope.barOffset;
-
-      // If less than 100 data points are available set the startpoint to 0
+        $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
+        
+      // Initialize the current start point if not dragged
+      if(!$scope.dragged)
+      {
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
+        
+        // Update the start offset. We are following the graph at this point.
+        $scope.startOffset = $scope.currentStartPoint; 
+      }
+      
+        
+      // If less than $scope.numberOfDatapoints data points are available set the startpoint to 0
       if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
 
       createAndSetDataSlice();
@@ -663,40 +678,54 @@ angular.module('app.controllers', [])
 
     // Variables relating to dragging
     $scope.dragging = false;
-    $scope.startX = 0;
-    $scope.currentDrag = 0;
-
-    // The width of a singe bar in the bar graph
-    var widthOfBar = angular.element("#bar").attr("width");
-
-    console.log("Width of bar is " + widthOfBar);
+    $scope.startOffset = 0;
 
     // When starting drag set dragging to true and log the startPosition
     $scope.startDrag = function($event) {
+      Log.add("Start Drag: " + JSON.stringify($event));
       $scope.dragging = true;
-      $scope.startX = $event.clientX;
+      $scope.startOffset = $scope.currentStartPoint;
     };
 
     // When stopping the dragging set dragging to false and persist the barOffset
     $scope.stopDrag = function($event) {
-      $scope.dragging = false;
-      $scope.currentDrag = $scope.barOffset;
+        Log.add("Stop Drag: " + JSON.stringify($event));
+        $scope.dragging = false;
     };
 
     // On mouse move we need to update the dragging
     $scope.mouseMove = function($event) {
+      Log.add("Mousemove: " + JSON.stringify($event));
       // Only do something if currently dragging
       if($scope.dragging)
       {
+        // The width of a single bar in the bar graph
+        var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
+        console.log("Width of bar is " + widthOfBar);
+    
         // The number of bars we've dragged is dependent on the space moved and
         // the width of a single bar
-        var numberOfBars = ($event.clientX - $scope.startX / widthOfBar);
-        // A positive offset doesn't make any sense
-        if(numberOfBars + $scope.currentDrag > 0) {
-          $scope.barOffset = 0;
+        // Number of bars will be negative if dragging to the left.
+        var numberOfBars = ($event.gesture.deltaX / widthOfBar);
+        
+        Log.add("Number of Bars: " + numberOfBars);
+        
+        // If we dragged to the end then set start point to the max
+        if(numberOfBars + $scope.startOffset > ($scope.totalPoints - $scope.numberOfDatapoints)) {
+          $scope.dragged = true;
+          // The current start point is changed to the maximum.
+          $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;  
+          createAndSetDataSlice(); 
         }
         else {
-          $scope.barOffset = numberOfBars + $scope.currentDrag;
+          // We dragged. Therefore we do not want to follow anymore.
+          $scope.dragged = true;
+          // The current start point is changed by the number of dragged bars.
+          $scope.currentStartPoint = $scope.startOffset + numberOfBars;
+          
+          // Don't let it become negative.
+          if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+          createAndSetDataSlice();
         }
       }
     };
