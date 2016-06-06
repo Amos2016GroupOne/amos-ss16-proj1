@@ -167,15 +167,11 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
 	
-		$translateProvider.translations('en', {
-			'SETTINGS': 'Settings',
+		$translateProvider.useStaticFilesLoader({
+			prefix: 'lang/',
+			suffix: '.json'
 		});
-
-		$translateProvider.translations('de', {
-			'SETTINGS': 'Einstellungen',
-		});
-
-		$translateProvider.preferredLanguage('en');
+		$translateProvider.preferredLanguage('en-us');
 
     })
     // Adopted from ng-cordova-ble example

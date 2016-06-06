@@ -4,16 +4,13 @@
     <h1>{{ 'SETTINGS' | translate }}</h1>
 
 	  <ion-list>
-		<div class="item item-divider">
-            Automatic Reconnection
-        </div>
-		<ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 	    <div class="item item-divider">
-        	Language
+        	{{ 'LANGUAGE' | translate }}
         </div>
 	    <div class="item">
         	{{settings.language}}
         </div>
+        <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 	  	<div class="item item-divider">
             Scan Duration
         </div>
