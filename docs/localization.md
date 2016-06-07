@@ -13,6 +13,7 @@ The actual translation is done via the new AngularJS module __[angular-translate
 - Pluralization support using __[MessageFormat.js](https://github.com/SlexAxton/messageformat.js/)__
 - Expandability through easy to use interfaces
 - very good documentation
+- definition of namespaces
 - also offers support for Right-to-Left Languages, with non latin letters like arabic (see eg. __[here](https://www.sitepoint.com/multilingual-support-for-angularjs/)__)
 
 The setup is very easy. After including the module, you write this:
@@ -32,4 +33,16 @@ The setup is very easy. After including the module, you write this:
 And then in your html you use the key and let angular know that you want this translated:
 
 	<h1>{{ 'TITLE' | translate }}</h1>
+
+using translation in your controller works the following way. 
+
+  $translate(['HEADLINE', 'PARAGRAPH',']).then(function (translations) {
+    $scope.headline = translations.HEADLINE;
+    $scope.paragraph = translations.PARAGRAPH;
+  });
+
+$translate service behaves asynchronous and returns a promise, since it could be that there's some asynchronous loading going on.
+This means that there are translation tables loaded in the background. These might be in a local json file or a file on a server.
+
+
 
