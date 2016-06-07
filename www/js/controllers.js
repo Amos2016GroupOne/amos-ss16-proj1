@@ -97,17 +97,28 @@ angular.module('app.controllers', [])
                     Log.add("Start Scan Error : " + JSON.stringify(obj));
                 }, function(device) {
                     Log.add("Start Scan Success : " + JSON.stringify(device));
-                    
+                                        
                     if (device.status == "scanStarted") {
                         $scope.scanDevice = true;
                         return;
                     }
+                    
+                    //if the device is out of range while scanning, it shows no device
+                    checkRSSI(device.rssi);
                                                            
+                    if (outOfRange) {
+                        $scope.noDevice =  true;
+                        outOfRange = false;
+                        return;
+                    }
+
+                    else {
                     $scope.noDevice = false;
                     $scope.devices[device.address] = device;
                     $scope.devices[device.address].services = {};
                     console.log(JSON.stringify($scope.devices));
-                    
+                    }
+                                                           
                     if (device.address == getLastCon() && $scope.firstScan) {
                         $scope.connect(device);
                         $scope.firstScan = false;
@@ -478,8 +489,6 @@ angular.module('app.controllers', [])
         
             $cordovaBluetoothLE.discover(params).then(function(obj) {
                 Log.add("Discover Success : " + JSON.stringify(obj));
-                
-                
 
                 var device = $scope.devices[obj.address];
 
