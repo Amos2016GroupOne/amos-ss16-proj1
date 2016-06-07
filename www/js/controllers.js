@@ -514,7 +514,7 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function($scope, Log, settings) {
+    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
@@ -579,6 +579,36 @@ angular.module('app.controllers', [])
             $scope.update();
         }
 
+        // helper function to start the DBMeter and it's output
+        function startDBMeter() {
+          var delayCounter = 0,
+              DELAY = 10;  // * 100 ms
+          DBMeter.start(function(dB){
+            // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
+            if (delayCounter === 0) {
+              // refresh datamodel and format
+              $scope.decibel = dB.toFixed(0);
+              //console.log('loudness: '+dB.toFixed(0));
+
+              // Select another volume profile if it is loud!
+              if (dB > 85 && !$scope.settings.mute) {
+                // set profile to outdoor as it is soo loud ;)
+                // REM: The json filter that is used in tab-settings.html for the options automatically
+                // does prettyfication. To set the current volume profile we must set the pretty flag as well:
+                $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
+                $scope.changeVolumeProfile();
+              }
+
+              //manual apply is needed, looks like angular does not fire apply here
+              $scope.$apply();
+
+            }
+            delayCounter = (delayCounter + 1) % DELAY;
+          }, function(e){
+            console.log('code: ' + e.code + ', message: ' + e.message);
+          });
+        }
+
         $scope.decibel = "[not measured yet]";
         $scope.decibelToggle = function() {
 
@@ -586,39 +616,18 @@ angular.module('app.controllers', [])
           $scope.update();
 
           if ($scope.settings.isListeningDecibel === true) {
-            var delayCounter = 0,
-                DELAY = 10;  // * 100 ms
             console.log('starting db...');
-            DBMeter.start(function(dB){
-              // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
-              if (delayCounter === 0) {
-                // refresh datamodel and format
-                $scope.decibel = dB.toFixed(0);
-                //console.log('loudness: '+dB.toFixed(0));
-
-                // Select another volume profile if it is loud!
-                if (dB > 85 && !$scope.settings.mute) {
-                  // set profile to outdoor as it is soo loud ;)
-                  // REM: The json filter that is used in tab-settings.html for the options automatically
-                  // does prettyfication. To set the current volume profile we must set the pretty flag as well:
-                  $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
-                  $scope.changeVolumeProfile();
-                }
-
-                //manual apply is needed, looks like angular does not fire apply here
-                $scope.$apply();
-
-              }
-              delayCounter = (delayCounter + 1) % DELAY;
-            }, function(e){
-              console.log('code: ' + e.code + ', message: ' + e.message);
-            });
+            startDBMeter();
           } else {
             console.log('stopping db...');
-            DBMeter.stop(function(){
-              console.log("DBMeter well stopped");
-            }, function(e){
-              console.log('code: ' + e.code + ', message: ' + e.message);
+            DBMeter.isListening(function(isListening) {
+              if (isListening) {
+                DBMeter.stop(function(){
+                  console.log("DBMeter well stopped");
+                }, function(e){
+                  console.log('code: ' + e.code + ', message: ' + e.message);
+                });
+              }
             });
           }
 
@@ -628,6 +637,34 @@ angular.module('app.controllers', [])
         if (typeof DBMeter !== 'undefined') {
           $scope.decibelToggle();
         }
+
+        $ionicPlatform.on('pause', function() {
+          // store DBMeter state and stop it.
+          DBMeter.myWasListening = false;
+          DBMeter.isListening(function(isListening) {
+            if (isListening) {
+              DBMeter.stop(function() {
+                DBMeter.myWasListening = true;
+                console.log("DBMeter well stopped");
+              }, function(e) {
+                console.log('code: ' + e.code + ', message: ' + e.message);
+              });
+            }
+          });
+        });
+
+        $ionicPlatform.on('resume', function() {
+          // restore DBMeter state
+          if (DBMeter.myWasListening === true) {
+            console.log('try to resume DBMeter');
+            // reactivate DBMeter
+            DBMeter.isListening(function(isListening) {
+              if (!isListening) {
+                startDBMeter();
+              }
+            });
+          }
+        });
 
         $scope.$on('volumeupbutton', function() {
             $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.

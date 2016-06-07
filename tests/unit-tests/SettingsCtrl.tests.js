@@ -27,6 +27,7 @@ describe('SettingsCtrl:', function() {
     $scope = $rootScope.$new();
     controller = $controller('SettingsCtrl',{
       '$scope': $scope,
+      // '$ionicPlatform':  - not specified, so it will take the original ionicPlatform
       'Log': LogMock,
       'settings': settingsMock
     });

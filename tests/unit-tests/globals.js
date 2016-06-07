@@ -48,7 +48,11 @@ var MockFactory = {
       stop: function(cb) {
         console.log("unsetting interval");
         clearInterval(this.intervalID);
+        this.intervalID = -1;
         cb();
+      },
+      isListening: function(cb) {
+        cb(this.intervalID != -1);
       }
     };
   }
