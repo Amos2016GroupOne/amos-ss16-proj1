@@ -10,3 +10,5 @@ www/lib
 www/css/ionic.app.css
 www/css/ionic.app.min.css
 resources/
+scss/
+icon.png
