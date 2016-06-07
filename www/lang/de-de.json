@@ -19,5 +19,6 @@
 	"PRESSURE": "Druck",
 	"GRAPH": "Graph",
 	"BAR_GRAPH": "Balkendiagramm",
-	"ACCELEROMETER": "accelerometer"
+	"ACCELEROMETER": "accelerometer",
+	"STATUS": "Status"
 }
