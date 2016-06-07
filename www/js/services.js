@@ -80,33 +80,67 @@ angular.module('app.services', [])
         };
 
     }])
-   .factory("dataStorage", [function() {
-	//TODO Use LokiDB with LokiCordovaFSAdapter
+   .factory("dataStorage", ['$q', 'Loki', function() {
 	var dataStorage = {};
+	var _db;
+    var _time;
+	var _xaxis;
+	var _yaxis;
+	var _zaxis;
+	var _tupel;
+	
+		// Initialize Database with autosave on. Loki is smart enough to just save something if anything has changed.
+		// we should use the graph-measure-interval to save data. maybe 1sec is too fast, maybe too slow.
+		function initDB() {
+			var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});  
+			_db = new Loki('GraphHistoryDB',
+					{
+						autosave: true,
+						autoload: true,
+						autoloadCallback: loadHandler,
+						autosaveInterval: 1000, // 1 second
+						adapter: adapter
+					});
+		};
+		
+		function loadHandler() {
+			// will be called when db is loaded
+			// if database did not exist it will be empty so we will intitialize here
+			_time = db.getCollection('accelerometer-time');
+			if (_time === null) {
+				_time = db.addCollection('accelerometer-time');
+			}
+				
+			_xaxis = db.getCollection('accelerometer-x');
+			if (_xaxis === null) {
+				_xaxis = db.addCollection('accelerometer-x');
+			}
+				
+			_yaxis = db.getCollection('accelerometer-y');
+			if (_yaxis === null) {
+				_yaxis = db.addCollection('accelerometer-y');
+			}
+				
+			_zaxis = db.getCollection('accelerometer-z');
+			if (_zaxis === null) {
+				_zaxis = db.addCollection('accelerometer-z');
+			}
+		}
+	
+		
 
+	    function retrieveData(type)
+	    {
+			if(dataStorage[type] == undefined)
+			{
+			  dataStorage[type] = [];
+			}
+			return dataStorage[type];
+		}
 
-	// This function stores data in the database.
-	// The current implementation is just a stub
-	function storeData(type, data)
-	{
-    if(dataStorage[type] === undefined)
-    {
-      dataStorage[type] = [];
-    }
-		dataStorage[type].push(data);
-	}
-
-  function retrieveData(type)
-  {
-    if(dataStorage[type] == undefined)
-    {
-      dataStorage[type] = [];
-    }
-    return dataStorage[type];
-  }
-
-	return {
-		storeData: storeData,
-    retrieveData: retrieveData
-	}
+		return {
+			initDB: initDB,
+			storeData: storeData,
+			retrieveData: retrieveData
+		}
     }]);
