@@ -186,3 +186,6 @@ as well:
 
     ... = angular.toJson(..., true);
 
+- use `angular.$apply()` to refresh angular bindings in non-angular events like
+`setTimeout()`. See [this](http://jimhoskins.com/2012/12/17/angularjs-and-apply.html) for
+further information.
