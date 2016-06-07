@@ -1,4 +1,23 @@
 {
 	"SETTINGS": "Einstellungen",
-	"LANGUAGE": "Sprache"
+	"LANGUAGE": "Sprache",
+	"AUTO_RECONNECT": "Automatische Verbindung",
+	"SCAN_DURATION": "Dauer des Scans",
+	"MUTE": "Lautlos",
+	"VOLUME_PROFILES": "Lautstärkeprofile",
+	"HOME": "Daheim",
+	"OFFICE": "Büro",
+	"OUTDOOR": "Draußen",
+	"SENSOR_TAG": "Sensor Tag",
+	"CONNECT": "Verbinden",
+	"NO_DEVICE_FOUND": "Kein Gerät gefunden",
+	"SCAN_FOR_DEVICES": "Nach Geräten suchen",
+	"STOP_SCANNING": "Suche stoppen",
+	"DISCONNECT": "Verbindung trennen",
+	"DEVICE": "Gerät",
+	"TEMPERATURE": "Temperatur",
+	"PRESSURE": "Druck",
+	"GRAPH": "Graph",
+	"BAR_GRAPH": "Balkendiagramm",
+	"ACCELEROMETER": "accelerometer"
 }

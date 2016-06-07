@@ -1,6 +1,6 @@
 <ion-view view-title="SensorTag">
     <ion-content class="padding">
-        <h1>Sensor Tag</h1>
+        <h1>{{ 'SENSOR_TAG' | translate }}</h1>
 
         <div id="overviewPage">
             <h2 id="reconnectMessage"></h2>
@@ -8,37 +8,38 @@
                 <li ng-repeat="(address, device) in devices" >
                 <li ng-repeat="(address, device) in devices" ng-if="(device.name=='CC2650 SensorTag' || device.name=='SensorTag 2.0') && !isConnected(device)">
                     {{device.name}}
-                    <button class="button button-royal" ng-click="connect(device)">Connect</button>
+                    <button class="button button-royal" ng-click="connect(device)">{{ 'CONNECT' | translate }}</button>
                     <br/> RSSI: {{device.rssi}} &nbsp;|&nbsp; {{device.address}}
                 </li>
             </ul>
-            <div ng-if="noDevice == true">No device found</div>
+            <div ng-if="noDevice == true">{{ 'NO_DEVICE_FOUND' | translate }}</div>
             <div ng-if="scanDevice == true">
             <ion-spinner icon="ripple"></ion-spinner>
             </div>
-            <button class="button button-royal" ng-if="scanDevice == false" id="btnRefresh" ng-click="refreshSensortags()">Scan for Devices</button>
-            <button class="button button-royal" ng-if="scanDevice == true" id="btnStopRefresh" ng-click="stopScan()">Stop Scanning</button>
+            <button class="button button-royal" ng-if="scanDevice == false" id="btnRefresh" ng-click="refreshSensortags()">{{ 'SCAN_FOR_DEVICES' | translate }}</button>
+            <button class="button button-royal" ng-if="scanDevice == true" id="btnStopRefresh" ng-click="stopScan()">{{ 'STOP_SCANNING' | translate }}</button>
             <span id="lastConDevice"></span>
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
             <div id="sensorData">
                 Device 1: <button class="button button-small button-royal" ng-click="disconnect(currentDevice1)">Disconnect</button><br/>
-                Temperature <br/>
-                {{barometer.temperatureDev1}} <br/>
-                 Pressure <br/>
-                {{barometer.pressureDev1}} <br/>
-                Accelerometer<br/>
+				{{ 'DEVICE' | translate }} 1: <button class="button button-small button-royal" ng-click="disconnect(currentDevice1)">{{ 'DISCONNECT' | translate }}</button><br/>
+                {{ 'TEMPERATURE' | translate }}<br/>
+                {{barometer.temperatureDev1}}<br/>
+                {{ 'PRESSURE' | translate }}<br/>
+                {{barometer.pressureDev1}}<br/><br/>
+                {{ 'ACCELEROMETER' | translate }}<br/>
                 {{accelerometer.accelerometerDev1}}<br/><br/>
             </div>
         </div>
         <div id="devicePage" ng-if="dev2Connected == true">
             <div id="sensorData">
-                Device 2: <button class="button button-small button-royal" ng-click="disconnect(currentDevice2)">Disconnect</button><br/>
-                Temperature <br/>
-                {{barometer.temperatureDev2}} <br/>
-                 Pressure <br/>
-                {{barometer.pressureDev2}} <br/><br/>
-                Accelerometer<br/>
+                {{ 'DEVICE' | translate }} 2: <button class="button button-small button-royal" ng-click="disconnect(currentDevice2)">{{ 'DISCONNECT' | translate }}</button><br/>
+                {{ 'TEMPERATURE' | translate }}<br/>
+                {{barometer.temperatureDev2}}<br/>
+                {{ 'PRESSURE' | translate }}<br/>
+                {{barometer.pressureDev2}}<br/><br/>
+                {{ 'ACCELEROMETER' | translate }}<br/>
                 {{accelerometer.accelerometerDev2}}<br/><br/>
             </div>
         </div>
@@ -53,7 +54,6 @@
 				<li>Z: {{measurements.z}}</li>
 			</ul>
 		</div>
-		
 
     </ion-content>
 </ion-view>

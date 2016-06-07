@@ -16,7 +16,7 @@
         </ion-radio>
         <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 	  	<div class="item item-divider">
-            Scan Duration
+            {{ 'SCAN_DURATION' | translate }}
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
@@ -33,10 +33,10 @@
 																		   translate: volumeSliderLabel, hideLimitLabels: true}"></rzslider>
           <i class="icon ion-volume-high"></i>
         </div>
-        <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">Mute</ion-toggle>
+        <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">{{ 'MUTE' | translate }}</ion-toggle>
         <ion-list ng-show="settings.volumeProfiles.length > 0">
           <div class="item item-divider">
-            Volume Profiles:
+            {{ 'VOLUME_PROFILES' | translate }}
           </div>
           <!-- REMEMBER: ng-values are compared by ==. Two objects equal each other in js
             if they refer to the same object! so we need to compare the objects into a
@@ -46,7 +46,7 @@
                ng-value="volumeProfile|json"
                ng-model="settings.currentVolumeProfile"
                ng-change="changeVolumeProfile()">
-               {{ volumeProfile.name }}
+               {{ volumeProfile.name | translate }}
           </ion-radio>
         </ion-list>
       </ion-list>

@@ -1,4 +1,23 @@
 {
-	"SETTINGS": "settings",
-	"LANGUAGE": "language"
+	"SETTINGS": "Settings",
+	"LANGUAGE": "Language",
+	"AUTO_RECONNECT": "Automatic Reconnection",
+	"SCAN_DURATION": "Scan Duration",
+	"MUTE": "Mute",
+	"VOLUME_PROFILES": "Volume Profiles",
+	"HOME": "Home",
+	"OFFICE": "Office",
+	"OUTDOOR": "Outdoor",
+	"SENSOR_TAG": "Sensor Tag",
+	"CONNECT": "Connect",
+	"NO_DEVICE_FOUND": "No device found",
+	"SCAN_FOR_DEVICES": "Scan for devices",
+	"STOP_SCANNING": "Stop scanning",
+	"DISCONNECT": "Disconnect",
+	"DEVICE": "Device",
+	"TEMPERATURE": "Temperature",
+	"PRESSURE": "Pressure",
+	"GRAPH": "Graph",
+	"BAR_GRAPH": "Bar Graph",
+	"ACCELEROMETER": "accelerometer"
 }
