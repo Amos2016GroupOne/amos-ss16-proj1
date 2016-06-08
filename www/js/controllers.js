@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $cordovaBluetoothLE, Log, settings) {
+    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, Log, settings, dataStorage) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -13,12 +13,25 @@ angular.module('app.controllers', [])
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
+        
+        $scope.accelerometer = {
+                accelerometerDev1: "", accelerometerDev2: ""
+        };
+
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
             notification: "F0002902-0451-4000-B000-000000000000",
             configuration: "F000AA42-0451-4000-B000-000000000000",
             period: "F000AA43-0451-4000-B000-000000000000"
+        };
+        
+        var accelerometer = {
+                service: "F000AA80-0451-4000-B000-000000000000",
+                data: "F000AA81-0451-4000-B000-000000000000", // read 3 bytes X, Y, Z
+                notification: "F0002902-0451-4000-B000-000000000000",
+                configuration: "F000AA82-0451-4000-B000-000000000000",
+                period: "F000AA83-0451-4000-B000-000000000000"
         };
 
         function getLastCon() {
@@ -73,7 +86,151 @@ angular.module('app.controllers', [])
                     }
                 })
             };
-                
+
+            // This function is used to subscribe to the barometer service and activate it on the passed device. 
+            // It returns a promise that is resolved on sucessful subscription and activation
+            // The promise returned is rejected if any error occurs.
+            // This approach is needed when subscribing to multple services as multiple writes in short succession will fail.
+            $scope.subscribeBarometer = function (device) {
+                var deferred = $q.defer();
+
+                //Subscribe to barometer service
+                var barometerParams = {
+                    address: device.address,
+                    service: barometer.service,
+                    characteristic: barometer.data,
+                    timeout: 5000
+                };
+
+                $cordovaBluetoothLE.subscribe(barometerParams).then(function (obj) {
+                    Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
+                }, function (obj) {
+                    deferred.reject();
+                    Log.add("Subscribe Error : " + JSON.stringify(obj));
+                }, function (obj) {
+                    //Log.add("Subscribe Success : " + JSON.stringify(obj));
+                    if (obj.status == "subscribedResult") {
+                        Log.add("Subscribed Result");
+
+                        onBarometerData(obj, device);
+
+                        var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+                        Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
+                        Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                    } else if (obj.status == "subscribed") {
+                        Log.add("Subscribed");
+                        //Turn on barometer
+                        var barometerConfig = new Uint8Array(1);
+                        barometerConfig[0] = 0x01;
+                        var params = {
+                            address: device.address,
+                            service: barometer.service,
+                            characteristic: barometer.configuration,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
+                            timeout: 5000
+                        };
+
+                        $cordovaBluetoothLE.write(params).then(function (obj) {
+                            Log.add("Write Success : " + JSON.stringify(obj));
+                            deferred.resolve();
+                        }, function (obj) {
+                            deferred.reject();
+                            Log.add("Write Error : " + JSON.stringify(obj));
+                        });
+
+                        Log.add("Write : " + JSON.stringify(params));
+
+
+                    } else {
+                        Log.add("Unexpected Subscribe Status");
+                    }
+                });
+                return deferred.promise;
+            };
+
+            // This function is used to subscribe to the accelerometer service and activate it on the passed device. 
+            // It returns a promise that is resolved on sucessful subscription and activation
+            // The promise returned is rejected if any error occurs.
+            // This approach is needed when subscribing to multple services as multiple writes in short succession will fail.
+
+            $scope.subscribeAccelerometer = function (device) {
+                var deferred = $q.defer();
+                //Subscribe to accelerometer service
+                var accelerometerParams = {
+                    address: device.address,
+                    service: accelerometer.service,
+                    characteristic: accelerometer.data,
+                    timeout: 5000
+                };
+
+                Log.add("Subscribe : " + JSON.stringify(accelerometerParams));
+
+                $cordovaBluetoothLE.subscribe(accelerometerParams).then(function (obj) {
+                    Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
+                }, function (obj) {
+                    Log.add("Subscribe Error : " + JSON.stringify(obj));
+                    deferred.reject();
+                }, function (obj) {
+                    //Log.add("Subscribe Success : " + JSON.stringify(obj));
+
+                    if (obj.status == "subscribedResult") {
+                        Log.add("Subscribed Result");
+                        onAccelerometerData(obj, device);
+
+                        var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+                        Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
+                        Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
+                    } else if (obj.status == "subscribed") {
+                        Log.add("Subscribed");
+
+                        //Turn on accelerometer
+                        var accelerometerConfig = new Uint8Array(2);
+                        accelerometerConfig[0] = 0x7F;
+                        accelerometerConfig[1] = 0x00;
+
+                        var params = {
+                            address: device.address,
+                            service: accelerometer.service,
+                            characteristic: accelerometer.configuration,
+                            value: $cordovaBluetoothLE.bytesToEncodedString(accelerometerConfig),
+                            timeout: 5000
+                        };
+
+                        $cordovaBluetoothLE.write(params).then(function (obj) {
+                            Log.add("Write Success : " + JSON.stringify(obj));
+                            var periodConfig = new Uint8Array(1);
+                            periodConfig[0] = 0x64;
+                            var params = {
+                                address: device.address,
+                                service: accelerometer.service,
+                                characteristic: accelerometer.period,
+                                value: $cordovaBluetoothLE.bytesToEncodedString(periodConfig),
+                                timeout: 5000
+                            };
+
+
+                            Log.add("Write : " + JSON.stringify(params));
+
+                            $cordovaBluetoothLE.write(params).then(function (obj) {
+                                Log.add("Write Success : " + JSON.stringify(obj));
+                                deferred.resolve();
+                            }, function (obj) {
+                                Log.add("Write Error : " + JSON.stringify(obj));
+                                deferred.reject();
+                            });
+                        }, function (obj) {
+                            Log.add("Write Error : " + JSON.stringify(obj));
+                            deferred.reject();
+                        });
+
+                        
+                    } else {
+                        Log.add("Unexpected Subscribe Status");
+                    }
+                });
+                return deferred.promise;
+            }
+
             // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
             // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
@@ -124,6 +281,7 @@ angular.module('app.controllers', [])
                     $scope.currentDevice1 = device;
                     $scope.barometer.temperatureDev1 = "FREEZING HELL";
                     $scope.barometer.pressureDev1 = "Inside of Jupiter";
+                    $scope.accelerometer.accelerometerDev1 = "TEST";
                 } else {
                     $scope.dev2Connected = true;
                     $scope.currentDevice2 = device;
@@ -131,56 +289,10 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
 
-                //Subscribe to barometer service
-                var params = {
-                    address: device.address,
-                    service: barometer.service,
-                    characteristic: barometer.data,
-                    timeout: 5000
-                };
-
-                Log.add("Subscribe : " + JSON.stringify(params));
-
-                $cordovaBluetoothLE.subscribe(params).then(function(obj) {
-                    Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
-                }, function(obj) {
-                    Log.add("Subscribe Error : " + JSON.stringify(obj));
-                }, function(obj) {
-                    //Log.add("Subscribe Success : " + JSON.stringify(obj));
-
-                    if (obj.status == "subscribedResult") {
-                        //Log.add("Subscribed Result");
-                        onBarometerData(obj, device);
-                        var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
-                        Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
-                        Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
-                    } else if (obj.status == "subscribed") {
-                        Log.add("Subscribed");
-                        //Turn on barometer
-                        var barometerConfig = new Uint8Array(1);
-                        barometerConfig[0] = 0x01;
-                        var params = {
-                            address: device.address,
-                            service: barometer.service,
-                            characteristic: barometer.configuration,
-                            value: $cordovaBluetoothLE.bytesToEncodedString(barometerConfig),
-                            timeout: 5000
-                        };
-
-                        Log.add("Write : " + JSON.stringify(params));
-
-                        $cordovaBluetoothLE.write(params).then(function(obj) {
-                            Log.add("Write Success : " + JSON.stringify(obj));
-                        }, function(obj) {
-                            Log.add("Write Error : " + JSON.stringify(obj));
-                        });
-                    } else {
-                        Log.add("Unexpected Subscribe Status");
-                    }
-                });
-
-
-            };
+                // First subscribe to the barometer. After that subscribe to the accelerometer.
+                $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
+                
+              };
             var params = { address: device.address, timeout: 10000 };
 
             Log.add("Connect : " + JSON.stringify(params));
@@ -243,6 +355,61 @@ angular.module('app.controllers', [])
             } else {
                 Log.add("onBarometerData: no matching device" + JSON.stringify(device.address));
             }
+        }
+
+        function onAccelerometerData(obj,device) {
+            var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
+
+                function sensorAccelerometerConvert(data) {
+                    var a = data / (32768 / 2);
+                    return a;
+                }
+
+                function convertAllData(data)
+                {
+                  // convert the data to 16 bit. the data consist of 2bytes.
+                  var converted = [];
+                  var b = new Int16Array(9);
+
+                  for(i = 0; i < 18; i += 2)
+                  {
+                      b[i/2] = (data[i]) | (data[i+1] << 8);
+                      //console.log("B " + i/2 + " is now " + b[i/2]);
+                  }
+
+                  for(i = 0; i < 9; i++)
+                  {
+                      converted.push(sensorAccelerometerConvert(b[i]));
+                  }
+                  return converted;
+                }
+
+                console.log("Convert all data!");
+
+                acc = convertAllData(acc);
+
+                var date = new Date();
+
+                dataStorage.storeData("accelerometer-x", acc[3]);
+                dataStorage.storeData("accelerometer-y", acc[4]);
+                dataStorage.storeData("accelerometer-z", acc[5]);
+
+                dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+
+                $rootScope.$broadcast("newAccelerometerData");
+
+                if ($scope.currentDevice1.address == device.address) {
+                    $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
+                } else if(scope.currentDevice2.address == device.address) {
+                    $scope.accelerometer.accelerometerDev2 = "X: " + acc[3] + ", " +
+                                                             "Y: " + acc[4] + ", " +
+                                                             "Z: " + acc[5] * -1;
+                } else {
+                    Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
+                }
+
         }
 
         $scope.disconnect = function(device) {
@@ -355,7 +522,7 @@ angular.module('app.controllers', [])
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
-	
+
 		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
 		$scope.durationSliderLabel = function(value) {
       		return value + ' s';
@@ -365,7 +532,7 @@ angular.module('app.controllers', [])
 		$scope.volumeSliderLabel = function(value) {
       		return value + '%';
     	}
-		
+
         $scope.newVolumeProfileName = "";
 
         $scope.changedVolume = function() {
@@ -454,15 +621,125 @@ angular.module('app.controllers', [])
             });
         });
     })
-	
+
 	// Controller for Settings
-    .controller('GraphCtrl', function($scope, Log, settings) {
-		$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-		$scope.series = ['Series A'];
-		$scope.data = [
-			[28, 48, 40, 19, 86, 27, 90]
-		];
+    .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
+		$scope.labels = [];
+		$scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
+		$scope.data = [  [] ];
         
+    $scope.numberOfDatapoints = 10;
+
+    // Initialize the current start point
+    $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
+    $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
+    
+    // This variable is true when the user dragged the graph to any location other than the end.
+    $scope.dragged = false;
+
+    // If less than 100 data points are available set the startpoint to 0
+    if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+
+    // This function extracs a 100 item data slice from the data starting at $scope.currentStartPoint
+    // This data slice is set as the chart data.
+    function createAndSetDataSlice()
+    {
+      var start = $scope.currentStartPoint;
+      var end = start + $scope.numberOfDatapoints;
+      //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
+      //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
+      $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
+      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
+    }
+
+    createAndSetDataSlice();
+
+    $scope.barOffset = 0;
+
+    // If we receive new data then update the graph
+    $rootScope.$on("newAccelerometerData", function() {
+        $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
+        Log.add("Dragged is : " + $scope.dragged);
+      // Initialize the current start point if not dragged
+      if(!$scope.dragged)
+      {
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
+        
+        // Update the start offset. We are following the graph at this point.
+        $scope.startOffset = $scope.currentStartPoint; 
+      }
+      
+        
+      // If less than $scope.numberOfDatapoints data points are available set the startpoint to 0
+      if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+
+      createAndSetDataSlice();
+    });
+
+    // Variables relating to dragging
+    $scope.dragging = false;
+    $scope.startOffset = 0;
+    
+    $scope.followGraph = function()
+    {
+        $scope.dragged = false;
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
+        
+        // Update the start offset. We are following the graph at this point.
+        $scope.startOffset = $scope.currentStartPoint; 
+        createAndSetDataSlice();
+    }
+
+    // When starting drag set dragging to true and log the startPosition
+    $scope.startDrag = function($event) {
+      Log.add("Start Drag: " + JSON.stringify($event));
+      $scope.dragging = true;
+      $scope.startOffset = $scope.currentStartPoint;
+    };
+
+    // When stopping the dragging set dragging to false and persist the barOffset
+    $scope.stopDrag = function($event) {
+        Log.add("Stop Drag: " + JSON.stringify($event));
+        $scope.dragging = false;
+    };
+
+    // On mouse move we need to update the dragging
+    $scope.mouseMove = function($event) {
+      Log.add("Mousemove: " + JSON.stringify($event));
+      // Only do something if currently dragging
+      if($scope.dragging)
+      {
+        // The width of a single bar in the bar graph
+        var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
+        console.log("Width of bar is " + widthOfBar);
+    
+        // The number of bars we've dragged is dependent on the space moved and
+        // the width of a single bar
+        // Number of bars should be positive if dragging to the left.
+        var numberOfBars = ($event.gesture.deltaX / widthOfBar) * -2;
+        
+        Log.add("Number of Bars: " + numberOfBars);
+        
+        // If we dragged to the end then set start point to the max
+        if(numberOfBars + $scope.startOffset > ($scope.totalPoints - $scope.numberOfDatapoints)) {
+          $scope.dragged = true;
+          // The current start point is changed to the maximum.
+          $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;  
+          createAndSetDataSlice(); 
+        }
+        else {
+          // We dragged. Therefore we do not want to follow anymore.
+          $scope.dragged = true;
+          // The current start point is changed by the number of dragged bars.
+          $scope.currentStartPoint = $scope.startOffset + numberOfBars;
+          
+          // Don't let it become negative.
+          if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+          createAndSetDataSlice();
+        }
+      }
+    };
+
     })
 
     .controller('TabCtrl', function ($scope, $ionicTabsDelegate) {

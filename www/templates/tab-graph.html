@@ -7,10 +7,17 @@
             A bar chart
         </div>
         <div class="item item-text-wrap">
-            <canvas id="bar" class="chart chart-bar" data="data" labels="labels" legend="true" series="series" options="{showTooltips: true}"></canvas>
+            <canvas id="bar" class="chart chart-bar" data="data" labels="labels"
+             legend="true" series="series" options="{showTooltips: true}"
+             on-touch="startDrag($event)"
+             on-drag-left="mouseMove($event)"
+             on-drag-right="mouseMove($event)"
+             on-release="stopDrag($event)"></canvas>
+             <button class="button button-royal" id="btnTrackGraph" ng-click="followGraph();">Track Graph</button>
+             
         </div>
     </div>
-    		
+
 
   </ion-content>
 </ion-view>

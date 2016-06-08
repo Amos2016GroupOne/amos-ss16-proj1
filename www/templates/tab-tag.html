@@ -21,21 +21,25 @@
             <span id="lastConDevice"></span>
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
-            <div id="barometerData">
+            <div id="sensorData">
                 Device 1: <button class="button button-small button-royal" ng-click="disconnect(currentDevice1)">Disconnect</button><br/>
                 Temperature <br/>
                 {{barometer.temperatureDev1}} <br/>
                  Pressure <br/>
-                {{barometer.pressureDev1}} <br/><br/>
+                {{barometer.pressureDev1}} <br/>
+                Accelerometer<br/>
+                {{accelerometer.accelerometerDev1}}<br/><br/>
             </div>
         </div>
         <div id="devicePage" ng-if="dev2Connected == true">
-            <div id="barometerData">
+            <div id="sensorData">
                 Device 2: <button class="button button-small button-royal" ng-click="disconnect(currentDevice2)">Disconnect</button><br/>
                 Temperature <br/>
                 {{barometer.temperatureDev2}} <br/>
                  Pressure <br/>
                 {{barometer.pressureDev2}} <br/><br/>
+                Accelerometer<br/>
+                {{accelerometer.accelerometerDev2}}<br/><br/>
             </div>
         </div>
 
