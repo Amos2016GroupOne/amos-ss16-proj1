@@ -1,10 +1,12 @@
 <ion-view view-title="Settings">
   <ion-content class="padding">
-    <h1>Settings</h1>
+      <h1>Settings</h1>
 
-      <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
-
-	  <div class="item">
+	  <ion-list>
+		<div class="item item-divider">
+            Automatic Reconnection
+        </div>
+		<ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
 	  	<div class="item item-divider">
             Scan Duration
         </div>
@@ -17,8 +19,6 @@
 																			 translate: durationSliderLabel, hideLimitLabels: true}"></rzslider>
 		  <i class="icon ion-clock"></i>
 		</div>
-	  </div>
-      <div class="item">
         <div class="item range">
           <i class="icon ion-volume-low"></i>
             <rzslider rz-slider-model="settings.volume" rz-slider-options="{floor: 0, ceil: 100, onChange: changedVolume,
@@ -26,7 +26,7 @@
           <i class="icon ion-volume-high"></i>
         </div>
         <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">Mute</ion-toggle>
-        <ion-list class="list list-inset" ng-show="settings.volumeProfiles.length > 0 && !settings.mute">
+        <ion-list ng-show="settings.volumeProfiles.length > 0">
           <div class="item item-divider">
             Volume Profiles:
           </div>
@@ -41,7 +41,7 @@
                {{ volumeProfile.name }}
           </ion-radio>
         </ion-list>
-      </div>
+      </ion-list>
 
   </ion-content>
 </ion-view>
