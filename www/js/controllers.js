@@ -629,8 +629,12 @@ angular.module('app.controllers', [])
 		$scope.data = [  [] ];
 
     // Initialize the current start point
+	dataStorage.storeData("accelerometer-time", "1");
+	dataStorage.storeData("accelerometer-time", "2");
+	dataStorage.storeData("accelerometer-time", "3");
+	
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - 10);
-
+	
     // If less than 100 data points are available set the startpoint to 0
     if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
 
