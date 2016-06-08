@@ -33,7 +33,8 @@
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
     "cordova-plugin-bluetoothle",
-    "cordova-plugin-dbmeter"
+    "cordova-plugin-dbmeter",
+	"cordova-plugin-device-motion"
   ],
   "cordovaPlatforms": [
     {
