@@ -13,7 +13,7 @@ angular.module('app.controllers', [])
             temperatureDev1: "FREEZING HELL", pressureDev1: "Inside of Jupiter",
             temperatureDev2: "FREEZING HELL", pressureDev2: "Inside of Jupiter"
         };
-        
+
         $scope.accelerometer = {
                 accelerometerDev1: "", accelerometerDev2: ""
         };
@@ -25,7 +25,7 @@ angular.module('app.controllers', [])
             configuration: "F000AA42-0451-4000-B000-000000000000",
             period: "F000AA43-0451-4000-B000-000000000000"
         };
-        
+
         var accelerometer = {
                 service: "F000AA80-0451-4000-B000-000000000000",
                 data: "F000AA81-0451-4000-B000-000000000000", // read 3 bytes X, Y, Z
@@ -87,7 +87,7 @@ angular.module('app.controllers', [])
                 })
             };
 
-            // This function is used to subscribe to the barometer service and activate it on the passed device. 
+            // This function is used to subscribe to the barometer service and activate it on the passed device.
             // It returns a promise that is resolved on sucessful subscription and activation
             // The promise returned is rejected if any error occurs.
             // This approach is needed when subscribing to multple services as multiple writes in short succession will fail.
@@ -148,7 +148,7 @@ angular.module('app.controllers', [])
                 return deferred.promise;
             };
 
-            // This function is used to subscribe to the accelerometer service and activate it on the passed device. 
+            // This function is used to subscribe to the accelerometer service and activate it on the passed device.
             // It returns a promise that is resolved on sucessful subscription and activation
             // The promise returned is rejected if any error occurs.
             // This approach is needed when subscribing to multple services as multiple writes in short succession will fail.
@@ -223,14 +223,13 @@ angular.module('app.controllers', [])
                             deferred.reject();
                         });
 
-                        
+
                     } else {
                         Log.add("Unexpected Subscribe Status");
                     }
                 });
                 return deferred.promise;
             }
-
             // Android 6 requires the locaton to be enabled. Therefore check this and query the user to enable it.
             // This has no effect on Android 4 and 5 and iOS
             $cordovaBluetoothLE.isLocationEnabled().then(function(obj) {
@@ -291,7 +290,7 @@ angular.module('app.controllers', [])
 
                 // First subscribe to the barometer. After that subscribe to the accelerometer.
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
-                
+
               };
             var params = { address: device.address, timeout: 10000 };
 
@@ -515,7 +514,7 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function($scope, Log, settings) {
+    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
@@ -557,12 +556,15 @@ angular.module('app.controllers', [])
         }
 
         $scope.changeVolumeProfile = function() {
+
             $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
 			$scope.settings.mute = false;
+            $scope.settings.volume = angular.fromJson($scope.settings.currentVolumeProfile).volume;
+
             $scope.update();
         }
 
-        //called when mute was toggled by pressing the button
+        // called when mute was toggled by pressing the button
         $scope.muteToggle = function() {
             if (settings.settings.mute) {
                 settings.settings.volBeforeMute = settings.settings.volume;
@@ -573,9 +575,96 @@ angular.module('app.controllers', [])
                 settings.settings.volume = parseInt(settings.settings.volBeforeMute);
 				settings.settings.currentVolumeProfile = settings.settings.volProfileBeforeMute;
             }
-            //persist settings
+            // persist settings
             $scope.update();
         }
+
+        // helper function to start the DBMeter and it's output
+        function startDBMeter() {
+          var delayCounter = 0,
+              DELAY = 10;  // * 100 ms
+          DBMeter.start(function(dB){
+            // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
+            if (delayCounter === 0) {
+              // refresh datamodel and format
+              $scope.decibel = dB.toFixed(0);
+              //console.log('loudness: '+dB.toFixed(0));
+
+              // Select another volume profile if it is loud!
+              if (dB > 85 && !$scope.settings.mute) {
+                // set profile to outdoor as it is soo loud ;)
+                // REM: The json filter that is used in tab-settings.html for the options automatically
+                // does prettyfication. To set the current volume profile we must set the pretty flag as well:
+                $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
+                $scope.changeVolumeProfile();
+              }
+
+              //manual apply is needed, looks like angular does not fire apply here
+              $scope.$apply();
+
+            }
+            delayCounter = (delayCounter + 1) % DELAY;
+          }, function(e){
+            console.log('code: ' + e.code + ', message: ' + e.message);
+          });
+        }
+
+        $scope.decibel = "[not measured yet]";
+        $scope.decibelToggle = function() {
+
+          // persist settings
+          $scope.update();
+
+          if ($scope.settings.isListeningDecibel === true) {
+            console.log('starting db...');
+            startDBMeter();
+          } else {
+            console.log('stopping db...');
+            DBMeter.isListening(function(isListening) {
+              if (isListening) {
+                DBMeter.stop(function(){
+                  console.log("DBMeter well stopped");
+                }, function(e){
+                  console.log('code: ' + e.code + ', message: ' + e.message);
+                });
+              }
+            });
+          }
+
+        }
+
+        // catch stupid browsers!
+        if (typeof DBMeter !== 'undefined') {
+          $scope.decibelToggle();
+        }
+
+        $ionicPlatform.on('pause', function() {
+          // store DBMeter state and stop it.
+          DBMeter.myWasListening = false;
+          DBMeter.isListening(function(isListening) {
+            if (isListening) {
+              DBMeter.stop(function() {
+                DBMeter.myWasListening = true;
+                console.log("DBMeter well stopped");
+              }, function(e) {
+                console.log('code: ' + e.code + ', message: ' + e.message);
+              });
+            }
+          });
+        });
+
+        $ionicPlatform.on('resume', function() {
+          // restore DBMeter state
+          if (DBMeter.myWasListening === true) {
+            console.log('try to resume DBMeter');
+            // reactivate DBMeter
+            DBMeter.isListening(function(isListening) {
+              if (!isListening) {
+                startDBMeter();
+              }
+            });
+          }
+        });
 
         $scope.$on('volumeupbutton', function() {
             $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
@@ -624,20 +713,20 @@ angular.module('app.controllers', [])
 
             });
         });
-    })
 
+    })
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
 		$scope.labels = [];
 		$scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
 		$scope.data = [  [] ];
-        
+
     $scope.numberOfDatapoints = 10;
 
     // Initialize the current start point
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
     $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
-    
+
     // This variable is true when the user dragged the graph to any location other than the end.
     $scope.dragged = false;
 
@@ -667,13 +756,13 @@ angular.module('app.controllers', [])
       // Initialize the current start point if not dragged
       if(!$scope.dragged)
       {
-        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
-        
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;
+
         // Update the start offset. We are following the graph at this point.
-        $scope.startOffset = $scope.currentStartPoint; 
+        $scope.startOffset = $scope.currentStartPoint;
       }
-      
-        
+
+
       // If less than $scope.numberOfDatapoints data points are available set the startpoint to 0
       if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
 
@@ -683,14 +772,14 @@ angular.module('app.controllers', [])
     // Variables relating to dragging
     $scope.dragging = false;
     $scope.startOffset = 0;
-    
+
     $scope.followGraph = function()
     {
         $scope.dragged = false;
-        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;   
-        
+        $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;
+
         // Update the start offset. We are following the graph at this point.
-        $scope.startOffset = $scope.currentStartPoint; 
+        $scope.startOffset = $scope.currentStartPoint;
         createAndSetDataSlice();
     }
 
@@ -716,34 +805,33 @@ angular.module('app.controllers', [])
         // The width of a single bar in the bar graph
         var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
         console.log("Width of bar is " + widthOfBar);
-    
+
         // The number of bars we've dragged is dependent on the space moved and
         // the width of a single bar
         // Number of bars should be positive if dragging to the left.
         var numberOfBars = ($event.gesture.deltaX / widthOfBar) * -2;
-        
+
         Log.add("Number of Bars: " + numberOfBars);
-        
+
         // If we dragged to the end then set start point to the max
         if(numberOfBars + $scope.startOffset > ($scope.totalPoints - $scope.numberOfDatapoints)) {
           $scope.dragged = true;
           // The current start point is changed to the maximum.
-          $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;  
-          createAndSetDataSlice(); 
+          $scope.currentStartPoint = $scope.totalPoints - $scope.numberOfDatapoints;
+          createAndSetDataSlice();
         }
         else {
           // We dragged. Therefore we do not want to follow anymore.
           $scope.dragged = true;
           // The current start point is changed by the number of dragged bars.
           $scope.currentStartPoint = $scope.startOffset + numberOfBars;
-          
+
           // Don't let it become negative.
           if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
           createAndSetDataSlice();
         }
       }
     };
-
     })
 
     .controller('TabCtrl', function ($scope, $ionicTabsDelegate) {

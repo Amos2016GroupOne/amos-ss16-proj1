@@ -146,3 +146,46 @@ Below is a list of common pitfalls we stumbled in.
 
 - Renaming the generated apk is hard?!
   --> no solution found yet
+
+- Angular does strange things to `JSON.stringify` and `JSON.parse`. If Angular is included in
+a project better use `angular.toJson` and `angular.fromJson`
+
+- Building up a radio group that uses objects as values:
+html:
+
+```html
+    <ion-radio
+    ng-repeat="volumeProfile in settings.volumeProfiles"
+    ng-value="volumeProfile|json"
+    ng-model="settings.currentVolumeProfile"
+    ng-change="changeVolumeProfile()">
+    {{ volumeProfile.name }}
+    </ion-radio>
+```
+
+controller.js:
+
+```js
+    var settings = {
+      ...
+      "volumeProfiles": [
+        { name: "Home",    volume: 40 },
+        { name: "Office",  volume: 70 },
+        { name: "Outdoor", volume: 90 }
+      ],
+      ...
+
+    // to set the controller to a value:
+    settings.currentVolumeProfile = angular.toJson(settings.volumeProfiles[0], true);
+```
+
+As === operator on objects evaluates to true just if both
+operands __refer__ to the same we must save the values as json (see `...|json`-filter).
+Furthermore the json filter automatically uses the `pretty`-flag. So we have to set this
+as well:
+
+    ... = angular.toJson(..., true);
+
+- use `angular.$apply()` to refresh angular bindings in non-angular events like
+`setTimeout()`. See [this](http://jimhoskins.com/2012/12/17/angularjs-and-apply.html) for
+further information.

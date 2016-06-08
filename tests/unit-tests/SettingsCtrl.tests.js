@@ -1,8 +1,10 @@
+var DBMeter = null;
 describe('SettingsCtrl:', function() {
   var controller,
   LogMock,
   settingsMock,
   $scope;
+
 
   // Load the App Module as a mock.
   // This will also make all app intern services available per inject()
@@ -17,6 +19,7 @@ describe('SettingsCtrl:', function() {
   // Instantiate the Controller and Mocks
   // Using angular-mocks inject() for having all the providers ($...) available!
   beforeEach(inject(function($rootScope, $controller) {
+    DBMeter = MockFactory.createNewDBMeterMock();
 
     settingsMock = MockFactory.createNewSettingsMock();
     LogMock = { };
@@ -24,6 +27,7 @@ describe('SettingsCtrl:', function() {
     $scope = $rootScope.$new();
     controller = $controller('SettingsCtrl',{
       '$scope': $scope,
+      // '$ionicPlatform':  - not specified, so it will take the original ionicPlatform
       'Log': LogMock,
       'settings': settingsMock
     });
@@ -40,6 +44,12 @@ describe('SettingsCtrl:', function() {
   function setVolume(vol) {
     $scope.settings.volume = vol;
     $scope.changedVolume();
+  }
+
+  // for easy decibel set:
+  function setListenDecibel(val) {
+    $scope.settings.isListeningDecibel = val;
+    $scope.decibelToggle();
   }
 
   describe('Muting', function() {
@@ -131,6 +141,38 @@ describe('SettingsCtrl:', function() {
       setVolume(100);
       $scope.$emit('volumeupbutton');
       expect($scope.settings.volume).toBe(100);
+    });
+
+  });
+
+  describe('Decibel Measurement', function() {
+
+    beforeEach(function() {
+      jasmine.clock().install();
+      setListenDecibel(true);
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it('should start the measurements', function() {
+      jasmine.clock().tick(101);  // wait a bit...
+      expect($scope.decibel).toBeGreaterThan(0);
+      expect(typeof $scope.decibel).toEqual('string');
+    });
+
+    it('should run the measurements', function() {
+      var old = DBMeter.callCounter;
+      jasmine.clock().tick(101);
+      expect(DBMeter.callCounter).toBeGreaterThan(old);
+    });
+
+    it('should stop the measurements', function() {
+      old = DBMeter.callCounter;
+      setListenDecibel(false);
+      jasmine.clock().tick(102);  // to ensure it has stopped it somehow...
+      expect(DBMeter.callCounter).toEqual(old);
     });
 
   });
