@@ -20,5 +20,6 @@
 	"GRAPH": "Graph",
 	"BAR_GRAPH": "Bar Graph",
 	"ACCELEROMETER": "accelerometer",
-	"STATUS": "Status"
+	"STATUS": "Status",
+	"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth"
 }

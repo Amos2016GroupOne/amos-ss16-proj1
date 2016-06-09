@@ -18,51 +18,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			var lang;
-			//If this is true its the first run. So use the system language:
-			if(settings.settings.language == "system"){
-				//Get the BCP 47 language tag for the client's current language. For example "en-US"
-				//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
-				if(typeof navigator.globalization !== "undefined") {
-				//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
-					navigator.globalization.getPreferredLanguage(function(language) {
-							//value is a string already
-							lang = language.value;
-							//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
-							lang = lang.toLowerCase();
-							Log.add("getPreferredLanguage success: preferred language is: " + lang);
-							//if the language exists in the lang folder, then apply the language now
-							var langExists = false;
-							for(var i=0; i<availableLanguages.length; i++){
-								if(availableLanguages[i] == lang){
-									settings.settings.language = lang;
-									//let angular-translate know that from now on this language has to be used
-									$translate.use(lang);
-									langExists = true;
-									break;
-								}
-							}
-							if(langExists == false){
-								//default language is already set in the config block. So no need to do $translate.use() here
-								settings.settings.language = defaultLanguage;
-								Log.add("Preferred Language does not exists");
-								Log.add("Using default language: " + defaultLanguage);
-							}
-						}, function(error) {
-							//default language is already set in the config block. So no need to do $translate.use() here
-							settings.settings.language = defaultLanguage;
-							Log.add("getPreferredLanguage error: " + error);
-							Log.add("Using default language: " + defaultLanguage);
-						});
-				}else{
-					//default language is already set in the config block. So no need to do $translate.use() here
-					settings.settings.language = defaultLanguage;
-					Log.add("navigator.globalization undefined. Using default language: " + defaultLanguage);
-				}
-			}else{
+			//wait until the initial language setting is determined.
+			//it is very important that $on is called BEFORE the $emit. Otherwise the emitted event will get lost
+			$rootScope.$on("setInitialLanguageSettingDone", function(event, data){
 				//let angular-translate know that from now on this language has to be used
+				console.log("tanslating to: " + settings.settings.language);
 				$translate.use(settings.settings.language);
-			}
+			});
+			//this calls $emit as soon as initial language setting is determined.
+			//This sets the language to the system language. Only on the very first run of the app
+			setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage);
 
 			//Returns the BCP 47 compliant locale identifier. For example "en-US"
 			//Android does not distinguish between "language" and "locale" so this will be the same as above
@@ -250,3 +215,49 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             }
         };
     });
+
+function setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage){
+	var lang;
+	//If this is true its the first run. So use the system language:
+	if(settings.settings.language == "system"){
+		//Get the BCP 47 language tag for the client's current language. For example "en-US"
+		//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
+		if(typeof navigator.globalization !== "undefined") {
+		//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
+			navigator.globalization.getPreferredLanguage(function(language) {
+					//value is a string already
+					lang = language.value;
+					//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
+					lang = lang.toLowerCase();
+					Log.add("getPreferredLanguage success: preferred language is: " + lang);
+					var langExists = false;
+					for(var i=0; i<availableLanguages.length; i++){
+						if(availableLanguages[i] == lang){
+							settings.settings.language = lang;
+							langExists = true;
+							break;
+						}
+					}
+					if(langExists == false){
+						settings.settings.language = defaultLanguage;
+						Log.add("Preferred Language does not exists");
+						Log.add("Using default language: " + defaultLanguage);
+					}
+					//language settings has been set. Fire an event
+					$rootScope.$emit('setInitialLanguageSettingDone');
+				}, function(error) {
+					settings.settings.language = defaultLanguage;
+					Log.add("getPreferredLanguage error: " + error);
+					Log.add("Using default language: " + defaultLanguage);
+					$rootScope.$emit('setInitialLanguageSettingDone');
+				});
+		}else{
+			settings.settings.language = defaultLanguage;
+			Log.add("navigator.globalization undefined. Using default language: " + defaultLanguage);
+			$rootScope.$emit('setInitialLanguageSettingDone');
+		}
+	}else{
+		//it was not the very first run of the app. So the settings is already set.
+		$rootScope.$emit('setInitialLanguageSettingDone');
+	}
+}
