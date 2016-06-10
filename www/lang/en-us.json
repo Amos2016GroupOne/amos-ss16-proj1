@@ -21,5 +21,11 @@
 	"BAR_GRAPH": "Bar Graph",
 	"ACCELEROMETER": "accelerometer",
 	"STATUS": "Status",
-	"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth"
+	"ACCEPT": "Accept",
+	"CANCEL": "Cancel",
+	"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
+	"PROMPT_DEVICE_DOES_NOT_SUPPORT_BLE": "Sorry. Your device does not support BTLE",
+	"PROMPT_INTERNAL_ERROR_ENABLING_BT": "There was an internal error when enabling Bluetooth. This app only works with Bluetooth enabled",
+	"PROMPT_APP_ONLY_WORKS_WITH_BT": "Sorry. This app only works with Bluetooth enabled",
+	"PROMPT_HEADER_ENABLE_BT": "Enable Bluetooth"
 }

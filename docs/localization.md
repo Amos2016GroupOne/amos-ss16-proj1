@@ -44,5 +44,8 @@ using translation in your controller works the following way.
 $translate service behaves asynchronous and returns a promise, since it could be that there's some asynchronous loading going on.
 This means that there are translation tables loaded in the background. These might be in a local json file or a file on a server.
 
+When you need the translation instantly you can also call $translate.instant('HEADLINE').
+This returns a translation instantly from the internal state of loaded translation.
+
 
 

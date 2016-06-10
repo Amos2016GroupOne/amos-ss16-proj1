@@ -18,92 +18,39 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			//wait until the initial language setting is determined.
+			//translate but wait until the initial language setting is determined.
 			//it is very important that $on is called BEFORE the $emit. Otherwise the emitted event will get lost
 			$rootScope.$on("setInitialLanguageSettingDone", function(event, data){
+				
 				//let angular-translate know that from now on this language has to be used
-				console.log("tanslating to: " + settings.settings.language);
-				$translate.use(settings.settings.language);
+				Log.add("tanslating to: " + settings.settings.language);
+				
+				var translationDone = $translate.use(settings.settings.language);
+				
+				//translationDone is a promise object with loaded language file data
+				translationDone.then(
+					function(data){
+						//Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
+						//this has to be called after the translation is loaded in order to display translated error messages
+						initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log);
+					}
+				);
 			});
-			//this calls $emit as soon as initial language setting is determined.
-			//This sets the language to the system language. Only on the very first run of the app
+
+			//This calls $emit as soon as initial language setting is determined.
+			//It sets the language to the system language. Only on the very first run of the app
 			setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage);
 
-			//Returns the BCP 47 compliant locale identifier. For example "en-US"
-			//Android does not distinguish between "language" and "locale" so this will be the same as above
-			if(typeof navigator.globalization !== "undefined") {
-				navigator.globalization.getLocaleName(function (locale) {
-						//value is a string already
-						var locale = locale.value;
-						//depending on the phone the string may be uppercase or lowercase. Prevent problems by lowercasing everything
-						locale = locale.toLowerCase();
-						Log.add("getLocaleName success: preferred locale is: " + locale);
-						//set language setting
-						settings.settings.locale = locale;
-					}, function (error) {
-						Log.add("getLocaleName error:" + error);
-						settings.settings.locale = "en-us";
-				});
-			} else {
-				//fallback if the navigator object is missing. Should never happen on actual devices
-				settings.settings.locale = "en-us";
-			}
+			/*not used at the moment
+			$rootScope.$on("setLocaleSettingDone", function(event, data){
+				//do something with it
+			});
+			setLocaleSetting($rootScope, settings, Log);*/
 
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
 			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
 			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
-			
-            //disable built in request as we use our own request below because
-            //with the built in request we can not recognize if the request was declined, or at least do not know how
-            $cordovaBluetoothLE.initialize({ request: false }).then(null,
-                function (result) {
-                    //Handle errors
-                    Log.add("Init Fail: " + JSON.stringify(result));
-                    navigator.notification.alert("Sorry. Your device does not support BTLE!", function () { navigator.app.exitApp(); });
-                },
-                function (obj) {
-                    //Handle successes of initialize
-                    if (obj.status == "disabled") {
-                        var enableFunction = function () {
-                            $cordovaBluetoothLE.enable().then(null, function (obj) {
-                                //there was a failure of the internal enable() function
-                                Log.add("Enable Error : " + JSON.stringify(obj));
-                                navigator.notification.alert("There was an internal error whenn enabling Bluetooth. This app only works with Bluetooth enabled.",
-                                                             function () { navigator.app.exitApp(); });
-                            });
-                        }
-                        //our own request. gets called everytime there was a change to the BT state
-                        navigator.notification.confirm("BLE Remote would like to turn on Bluetooth.", function (buttonIndex) {
-                            if (buttonIndex == 1){
-                                enableFunction();
-                            }else if(buttonIndex == 0 || buttonIndex == 2){
-                                navigator.notification.alert("Sorry. This app only works with Bluetooth enabled.", function () { navigator.app.exitApp(); });
-                            }
-                        }, "Enable Bluetooth", ["Accept", "Cancel"]);
-                    }
-                    else if (obj.status == "enabled") {
-                        Log.add("Enable Success : " + JSON.stringify(obj));
 
-                        $cordovaBluetoothLE.hasPermission().then(function (obj) {
-                            Log.add("Has Permission Success : " + JSON.stringify(obj));
-                            if (obj.hasPermission == false) {
-                                $cordovaBluetoothLE.requestPermission().then(function (obj) {
-                                    Log.add("Request Permission Success : " + JSON.stringify(obj));
-                                }, function (obj) {
-                                    Log.add("Request Permission Error : " + JSON.stringify(obj));
-                                });
-                            }
-                            else {
-                                $rootScope.$broadcast("bleEnabledEvent");
-                            }
-                        }, function (obj) {
-                            Log.add("Has Permission Error : " + JSON.stringify(obj));
-                            $rootScope.$broadcast("bleEnabledEvent");
-                        });
-
-                    }
-                }
-            );
         })
     })
 
@@ -216,6 +163,61 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         };
     });
 
+
+function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log){
+	//disable built in request as we use our own request below because
+	//with the built in request we can not recognize if the request was declined, or at least do not know how
+	$cordovaBluetoothLE.initialize({ request: false }).then(null,
+		function (result) {
+			//Handle errors
+			Log.add("Init Fail: " + JSON.stringify(result));
+			navigator.notification.alert($translate.instant("PROMPT_DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
+		},
+		function (obj) {
+			//Handle successes of initialize
+			if (obj.status == "disabled") {
+				var enableFunction = function () {
+					$cordovaBluetoothLE.enable().then(null, function (obj) {
+						//there was a failure of the internal enable() function
+						Log.add("Enable Error : " + JSON.stringify(obj));
+						navigator.notification.alert($translate.instant("PROMPT_INTERNAL_ERROR_ENABLING_BT"),
+													 function () { navigator.app.exitApp(); });
+					});
+				}
+				//our own request. gets called everytime there was a change to the BT state
+				navigator.notification.confirm($translate.instant("PROMPT_TURN_ON_BLUETOOTH"), function (buttonIndex) {
+					if (buttonIndex == 1){
+						enableFunction();
+					}else if(buttonIndex == 0 || buttonIndex == 2){
+						navigator.notification.alert($translate.instant("PROMPT_APP_ONLY_WORKS_WITH_BT"), function () { navigator.app.exitApp(); });
+					}
+				}, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("ACCEPT"), $translate.instant("CANCEL")]);
+			}
+			else if (obj.status == "enabled") {
+				Log.add("Enable Success : " + JSON.stringify(obj));
+
+				$cordovaBluetoothLE.hasPermission().then(function (obj) {
+					Log.add("Has Permission Success : " + JSON.stringify(obj));
+					if (obj.hasPermission == false) {
+						$cordovaBluetoothLE.requestPermission().then(function (obj) {
+							Log.add("Request Permission Success : " + JSON.stringify(obj));
+						}, function (obj) {
+							Log.add("Request Permission Error : " + JSON.stringify(obj));
+						});
+					}
+					else {
+						$rootScope.$broadcast("bleEnabledEvent");
+					}
+				}, function (obj) {
+					Log.add("Has Permission Error : " + JSON.stringify(obj));
+					$rootScope.$broadcast("bleEnabledEvent");
+				});
+
+			}
+		}
+	);
+}
+
 function setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage){
 	var lang;
 	//If this is true its the first run. So use the system language:
@@ -259,5 +261,30 @@ function setInitialLanguageSetting($rootScope, settings, Log, availableLanguages
 	}else{
 		//it was not the very first run of the app. So the settings is already set.
 		$rootScope.$emit('setInitialLanguageSettingDone');
+	}
+}
+
+function setLocaleSetting($rootScope, settings, Log){
+	//Returns the BCP 47 compliant locale identifier. For example "en-US"
+	//Android does not distinguish between "language" and "locale" so this will be the same as above
+	if(typeof navigator.globalization !== "undefined") {
+		navigator.globalization.getLocaleName(function (locale) {
+				//value is a string already
+				var locale = locale.value;
+				//depending on the phone the string may be uppercase or lowercase. Prevent problems by lowercasing everything
+				locale = locale.toLowerCase();
+				Log.add("getLocaleName success: preferred locale is: " + locale);
+				//set language setting
+				settings.settings.locale = locale;
+				$rootScope.$emit('setLocaleSettingDone');
+			}, function (error) {
+				Log.add("getLocaleName error:" + error);
+				settings.settings.locale = "en-us";
+				$rootScope.$emit('setLocaleSettingDone');
+		});
+	} else {
+		//fallback if the navigator object is missing. Should never happen on actual devices
+		settings.settings.locale = "en-us";
+		$rootScope.$emit('setLocaleSettingDone');
 	}
 }
