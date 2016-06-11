@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
-    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, Log, settings, availableLanguages, defaultLanguage, $translate) {
+    .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,28 +18,23 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			//translate but wait until the initial language setting is determined.
-			//it is very important that $on is called BEFORE the $emit. Otherwise the emitted event will get lost
-			$rootScope.$on("setInitialLanguageSettingDone", function(event, data){
-				
-				//let angular-translate know that from now on this language has to be used
-				Log.add("tanslating to: " + settings.settings.language);
-				
-				var translationDone = $translate.use(settings.settings.language);
-				
-				//translationDone is a promise object with loaded language file data
-				translationDone.then(
-					function(data){
-						//Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
-						//this has to be called after the translation is loaded in order to display translated error messages
-						initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log);
-					}
-				);
-			});
-
-			//This calls $emit as soon as initial language setting is determined.
 			//It sets the language to the system language. Only on the very first run of the app
-			setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage);
+			setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
+			.then(
+				function(data){
+					Log.add("tanslating to: " + settings.settings.language);
+					//let angular-translate know that from now on this language has to be used
+					//this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
+					return $translate.use(settings.settings.language)
+				}
+			).then(
+				function(data){
+					//Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
+					//this has to be called after the translation is loaded in order to display translated error messages
+					Log.add("initializing CordovaBluetoothLE");
+					initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log);
+				}
+			);
 
 			/*not used at the moment
 			$rootScope.$on("setLocaleSettingDone", function(event, data){
@@ -218,50 +213,56 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 	);
 }
 
-function setInitialLanguageSetting($rootScope, settings, Log, availableLanguages, defaultLanguage){
+function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage){
+	console.log("setInitialLanguageSetting");
+	var initialLangSettingDone;
 	var lang;
 	//If this is true its the first run. So use the system language:
 	if(settings.settings.language == "system"){
 		//Get the BCP 47 language tag for the client's current language. For example "en-US"
 		//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
-		if(typeof navigator.globalization !== "undefined") {
+		//use AngularJS wrapper from ngCordova for cordova-plugin-globalization instead of navigator.globalization.getPreferredLanguage
+		//that way we can work with a promise instead of callbacks
 		//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
-			navigator.globalization.getPreferredLanguage(function(language) {
-					//value is a string already
-					lang = language.value;
-					//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
-					lang = lang.toLowerCase();
-					Log.add("getPreferredLanguage success: preferred language is: " + lang);
-					var langExists = false;
-					for(var i=0; i<availableLanguages.length; i++){
-						if(availableLanguages[i] == lang){
-							settings.settings.language = lang;
-							langExists = true;
-							break;
-						}
+		//so when doing "ionic serve" the browser will not set the language setting
+		//So the broweser will use the default language set in the provider on every start
+		initialLangSettingDone = $cordovaGlobalization.getPreferredLanguage().then(
+			//success
+			function(language) {
+				//value is a string already
+				lang = language.value;
+				//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
+				lang = lang.toLowerCase();
+				Log.add("getPreferredLanguage success: preferred language is: " + lang);
+				var langExists = false;
+				for(var i=0; i<availableLanguages.length; i++){
+					if(availableLanguages[i] == lang){
+						settings.settings.language = lang;
+						langExists = true;
+						break;
 					}
-					if(langExists == false){
-						settings.settings.language = defaultLanguage;
-						Log.add("Preferred Language does not exists");
-						Log.add("Using default language: " + defaultLanguage);
-					}
-					//language settings has been set. Fire an event
-					$rootScope.$emit('setInitialLanguageSettingDone');
-				}, function(error) {
+				}
+				if(langExists == false){
 					settings.settings.language = defaultLanguage;
-					Log.add("getPreferredLanguage error: " + error);
+					Log.add("Preferred Language does not exists");
 					Log.add("Using default language: " + defaultLanguage);
-					$rootScope.$emit('setInitialLanguageSettingDone');
-				});
-		}else{
-			settings.settings.language = defaultLanguage;
-			Log.add("navigator.globalization undefined. Using default language: " + defaultLanguage);
-			$rootScope.$emit('setInitialLanguageSettingDone');
-		}
+				}
+			},
+			//error
+			function(error) {
+				settings.settings.language = defaultLanguage;
+				Log.add("getPreferredLanguage error: " + error);
+				Log.add("Using default language: " + defaultLanguage);
+			});
 	}else{
-		//it was not the very first run of the app. So the settings is already set.
-		$rootScope.$emit('setInitialLanguageSettingDone');
+		//this promise does nothing. It is just returned, so it can be uses in the same way as when a real promise is returned like above
+		initialLangSettingDone = $q(function(resolve, reject) {
+			//do nothing
+			resolve();
+	  	});
+		console.log("was not system" + initialLangSettingDone);
 	}
+	return initialLangSettingDone;
 }
 
 function setLocaleSetting($rootScope, settings, Log){
