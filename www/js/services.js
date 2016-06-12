@@ -157,6 +157,14 @@ angular.module('app.services', [])
         });
     }		
 	
+	function swapData(time, x, y, z)
+	{		  
+		dataStorage["accelerometer-x"] = x;
+		dataStorage["accelerometer-y"] = y;
+		dataStorage["accelerometer-z"] = z;
+		dataStorage["accelerometer-time"] = time;
+    }
+	
 
   function retrieveData(type)
   {
@@ -170,6 +178,7 @@ angular.module('app.services', [])
 	return {
 		storeData_graph: storeData_graph,
 		storeData: storeData,
-        retrieveData: retrieveData
+        retrieveData: retrieveData,
+		swapData : swapData
 	}
     }]);
