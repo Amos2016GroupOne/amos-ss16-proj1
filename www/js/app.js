@@ -214,7 +214,6 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 }
 
 function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage){
-	console.log("setInitialLanguageSetting");
 	var initialLangSettingDone;
 	var lang;
 	//If this is true its the first run. So use the system language:
@@ -260,7 +259,6 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 			//do nothing
 			resolve();
 	  	});
-		console.log("was not system" + initialLangSettingDone);
 	}
 	return initialLangSettingDone;
 }

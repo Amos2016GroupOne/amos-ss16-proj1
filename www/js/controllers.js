@@ -613,7 +613,7 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings, $translate, availableLanguages) {
+    .controller('SettingsCtrl', function($scope, $rootScope, $ionicPlatform, Log, settings, $translate, availableLanguages) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
@@ -716,7 +716,16 @@ angular.module('app.controllers', [])
           });
         }
 
-        $scope.decibel = "NOT_MEASURED_YET";
+		//tanslate it on first run
+		$translate('NOT_MEASURED_YET').then(function (translation) {
+			$scope.decibel = translation;
+		});
+		//also listen if the translation was changed in order to update it then
+		$rootScope.$on('$translateChangeSuccess', function () {
+			$translate('NOT_MEASURED_YET').then(function (translation) {
+				$scope.decibel = translation;
+			});
+		});
         $scope.decibelToggle = function() {
 
           // persist settings
