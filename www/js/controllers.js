@@ -34,6 +34,7 @@ angular.module('app.controllers', [])
 			// On Phone: all okay
 			if(window.cordova) {
 				$rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
+			}
 			else { // without a phone (e.g. ionic serve)
 				db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
 			}
