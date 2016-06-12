@@ -31,7 +31,13 @@ angular.module('app.controllers', [])
 		
 		function initDB()
 		{
-			$rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
+			// On Phone: all okay
+			if(window.cordova) {
+				$rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
+			else { // without a phone (e.g. ionic serve)
+				db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+			}
+			
 			$cordovaSQLite.execute($scope.db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");	
 		}
 		
