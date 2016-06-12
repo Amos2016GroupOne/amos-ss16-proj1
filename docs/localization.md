@@ -47,5 +47,16 @@ This means that there are translation tables loaded in the background. These mig
 When you need the translation instantly you can also call $translate.instant('HEADLINE').
 This returns a translation instantly from the internal state of loaded translation.
 
+$translate service should not be used to often because you don't want to bind your apps controllers and services too hard to your translated content.
+It is important to know that translations translated through a directive $translate call, don't get updated when changing the language at runtime.
 
+You can fix that by simply wrapping your $translate call into a $translateChangeSuccess callback on $rootScope. For example:
+
+	app.controller('Ctrl', ['$scope', '$translate', '$rootScope', function ($scope, $translate, $rootScope) {
+	  $rootScope.$on('$translateChangeSuccess', function () {
+		$translate('HEADLINE').then(function (translation) {
+		  $scope.headline = translation;
+		});
+	  });
+	}]);
 
