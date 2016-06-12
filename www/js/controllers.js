@@ -18,6 +18,51 @@ angular.module('app.controllers', [])
         };
 
 		$scope.motionOn = false;
+		
+		
+		// Create Database for Graph. Better in service.. but no native plugins in service possible
+		// here: ugly workaround
+		$rootScope.db = null;
+		$ionicPlatform.ready(function() {
+			//dataStorage.storeData_graph("" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(), acc[3], acc[4], acc[5]);
+			initDB();
+			initDataStorage();				
+		});
+		
+		function initDB()
+		{
+			$rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
+			$cordovaSQLite.execute($scope.db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");	
+		}
+		
+		// Get data from sql and store in service
+		function initDataStorage()
+		{
+			var var_dataStorage = {};
+			var_dataStorage["accelerometer-time"] = [];
+			var_dataStorage["accelerometer-x"] = [];
+			var_dataStorage["accelerometer-y"] = [];
+			var_dataStorage["accelerometer-z"] = [];
+			
+			var query = "SELECT time, x, y, z FROM graph ORDER BY id ASC";
+			$cordovaSQLite.execute($scope.db, query).then(function(res) {
+				if(res.rows.length > 0) {
+					for(var i = 0; i < res.rows.length; i++) {
+						var_dataStorage["accelerometer-x"].push(res.rows.item(i).x);
+						var_dataStorage["accelerometer-y"].push(res.rows.item(i).y);
+						var_dataStorage["accelerometer-z"].push(res.rows.item(i).z);
+						var_dataStorage["accelerometer-time"].push(res.rows.item(i).time);
+					}
+					
+					// Initialize the service-datastore with persistent data
+					dataStorage.swapData(var_dataStorage["accelerometer-time"], var_dataStorage["accelerometer-x"], var_dataStorage["accelerometer-y"], var_dataStorage["accelerometer-z"]);
+				}
+			}, function (err) {
+				console.error(err);
+			});
+		}
+		
+		
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -388,18 +433,23 @@ angular.module('app.controllers', [])
                 acc = convertAllData(acc);
 
                 var date = new Date();
+				var time = "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-                //dataStorage.storeData("accelerometer-x", acc[3]);
-                //dataStorage.storeData("accelerometer-y", acc[4]);
-                //dataStorage.storeData("accelerometer-z", acc[5]);
-                //dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+                dataStorage.storeData("accelerometer-x", acc[3]);
+                dataStorage.storeData("accelerometer-y", acc[4]);
+                dataStorage.storeData("accelerometer-z", acc[5]);
+                dataStorage.storeData("accelerometer-time", time);
 
+				// Save persistent (ugly workaround)
 				$ionicPlatform.ready(function() {
-					//dataStorage.storeData_graph("" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(), acc[3], acc[4], acc[5]);
-					
-					var db = null;
-					db = $cordovaSQLite.openDB("my.db");
-					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");	
+										
+					// Save data persistent
+					var query = "INSERT INTO graph (time, x, y, z) VALUES (?,?,?,?)";
+					$cordovaSQLite.execute($scope.db, query, [time, acc[3], acc[4], acc[5]]).then(function(res) {
+						console.log("INSERT ID -> " + res.insertId);
+					}, function (err) {
+						console.error(err);
+					});
 				});
 
                 $rootScope.$broadcast("newAccelerometerData");
@@ -840,7 +890,7 @@ angular.module('app.controllers', [])
 
     })
 	// Controller for Settings
-    .controller('GraphCtrl', function($scope, $rootScope, Log, settings, dataStorage) {
+    .controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage) {
 		$scope.labels = [];
 		$scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
 		$scope.data = [  [] ];
@@ -868,6 +918,10 @@ angular.module('app.controllers', [])
       $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
       $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);  
     }
+	
+	
+	
+		
 
     createAndSetDataSlice();
 
