@@ -34,7 +34,8 @@
     "ionic-plugin-keyboard",
     "cordova-plugin-bluetoothle",
     "cordova-plugin-dbmeter",
-	"cordova-plugin-device-motion"
+	"cordova-plugin-device-motion",
+	"cordova-sqlite-storage"
   ],
   "cordovaPlatforms": [
     {
