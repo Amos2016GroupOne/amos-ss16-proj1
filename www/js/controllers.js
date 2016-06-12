@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, Log, settings, dataStorage, $translate) {
+    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, $cordovaSQLite, Log, settings, dataStorage, $translate) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -389,11 +389,18 @@ angular.module('app.controllers', [])
 
                 var date = new Date();
 
-                dataStorage.storeData("accelerometer-x", acc[3]);
-                dataStorage.storeData("accelerometer-y", acc[4]);
-                dataStorage.storeData("accelerometer-z", acc[5]);
+                //dataStorage.storeData("accelerometer-x", acc[3]);
+                //dataStorage.storeData("accelerometer-y", acc[4]);
+                //dataStorage.storeData("accelerometer-z", acc[5]);
+                //dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
-                dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+				$ionicPlatform.ready(function() {
+					//dataStorage.storeData_graph("" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(), acc[3], acc[4], acc[5]);
+					
+					var db = null;
+					db = $cordovaSQLite.openDB("my.db");
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");	
+				});
 
                 $rootScope.$broadcast("newAccelerometerData");
 
@@ -859,7 +866,7 @@ angular.module('app.controllers', [])
       //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
       //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
       $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
-      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
+      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);  
     }
 
     createAndSetDataSlice();
