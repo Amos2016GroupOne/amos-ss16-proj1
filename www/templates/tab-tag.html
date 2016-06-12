@@ -45,9 +45,9 @@
         </div>
 		<div>
 			<br><br>
-			<h2>Smartphone Motions:</h2>
-			<button class="button button-royal" ng-if="motionOn == false" id="btnMotionStart" ng-click="startWatching()">Show Motion</button>
-            <button class="button button-royal" ng-if="motionOn == true" id="btnMotionStop" ng-click="stopWatching()">Hide Motion</button>
+			<h2>{{ 'SMARTPHONE_MOTIONS' | translate }}</h2>
+			<button class="button button-royal" ng-if="motionOn == false" id="btnMotionStart" ng-click="startWatching()">{{ 'SHOW_MOTION' | translate }}</button>
+            <button class="button button-royal" ng-if="motionOn == true" id="btnMotionStop" ng-click="stopWatching()">{{ 'HIDE_MOTION' | translate }}</button>
 			<ul ng-if="motionOn == true">
 				<li>X: {{measurements.x}}</li>
 				<li>Y: {{measurements.y}}</li>

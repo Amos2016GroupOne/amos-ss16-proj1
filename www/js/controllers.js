@@ -716,7 +716,7 @@ angular.module('app.controllers', [])
           });
         }
 
-        $scope.decibel = "[not measured yet]";
+        $scope.decibel = "NOT_MEASURED_YET";
         $scope.decibelToggle = function() {
 
           // persist settings

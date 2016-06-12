@@ -14,7 +14,10 @@
 			ng-change="changeLanguage()">
 			{{ lang }}
         </ion-radio>
-        <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">Automatic Reconnect</ion-toggle>
+		<div class="item item-divider">
+			{{ 'CONNECTION_TYPE' | translate }}
+        </div>
+        <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">{{ 'AUTO_RECONNECT' | translate }}</ion-toggle>
 	  	<div class="item item-divider">
             {{ 'SCAN_DURATION' | translate }}
         </div>
@@ -51,9 +54,9 @@
         </ion-list>
       </ion-list>
       <div class="item item-divider">
-        Volume: {{ decibel }} dB
+      	{{ 'ENVIRONMENT_VOLUME' | translate }}: {{ decibel }} dB
       </div>
-        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">Activate Decibel Meter</ion-toggle>
+        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'ACTIVATE_DB_METER' | translate }}</ion-toggle>
 
   </ion-content>
 </ion-view>
