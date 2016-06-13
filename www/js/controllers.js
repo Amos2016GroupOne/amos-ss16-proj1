@@ -43,20 +43,7 @@ angular.module('app.controllers', [])
         function setLastCon(deviceId) {
             localStorage.setItem("lastCon", deviceId);
         }
-                
-        //Read the current RSSI of the device
-        function readRSSI(address) {
-            var params = {address: address, timeout: 1000};
-            $cordovaBluetoothLE.rssi(params).then(function(obj) {
-                Log.add("RSSI Success : " + JSON.stringify(obj));
-            }, function(obj) {
-                Log.add("RSSI Error : " + JSON.stringify(obj));
-                navigator.notification.alert("The device is out of range! Please move closer.");
-                $scope.disconnect(device);
-            });
-        }
-        
-       
+
         $scope.startScan = function() {
             var params = {
                 services: [],
@@ -94,7 +81,6 @@ angular.module('app.controllers', [])
                     $scope.devices[device.address] = device;
                     $scope.devices[device.address].services = {};
                     console.log(JSON.stringify($scope.devices));
-                    
                                                            
                     if (device.address == getLastCon() && $scope.firstScan) {
                         $scope.connect(device);
@@ -188,6 +174,8 @@ angular.module('app.controllers', [])
                 }, function (obj) {
                     Log.add("Subscribe Error : " + JSON.stringify(obj));
                     deferred.reject();
+                    navigator.notification.alert("The device is interrupted or out of range! Please check if it is turned on.");
+                    $scope.disconnect(device);
                 }, function (obj) {
                     //Log.add("Subscribe Success : " + JSON.stringify(obj));
 
@@ -284,8 +272,6 @@ angular.module('app.controllers', [])
                 
             var onConnect = function(obj) {
                 
-                readRSSI(device.address);
-                
                 //The app will stop scanning if the device already connected
                 $scope.stopScan();
 
@@ -315,6 +301,7 @@ angular.module('app.controllers', [])
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
               };
                 
+
             var params = { address: device.address, timeout: 10000 };
             
             
