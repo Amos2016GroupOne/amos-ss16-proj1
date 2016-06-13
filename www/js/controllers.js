@@ -625,6 +625,7 @@ angular.module('app.controllers', [])
 		$scope.availableLanguages = availableLanguages;
 
 		$scope.changeLanguage = function() {
+			console.log("tanslating to: " + $scope.settings.language);
             $translate.use($scope.settings.language);
             $scope.update();
         }
