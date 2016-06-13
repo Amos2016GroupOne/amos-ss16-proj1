@@ -266,7 +266,6 @@ angular.module('app.controllers', [])
 
             var onConnect = function(obj) {
                 
-                $rootScope.$broadcast("startTime");
                 
                 if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
@@ -289,7 +288,7 @@ angular.module('app.controllers', [])
                     $scope.barometer.temperatureDev2 = "FREEZING HELL";
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
-
+                
                 // First subscribe to the barometer. After that subscribe to the accelerometer.
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
 
@@ -398,6 +397,7 @@ angular.module('app.controllers', [])
                 dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
                 $rootScope.$broadcast("newAccelerometerData");
+                $rootScope.$broadcast("startTime");
 
                 if ($scope.currentDevice1.address == device.address) {
                     $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
@@ -873,6 +873,7 @@ angular.module('app.controllers', [])
 
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
+        
         $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
         Log.add("Dragged is : " + $scope.dragged);
       // Initialize the current start point if not dragged
@@ -954,17 +955,18 @@ angular.module('app.controllers', [])
         }
       }
     };
-                
+    
     $rootScope.$on("startTime", function() {
+                
                 Log.add("masuk");
                 var timer;
                 var counter=0;
                 $scope.stopCounter = function() {
-                    $timeout.cancel(timer);
+                $timeout.cancel(timer);
                 };
                 var updateCounter = function() {
-                counter++;
-                convertToHms(counter);
+                var t = counter++;
+                convertToHms(t);
                 timer = $timeout(updateCounter, 1000);
                 return;
                 };
@@ -972,7 +974,7 @@ angular.module('app.controllers', [])
                 updateCounter();
                 
                 
-            function convertToHms(secs) {
+                function convertToHms(secs) {
                 secs = Number(secs);
                 var h = Math.floor(secs / 3600);
                 var m = Math.floor(secs % 3600 / 60);
@@ -997,9 +999,11 @@ angular.module('app.controllers', [])
                 $scope.seconds = s;
                 }
                 
-                $scope.$apply();
-            }
-        });
+                return;
+                }
+                
+                
+            });
     
     })
 
@@ -1018,5 +1022,6 @@ angular.module('app.controllers', [])
                 $ionicTabsDelegate.select(selected - 1);
             }
         }
+
     });
 >>>>>>> add start time method to count the usage time and convert it into hh:mm:ss format
