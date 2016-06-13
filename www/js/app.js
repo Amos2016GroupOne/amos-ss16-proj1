@@ -214,17 +214,25 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 }
 
 function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage){
-	var initialLangSettingDone;
+
+	//this promise does nothing. It is just returned, so it can be used in the same way as when a real promise is returned like below
+	var initialLangSettingDone = $q(function(resolve, reject) {
+		//do nothing
+		resolve();
+	});
 	var lang;
+	if(typeof navigator.globalization == "undefined") {
+		//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
+		settings.settings.language = defaultLanguage;
+		Log.add("navigator.globalization undefined. Probably running in browser. Using default language: " + defaultLanguage);
+		return initialLangSettingDone;
+	}
 	//If this is true its the first run. So use the system language:
 	if(settings.settings.language == "system"){
 		//Get the BCP 47 language tag for the client's current language. For example "en-US"
 		//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
 		//use AngularJS wrapper from ngCordova for cordova-plugin-globalization instead of navigator.globalization.getPreferredLanguage
 		//that way we can work with a promise instead of callbacks
-		//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
-		//so when doing "ionic serve" the browser will not set the language setting
-		//So the broweser will use the default language set in the provider on every start
 		initialLangSettingDone = $cordovaGlobalization.getPreferredLanguage().then(
 			//success
 			function(language) {
@@ -243,8 +251,7 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 				}
 				if(langExists == false){
 					settings.settings.language = defaultLanguage;
-					Log.add("Preferred Language does not exists");
-					Log.add("Using default language: " + defaultLanguage);
+					Log.add("Preferred Language does not exist. Using default language: " + defaultLanguage);
 				}
 			},
 			//error
@@ -253,12 +260,6 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 				Log.add("getPreferredLanguage error: " + error);
 				Log.add("Using default language: " + defaultLanguage);
 			});
-	}else{
-		//this promise does nothing. It is just returned, so it can be uses in the same way as when a real promise is returned like above
-		initialLangSettingDone = $q(function(resolve, reject) {
-			//do nothing
-			resolve();
-	  	});
 	}
 	return initialLangSettingDone;
 }
