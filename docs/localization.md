@@ -36,7 +36,7 @@ And then in your html you use the key and let angular know that you want this tr
 
 using translation in your controller works the following way. 
 
-  $translate(['HEADLINE', 'PARAGRAPH',']).then(function (translations) {
+  $translate(['HEADLINE', 'PARAGRAPH']).then(function (translations) {
     $scope.headline = translations.HEADLINE;
     $scope.paragraph = translations.PARAGRAPH;
   });
