@@ -963,6 +963,7 @@ angular.module('app.controllers', [])
 
     //The counting of usage time start when the device is connected, format hh:mm:ss
     $scope.$on("startTime", function() {
+
                 var counter=0;
                
                 var updateCounter = function() {
