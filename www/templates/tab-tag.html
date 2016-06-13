@@ -22,7 +22,6 @@
         </div>
         <div id="devicePage" ng-if="dev1Connected == true">
             <div id="sensorData">
-                Device 1: <button class="button button-small button-royal" ng-click="disconnect(currentDevice1)">Disconnect</button><br/>
 				{{ 'DEVICE' | translate }} 1: <button class="button button-small button-royal" ng-click="disconnect(currentDevice1)">{{ 'DISCONNECT' | translate }}</button><br/>
                 {{ 'TEMPERATURE' | translate }}<br/>
                 {{barometer.temperatureDev1}}<br/>
