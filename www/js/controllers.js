@@ -289,6 +289,7 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
                 
+                $rootScope.$broadcast("startTime");
                 // First subscribe to the barometer. After that subscribe to the accelerometer.
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
 
@@ -331,6 +332,7 @@ angular.module('app.controllers', [])
 
             $cordovaBluetoothLE.close(params).then(function(obj) {
                 Log.add("Close Success : " + JSON.stringify(obj));
+                $rootScope.$broadcast("resetTime");
             }, function(obj) {
                 Log.add("Close Error : " + JSON.stringify(obj));
             });
@@ -359,7 +361,8 @@ angular.module('app.controllers', [])
 
         function onAccelerometerData(obj,device) {
             var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
-
+            
+                
                 function sensorAccelerometerConvert(data) {
                     var a = data / (32768 / 2);
                     return a;
@@ -395,9 +398,9 @@ angular.module('app.controllers', [])
                 dataStorage.storeData("accelerometer-z", acc[5]);
 
                 dataStorage.storeData("accelerometer-time", "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-
+                
+                
                 $rootScope.$broadcast("newAccelerometerData");
-                $rootScope.$broadcast("startTime");
 
                 if ($scope.currentDevice1.address == device.address) {
                     $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
@@ -414,6 +417,8 @@ angular.module('app.controllers', [])
         }
 
         $scope.disconnect = function(device) {
+            
+            
             if ($scope.dev1Connected && $scope.currentDevice1.address == device.address) {
                 $scope.dev1Connected = false;
                 $scope.close($scope.currentDevice1.address);
@@ -842,6 +847,7 @@ angular.module('app.controllers', [])
         $scope.hours = "00";
         $scope.minutes = "00";
         $scope.seconds = "00";
+        var timer;
 
     $scope.numberOfDatapoints = 10;
 
@@ -956,14 +962,12 @@ angular.module('app.controllers', [])
       }
     };
     
-    $rootScope.$on("startTime", function() {
+    $scope.$on("startTime", function() {
                 
                 Log.add("masuk");
-                var timer;
+                
                 var counter=0;
-                $scope.stopCounter = function() {
-                $timeout.cancel(timer);
-                };
+               
                 var updateCounter = function() {
                 var t = counter++;
                 convertToHms(t);
@@ -1004,6 +1008,17 @@ angular.module('app.controllers', [])
                 
                 
             });
+            
+    $scope.$on("resetTime", function() {
+                
+            Log.add("masuk 2");
+            $timeout.cancel(timer);
+            $scope.hours = "00";
+            $scope.minutes = "00";
+            $scope.seconds = "00";
+                           
+                
+        });
     
     })
 
