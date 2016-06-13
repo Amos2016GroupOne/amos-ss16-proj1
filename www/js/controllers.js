@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
     // Controller for Tag View
-    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, Log, settings, dataStorage) {
+    .controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, Log, settings, dataStorage, $translate) {
         $scope.devices = {};
         $scope.scanDevice = false;
         $scope.noDevice = true;
@@ -238,7 +238,7 @@ angular.module('app.controllers', [])
                     startScan();
                 }
                 else {
-                    navigator.notification.confirm("To scan for devices you need to enable location services. Do you want to do that now?", function(buttonIndex) {
+                    navigator.notification.confirm($translate.instant("PROMPT_ENABLE_LOCATION_SERVICE"), function(buttonIndex) {
                         if (buttonIndex == 1) {
                             $cordovaBluetoothLE.requestLocation().then(function(obj) {
                                 console.log(JSON.stringify(obj));
@@ -246,13 +246,13 @@ angular.module('app.controllers', [])
                                     startScan();
                                 }
                                 else {
-                                    navigator.notification.alert("Sorry. Scanning only works with location services enabled.", null);
+                                    navigator.notification.alert($translate.instant("PROMPT_SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
                                 }
                             }, null);
                         } else if (buttonIndex == 0 || buttonIndex == 2) {
-                            navigator.notification.alert("Sorry. Scanning only works with location services enabled.", null);
+                            navigator.notification.alert($translate.instant("PROMPT_SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
                         }
-                    }, "Enable Bluetooth", ["Accept", "Cancel"]);
+                    }, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("ACCEPT"), $translate.instant("CANCEL")]);
                 }
             }, function(err)
                {
@@ -267,7 +267,7 @@ angular.module('app.controllers', [])
             var onConnect = function(obj) {
 
                 if ($scope.dev1Connected && $scope.dev2Connected) {
-                    navigator.notification.alert("Sorry. You cannot connect to more than two devices!", function() { });
+                    navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                     return;
                 }
 
@@ -298,7 +298,7 @@ angular.module('app.controllers', [])
 
             $cordovaBluetoothLE.connect(params).then(null, function(obj) {
                 Log.add("Connect Error : " + JSON.stringify(obj));
-                 navigator.notification.alert("Connection failed. Please try again.", null);
+                 navigator.notification.alert($translate.instant("PROMPT_CONNECTION_FAILED"), null);
                 $scope.close(params.address); //Best practice is to close on connection error
             }, function() {
                 $scope.discover(device.address, onConnect);
@@ -613,13 +613,22 @@ angular.module('app.controllers', [])
     })
 
     // Controller for Settings
-    .controller('SettingsCtrl', function($scope, $ionicPlatform, Log, settings) {
+    .controller('SettingsCtrl', function($scope, $rootScope, $ionicPlatform, Log, settings, $translate, availableLanguages) {
 
         // Link the scope settings to the settings service
         $scope.settings = settings.settings;
 
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
+
+		//get the list of all languages that are available as json file
+		$scope.availableLanguages = availableLanguages;
+
+		$scope.changeLanguage = function() {
+			console.log("tanslating to: " + $scope.settings.language);
+            $translate.use($scope.settings.language);
+            $scope.update();
+        }
 
 		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
 		$scope.durationSliderLabel = function(value) {
@@ -708,7 +717,16 @@ angular.module('app.controllers', [])
           });
         }
 
-        $scope.decibel = "[not measured yet]";
+		//tanslate it on first run
+		$translate('NOT_MEASURED_YET').then(function (translation) {
+			$scope.decibel = translation;
+		});
+		//also listen if the translation was changed in order to update it then
+		$rootScope.$on('$translateChangeSuccess', function () {
+			$translate('NOT_MEASURED_YET').then(function (translation) {
+				$scope.decibel = translation;
+			});
+		});
         $scope.decibelToggle = function() {
 
           // persist settings

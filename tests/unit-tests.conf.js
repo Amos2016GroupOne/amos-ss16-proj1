@@ -20,6 +20,8 @@ module.exports = function(config) {
       '../www/lib/ngCordova/dist/ng-cordova.js',
       '../www/lib/angularjs-slider/dist/rzslider.js',
       '../www/lib/moment.min.js',
+      '../www/lib/angular-translate/angular-translate.js',
+      '../www/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       '../www/js/**/*.js',
       '../www/lib/angular-mocks/angular-mocks.js',
       '../www/templates/*.html',
