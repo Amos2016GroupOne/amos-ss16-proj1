@@ -290,7 +290,6 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
                 
-                $rootScope.$broadcast("startTime");
                 // First subscribe to the barometer. After that subscribe to the accelerometer.
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
 
@@ -333,10 +332,6 @@ angular.module('app.controllers', [])
 
             $cordovaBluetoothLE.close(params).then(function(obj) {
                 Log.add("Close Success : " + JSON.stringify(obj));
-<<<<<<< 4bc79c278300492314a55fc366f64c0c2cfb7df1
-                //broadcast an event when the device is disconnected, the usage time reset to 00:00:00
-=======
->>>>>>> $broadcast and $on finally work, make bigger size font
                 $rootScope.$broadcast("resetTime");
             }, function(obj) {
                 Log.add("Close Error : " + JSON.stringify(obj));
@@ -852,10 +847,7 @@ angular.module('app.controllers', [])
         $scope.minutes = "00";
         $scope.seconds = "00";
         var timer;
-<<<<<<< 4bc79c278300492314a55fc366f64c0c2cfb7df1
-=======
 
->>>>>>> $broadcast and $on finally work, make bigger size font
     $scope.numberOfDatapoints = 10;
 
     // Initialize the current start point
@@ -968,19 +960,9 @@ angular.module('app.controllers', [])
         }
       }
     };
-<<<<<<< 4bc79c278300492314a55fc366f64c0c2cfb7df1
-
 
     //The counting of usage time start when the device is connected, format hh:mm:ss
     $scope.$on("startTime", function() {
-               
-=======
-    
-    $scope.$on("startTime", function() {
-                
-                Log.add("masuk");
-                
->>>>>>> $broadcast and $on finally work, make bigger size font
                 var counter=0;
                
                 var updateCounter = function() {
