@@ -263,7 +263,10 @@ angular.module('app.controllers', [])
         };
 
         $scope.connect = function(device) {
-
+            
+            //broadcast an event where if the device connected, usage time start
+            $rootScope.$broadcast("startTime");
+                
             var onConnect = function(obj) {
                 
                 
@@ -289,13 +292,12 @@ angular.module('app.controllers', [])
                     $scope.barometer.pressureDev2 = "Inside of Jupiter";
                 }
                 
-                $rootScope.$broadcast("startTime");
                 // First subscribe to the barometer. After that subscribe to the accelerometer.
                 $scope.subscribeBarometer(device).then(function() { $scope.subscribeAccelerometer(device) }, function() { $scope.subscribeAccelerometer(device) });
 
               };
             var params = { address: device.address, timeout: 10000 };
-
+            
             Log.add("Connect : " + JSON.stringify(params));
 
             $cordovaBluetoothLE.connect(params).then(null, function(obj) {
@@ -332,6 +334,7 @@ angular.module('app.controllers', [])
 
             $cordovaBluetoothLE.close(params).then(function(obj) {
                 Log.add("Close Success : " + JSON.stringify(obj));
+                //broadcast an event when the device is disconnected, the usage time reset to 00:00:00
                 $rootScope.$broadcast("resetTime");
             }, function(obj) {
                 Log.add("Close Error : " + JSON.stringify(obj));
@@ -510,7 +513,6 @@ angular.module('app.controllers', [])
         $scope.firstScan = false;
         if (settings.settings.reconnect == "true" || settings.settings.reconnect === true) {
             $scope.firstScan = true;
-
         }
 
         $rootScope.$on("bleEnabledEvent", function() {
@@ -962,6 +964,7 @@ angular.module('app.controllers', [])
       }
     };
     
+    //The counting of usage time start when the device is connected, format hh:mm:ss
     $scope.$on("startTime", function() {
                 
                 Log.add("masuk");
@@ -977,7 +980,7 @@ angular.module('app.controllers', [])
                 
                 updateCounter();
                 
-                
+                //Convert the seconds into hh:mm:ss format
                 function convertToHms(secs) {
                 secs = Number(secs);
                 var h = Math.floor(secs / 3600);
@@ -1008,7 +1011,8 @@ angular.module('app.controllers', [])
                 
                 
             });
-            
+                
+    //The time will reset back to 00:00:00 if the device is disconnected
     $scope.$on("resetTime", function() {
                 
             Log.add("masuk 2");
