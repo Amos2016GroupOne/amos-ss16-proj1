@@ -9,9 +9,10 @@ services:
         docker
 android:
         components:
-                - build-tools-23.0.3  # Specify your build tools verison
+                - build-tools-23.0.3  # Specify your build tools version
                 - android-23  # Android Platform Target
 env: # Envirement Variables
+        - TRAVIS_NODE_VERSION="v5.6.0"
 global:
 before_install:
         # Commands to excecute before install
@@ -19,9 +20,11 @@ before_install:
 install:
         # Specify what and how to install
         - echo "Install stage"
-        - curl --silent --location https://deb.nodesource.com/setup | sudo bash -
-        - sudo apt-get install -y nodejs inkscape
-        - sudo npm install -g cordova ionic bower gulp cordova-icon
+        # Install the correct node version using nvm.
+        # see: http://austinpray.com/ops/2015/09/20/change-travis-node-version.html
+        - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+        - sudo apt-get install -y inkscape
+        - npm install -g cordova ionic bower gulp cordova-icon
         - npm i  # for installing gulp and other stuff
         - ionic state restore
         - ionic prepare
