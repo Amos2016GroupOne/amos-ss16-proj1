@@ -268,8 +268,7 @@ angular.module('app.controllers', [])
             $rootScope.$broadcast("startTime");
                 
             var onConnect = function(obj) {
-                
-   if ($scope.dev1Connected && $scope.dev2Connected) {
+                if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                     return;
                 }
@@ -403,6 +402,7 @@ angular.module('app.controllers', [])
                 
                 
                 $rootScope.$broadcast("newAccelerometerData");
+                $rootScope.$broadcast("startTime");
 
                 if ($scope.currentDevice1.address == device.address) {
                     $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
@@ -962,6 +962,7 @@ angular.module('app.controllers', [])
       }
     };
 
+
     //The counting of usage time start when the device is connected, format hh:mm:ss
     $scope.$on("startTime", function() {
                
@@ -976,7 +977,7 @@ angular.module('app.controllers', [])
                 
                 updateCounter();
                
-                //Convert the seconds into hh:mm:ss format
+               //Convert the seconds into hh:mm:ss format
                 function convertToHms(secs) {
                 secs = Number(secs);
                 var h = Math.floor(secs / 3600);
@@ -1003,20 +1004,18 @@ angular.module('app.controllers', [])
                 }
                 return;
                 }
-                
-            });
+        });
                 
     //The time will reset back to 00:00:00 if the device is disconnected
     $scope.$on("resetTime", function() {
                 
-            Log.add("masuk 2");
             $timeout.cancel(timer);
             $scope.hours = "00";
             $scope.minutes = "00";
             $scope.seconds = "00";
                
         });
-    
+
     })
 
     .controller('TabCtrl', function ($scope, $ionicTabsDelegate) {
