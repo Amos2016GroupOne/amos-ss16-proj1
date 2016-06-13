@@ -50,7 +50,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
     })
 
 	//add languages here if you add a new language to the lang folder
-	.constant('availableLanguages', ['en-us', 'de-de'])
+	.constant('availableLanguages', ['en-us', 'de-de', 'hu-hu'])
 	.constant('defaultLanguage', 'en-us')
 
     .config(function ($stateProvider, $urlRouterProvider, $translateProvider, defaultLanguage) {
