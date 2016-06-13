@@ -269,8 +269,7 @@ angular.module('app.controllers', [])
                 
             var onConnect = function(obj) {
                 
-                
-                if ($scope.dev1Connected && $scope.dev2Connected) {
+   if ($scope.dev1Connected && $scope.dev2Connected) {
                     navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                     return;
                 }
@@ -850,7 +849,6 @@ angular.module('app.controllers', [])
         $scope.minutes = "00";
         $scope.seconds = "00";
         var timer;
-
     $scope.numberOfDatapoints = 10;
 
     // Initialize the current start point
@@ -963,12 +961,10 @@ angular.module('app.controllers', [])
         }
       }
     };
-    
+
     //The counting of usage time start when the device is connected, format hh:mm:ss
     $scope.$on("startTime", function() {
-                
-                Log.add("masuk");
-                
+               
                 var counter=0;
                
                 var updateCounter = function() {
@@ -979,7 +975,7 @@ angular.module('app.controllers', [])
                 };
                 
                 updateCounter();
-                
+               
                 //Convert the seconds into hh:mm:ss format
                 function convertToHms(secs) {
                 secs = Number(secs);
@@ -1005,10 +1001,8 @@ angular.module('app.controllers', [])
                 else {
                 $scope.seconds = s;
                 }
-                
                 return;
                 }
-                
                 
             });
                 
@@ -1020,8 +1014,7 @@ angular.module('app.controllers', [])
             $scope.hours = "00";
             $scope.minutes = "00";
             $scope.seconds = "00";
-                           
-                
+               
         });
     
     })
