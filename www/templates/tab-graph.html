@@ -13,11 +13,14 @@
              on-drag-left="mouseMove($event)"
              on-drag-right="mouseMove($event)"
              on-release="stopDrag($event)"></canvas>
+            
              <button class="button button-royal" id="btnTrackGraph" ng-click="followGraph();">{{ 'TRACK_GRAPH' | translate }}</button>
-             
         </div>
+        </div>
+    
+    <div id="usage-time">{{hours}}:{{minutes}}:{{seconds}}<br/>
     </div>
-
-
-  </ion-content>
+    
+  
+    </ion-content>
 </ion-view>
