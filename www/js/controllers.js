@@ -832,56 +832,35 @@ angular.module('app.controllers', [])
           }
         });
 
-        $scope.$on('volumeupbutton', function() {
-            $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+        function volumeButtonPress(volDiff) {
+          $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
-                // Update Volume + checks for valid values (0 to 100)
-                if (settings.settings.mute) {
-                    var vol = parseInt(settings.settings.volBeforeMute);
-                } else {
-                    // Parse to Int or otherwise it is not if changed per GUI
-                    var vol = parseInt(settings.settings.volume);
-                }
-                var up = 10;
+            // Update Volume + checks for valid values (0 to 100)
+            if (settings.settings.mute) {
+              var vol = parseInt(settings.settings.volBeforeMute);
+            } else {
+              // Parse to Int or otherwise it is not if changed per GUI
+              var vol = parseInt(settings.settings.volume);
+            }
+            var up = 10;
 
-                // Catch if volume 91 to 100, update to max 100
-                if (vol > 90) {
-                    up = 100 - vol;
-                }
-                vol = vol + up;
+            vol += volDiff;
 
-                settings.settings.volume = vol;
-                // Unmute as the user changed the volume and persist
-                $scope.changedVolume();
+            // Catch if volume 91 to 100, update to max 100
+            if (vol > 100) {
+              vol = 100;
+            }
+            if (vol < 0) {
+              vol = 0;
+            }
+            settings.settings.volume = vol;
+            // Unmute as the user changed the volume and persist
+            $scope.changedVolume();
+          });
+        }
 
-            });
-        });
-
-        $scope.$on('volumedownbutton', function() {
-            $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
-
-                // Update Volume + checks for valid values (0 to 100)
-                if (settings.settings.mute) {
-                    var vol = parseInt(settings.settings.volBeforeMute);
-                } else {
-                    // Parse to Int or otherwise it is not if changed per GUI
-                    var vol = parseInt(settings.settings.volume);
-                }
-                var down = 10;
-
-                // Catch if volume 9 to 0, update to min 0
-                if (vol < 10) {
-                    down = vol;
-                }
-                vol = vol - down;
-
-                settings.settings.volume = vol;
-                // Unmute as the user changed the volume and persist
-                $scope.changedVolume();
-
-            });
-        });
-
+        $scope.$on('volumeupbutton', volumeButtonPress.bind(this, +10));
+        $scope.$on('volumedownbutton', volumeButtonPress.bind(this, -10));
     })
 	// Controller for Settings
     .controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage) {
