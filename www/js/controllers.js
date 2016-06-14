@@ -18,30 +18,30 @@ angular.module('app.controllers', [])
         };
 
 		$scope.motionOn = false;
-		
-		
+
+
 		// Create Database for Graph. Better in service.. but no native plugins in service possible
 		// here: ugly workaround
 		$rootScope.db = null;
 		$ionicPlatform.ready(function() {
 			//dataStorage.storeData_graph("" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(), acc[3], acc[4], acc[5]);
 			initDB();
-			initDataStorage();				
+			initDataStorage();
 		});
-		
+
 		function initDB()
 		{
 			// On Phone: all okay
 			if(window.cordova) {
 				$rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
 			}
-			else { // without a phone (e.g. ionic serve)
+			else { // Without a phone (e.g. ionic serve)
 				db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
 			}
-			
-			$cordovaSQLite.execute($scope.db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");	
+
+			$cordovaSQLite.execute($scope.db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");
 		}
-		
+
 		// Get data from sql and store in service
 		function initDataStorage()
 		{
@@ -50,7 +50,7 @@ angular.module('app.controllers', [])
 			var_dataStorage["accelerometer-x"] = [];
 			var_dataStorage["accelerometer-y"] = [];
 			var_dataStorage["accelerometer-z"] = [];
-			
+
 			var query = "SELECT time, x, y, z FROM graph ORDER BY id ASC";
 			$cordovaSQLite.execute($scope.db, query).then(function(res) {
 				if(res.rows.length > 0) {
@@ -60,7 +60,7 @@ angular.module('app.controllers', [])
 						var_dataStorage["accelerometer-z"].push(res.rows.item(i).z);
 						var_dataStorage["accelerometer-time"].push(res.rows.item(i).time);
 					}
-					
+
 					// Initialize the service-datastore with persistent data
 					dataStorage.swapData(var_dataStorage["accelerometer-time"], var_dataStorage["accelerometer-x"], var_dataStorage["accelerometer-y"], var_dataStorage["accelerometer-z"]);
 				}
@@ -68,8 +68,8 @@ angular.module('app.controllers', [])
 				console.error(err);
 			});
 		}
-		
-		
+
+
         var barometer = {
             service: "F000AA40-0451-4000-B000-000000000000",
             data: "F000AA41-0451-4000-B000-000000000000",
@@ -80,7 +80,7 @@ angular.module('app.controllers', [])
 
         var accelerometer = {
                 service: "F000AA80-0451-4000-B000-000000000000",
-                data: "F000AA81-0451-4000-B000-000000000000", // read 3 bytes X, Y, Z
+                data: "F000AA81-0451-4000-B000-000000000000",  // Read 3 bytes X, Y, Z
                 notification: "F0002902-0451-4000-B000-000000000000",
                 configuration: "F000AA82-0451-4000-B000-000000000000",
                 period: "F000AA83-0451-4000-B000-000000000000"
@@ -146,7 +146,7 @@ angular.module('app.controllers', [])
             $scope.subscribeBarometer = function (device) {
                 var deferred = $q.defer();
 
-                //Subscribe to barometer service
+                // Subscribe to barometer service
                 var barometerParams = {
                     address: device.address,
                     service: barometer.service,
@@ -171,7 +171,7 @@ angular.module('app.controllers', [])
                         Log.add("HEX (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToHex(bytes));
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
-                        //Turn on barometer
+                        // Turn on barometer
                         var barometerConfig = new Uint8Array(1);
                         barometerConfig[0] = 0x01;
                         var params = {
@@ -207,7 +207,7 @@ angular.module('app.controllers', [])
 
             $scope.subscribeAccelerometer = function (device) {
                 var deferred = $q.defer();
-                //Subscribe to accelerometer service
+                // Subscribe to accelerometer service
                 var accelerometerParams = {
                     address: device.address,
                     service: accelerometer.service,
@@ -235,7 +235,7 @@ angular.module('app.controllers', [])
                     } else if (obj.status == "subscribed") {
                         Log.add("Subscribed");
 
-                        //Turn on accelerometer
+                        // Turn on accelerometer
                         var accelerometerConfig = new Uint8Array(2);
                         accelerometerConfig[0] = 0x7F;
                         accelerometerConfig[1] = 0x00;
@@ -351,7 +351,7 @@ angular.module('app.controllers', [])
             $cordovaBluetoothLE.connect(params).then(null, function(obj) {
                 Log.add("Connect Error : " + JSON.stringify(obj));
                  navigator.notification.alert($translate.instant("PROMPT_CONNECTION_FAILED"), null);
-                $scope.close(params.address); //Best practice is to close on connection error
+                $scope.close(params.address);  // Best practice is to close on connection error
             }, function() {
                 $scope.discover(device.address, onConnect);
             });
@@ -418,7 +418,7 @@ angular.module('app.controllers', [])
 
                 function convertAllData(data)
                 {
-                  // convert the data to 16 bit. the data consist of 2bytes.
+                  // Convert the data to 16 bit. the data consist of 2bytes.
                   var converted = [];
                   var b = new Int16Array(9);
 
@@ -449,7 +449,7 @@ angular.module('app.controllers', [])
 
 				// Save persistent (ugly workaround)
 				$ionicPlatform.ready(function() {
-										
+
 					// Save data persistent
 					var query = "INSERT INTO graph (time, x, y, z) VALUES (?,?,?,?)";
 					$cordovaSQLite.execute($scope.db, query, [time, acc[3], acc[4], acc[5]]).then(function(res) {
@@ -579,8 +579,8 @@ angular.module('app.controllers', [])
 
 		// watch Acceleration options
 		$scope.options = {
-			frequency: 100, // Measure every 100ms
-			deviation : 25  // We'll use deviation to determine the shake event, best values in the range between 25 and 30
+			frequency: 100,  // Measure every 100ms
+			deviation : 25   // We'll use deviation to determine the shake event, best values in the range between 25 and 30
 		};
 
 		// Current measurements
@@ -605,7 +605,7 @@ angular.module('app.controllers', [])
 		// Start measurements when Cordova device is ready
 		$ionicPlatform.ready(function() {
 
-			//Start Watching method
+			// Start Watching method
 			$scope.startWatching = function() {
 
 				$scope.motionOn = true;
@@ -639,7 +639,7 @@ angular.module('app.controllers', [])
 			// Detect shake method
 			$scope.detectShake = function(result) {
 
-				//Object to hold measurement difference between current and old data
+				// Object to hold measurement difference between current and old data
 				var measurementsChange = {};
 
 				// Calculate measurement change only if we have two sets of data, current and old
@@ -685,7 +685,7 @@ angular.module('app.controllers', [])
         // Scope update function is the settings service persist function
         $scope.update = settings.persistSettings;
 
-		//get the list of all languages that are available as json file
+		// Get the list of all languages that are available as json file
 		$scope.availableLanguages = availableLanguages;
 
 		$scope.changeLanguage = function() {
@@ -694,12 +694,12 @@ angular.module('app.controllers', [])
             $scope.update();
         }
 
-		//this is used by the scanduration slider. It adds ' s' to the tooltip of the slider
+		// This is used by the scanduration slider. It adds ' s' to the tooltip of the slider
 		$scope.durationSliderLabel = function(value) {
       		return value + ' s';
     	}
 
-		//this is used by the volume slider. It adds '%' to the tooltip of the slider
+		// This is used by the volume slider. It adds '%' to the tooltip of the slider
 		$scope.volumeSliderLabel = function(value) {
       		return value + '%';
     	}
@@ -736,42 +736,42 @@ angular.module('app.controllers', [])
             $scope.update();
         }
 
-        // called when mute was toggled by pressing the button
+        // Called when mute was toggled by pressing the button
         $scope.muteToggle = function() {
             if (settings.settings.mute) {
                 settings.settings.volBeforeMute = settings.settings.volume;
 				settings.settings.volProfileBeforeMute = settings.settings.currentVolumeProfile;
                 settings.settings.volume = parseInt(0);
-				$scope.settings.currentVolumeProfile = false; //deselects any volume profile
+				$scope.settings.currentVolumeProfile = false;  // Deselects any volume profile
             } else {
                 settings.settings.volume = parseInt(settings.settings.volBeforeMute);
 				settings.settings.currentVolumeProfile = settings.settings.volProfileBeforeMute;
             }
-            // persist settings
+            // Persist settings
             $scope.update();
         }
 
-        // helper function to start the DBMeter and it's output
+        // Helper function to start the DBMeter and its output
         function startDBMeter() {
           var delayCounter = 0,
               DELAY = 10;  // * 100 ms
           DBMeter.start(function(dB){
-            // gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
+            // Gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
             if (delayCounter === 0) {
-              // refresh datamodel and format
+              // Refresh datamodel and format
               $scope.decibel = dB.toFixed(0);
               //console.log('loudness: '+dB.toFixed(0));
 
               // Select another volume profile if it is loud!
               if (dB > 85 && !$scope.settings.mute) {
-                // set profile to outdoor as it is soo loud ;)
+                // Set profile to outdoor as it is soo loud ;)
                 // REM: The json filter that is used in tab-settings.html for the options automatically
                 // does prettyfication. To set the current volume profile we must set the pretty flag as well:
                 $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
                 $scope.changeVolumeProfile();
               }
 
-              //manual apply is needed, looks like angular does not fire apply here
+              // Manual apply is needed, looks like angular does not fire apply here
               $scope.$apply();
 
             }
@@ -781,11 +781,11 @@ angular.module('app.controllers', [])
           });
         }
 
-		//tanslate it on first run
+		// Tanslate it on first run
 		$translate('NOT_MEASURED_YET').then(function (translation) {
 			$scope.decibel = translation;
 		});
-		//also listen if the translation was changed in order to update it then
+		// Also listen if the translation was changed in order to update it then
 		$rootScope.$on('$translateChangeSuccess', function () {
 			$translate('NOT_MEASURED_YET').then(function (translation) {
 				$scope.decibel = translation;
@@ -793,7 +793,7 @@ angular.module('app.controllers', [])
 		});
         $scope.decibelToggle = function() {
 
-          // persist settings
+          // Persist settings
           $scope.update();
 
           if ($scope.settings.isListeningDecibel === true) {
@@ -814,13 +814,13 @@ angular.module('app.controllers', [])
 
         }
 
-        // catch stupid browsers!
+        // Catch stupid browsers!
         if (typeof DBMeter !== 'undefined') {
           $scope.decibelToggle();
         }
 
         $ionicPlatform.on('pause', function() {
-          // store DBMeter state and stop it.
+          // Store DBMeter state and stop it.
           DBMeter.myWasListening = false;
           DBMeter.isListening(function(isListening) {
             if (isListening) {
@@ -835,10 +835,10 @@ angular.module('app.controllers', [])
         });
 
         $ionicPlatform.on('resume', function() {
-          // restore DBMeter state
+          // Restore DBMeter state
           if (DBMeter.myWasListening === true) {
             console.log('try to resume DBMeter');
-            // reactivate DBMeter
+            // Reactivate DBMeter
             DBMeter.isListening(function(isListening) {
               if (!isListening) {
                 startDBMeter();
@@ -848,13 +848,13 @@ angular.module('app.controllers', [])
         });
 
         $scope.$on('volumeupbutton', function() {
-            $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+            $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
                 if (settings.settings.mute) {
                     var vol = parseInt(settings.settings.volBeforeMute);
                 } else {
-                    // parse to Int or otherwise it is not if changed per GUI
+                    // Parse to Int or otherwise it is not if changed per GUI
                     var vol = parseInt(settings.settings.volume);
                 }
                 var up = 10;
@@ -865,20 +865,20 @@ angular.module('app.controllers', [])
                 vol = vol + up;
 
                 settings.settings.volume = vol;
-                //unmute as the user changed the volume and persist
+                // Unmute as the user changed the volume and persist
                 $scope.changedVolume();
 
             });
         });
 
         $scope.$on('volumedownbutton', function() {
-            $scope.$apply(function() {									// angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+            $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
 
                 // Update Volume + checks for valid values (0 to 100)
                 if (settings.settings.mute) {
                     var vol = parseInt(settings.settings.volBeforeMute);
                 } else {
-                    // parse to Int or otherwise it is not if changed per GUI
+                    // Parse to Int or otherwise it is not if changed per GUI
                     var vol = parseInt(settings.settings.volume);
                 }
                 var down = 10;
@@ -889,7 +889,7 @@ angular.module('app.controllers', [])
                 vol = vol - down;
 
                 settings.settings.volume = vol;
-                //unmute as the user changed the volume and persist
+                // Unmute as the user changed the volume and persist
                 $scope.changedVolume();
 
             });
@@ -923,12 +923,12 @@ angular.module('app.controllers', [])
       //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
       //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
       $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
-      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);  
+      $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
     }
-	
-	
-	
-		
+
+
+
+
 
     createAndSetDataSlice();
 
