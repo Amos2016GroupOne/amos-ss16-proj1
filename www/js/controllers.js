@@ -712,21 +712,6 @@ angular.module('app.controllers', [])
             $scope.update();
         }
 
-        $scope.addVolumeProfile = function(name) {
-            // TODO: no duplicates!
-            var newProfile = { name: name, volume: $scope.settings.volume };
-            $scope.settings.volumeProfiles.push(newProfile);
-            $scope.settings.currentVolumeProfile = newProfile;
-            $scope.newVolumeProfileName = "";  // TODO: has no effect!
-        }
-
-        $scope.removeVolumeProfile = function(volumeProfile) {  // TODO
-            console.log("removing volume profile " + volumeProfile.name);
-            $scope.settings.volumeProfiles = $scope.settings.volumeProfiles.filter(function(item) {
-                return item.name !== volumeProfile.name;
-            });
-        }
-
         $scope.changeVolumeProfile = function() {
 
             $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
