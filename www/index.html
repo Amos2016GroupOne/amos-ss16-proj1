@@ -19,14 +19,14 @@
 
 <head>
     <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
+      Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+      Some notes:
+      * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+      * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+    -->
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -35,29 +35,35 @@
 
     <link rel="stylesheet" type="text/css" href="css/ionic.app.css" />
     <link rel="stylesheet" type="text/css" href="css/index.css" />
-	<link rel="stylesheet" type="text/css" href="css/angular-chart.css">
-	<link rel="stylesheet" type="text/css" href="lib/angularjs-slider/dist/rzslider.css"/>
+    <link rel="stylesheet" type="text/css" href="css/angular-chart.css">
+    <link rel="stylesheet" type="text/css" href="lib/angularjs-slider/dist/rzslider.css"/>
 
 
     <script src="lib/jquery/dist/jquery.min.js"></script>
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
-	<script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script type="text/javascript" src="lib/ng-cordova-ble/ng-cordova-bluetoothle.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script type="text/javascript" src="cordova.js"></script>
 
     <!-- your app's js -->
-	<script type="text/javascript" src="lib/angularjs-slider/dist/rzslider.min.js"></script>
-	<script type="text/javascript" src="lib/angular-translate/angular-translate.js"></script>
-	<script type="text/javascript" src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-	<script type="text/javascript" src="js/Chart.min.js"></script>
+    <script type="text/javascript" src="lib/angularjs-slider/dist/rzslider.min.js"></script>
+    <script type="text/javascript" src="lib/angular-translate/angular-translate.js"></script>
+    <script type="text/javascript" src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
     <script type="text/javascript" src="js/angular-chart.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/services.js"></script>
+    <script type="text/javascript" src="js/services/settings.js"></script>
+    <script type="text/javascript" src="js/services/dataStorage.js"></script>
     <script type="text/javascript" src="js/controllers.js"></script>
+    <script type="text/javascript" src="js/controllers/tab.js"></script>
+    <script type="text/javascript" src="js/controllers/graph.js"></script>
+    <script type="text/javascript" src="js/controllers/tag.js"></script>
+    <script type="text/javascript" src="js/controllers/settings.js"></script>
     <script type="text/javascript" src="js/init.js"></script>
 </head>
 
