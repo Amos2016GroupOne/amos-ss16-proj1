@@ -18,19 +18,19 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 StatusBar.styleDefault();
             }
 
-			//It sets the language to the system language. Only on the very first run of the app
+			// It sets the language to the system language. Only on the very first run of the app
 			setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
 			.then(
 				function(data){
 					Log.add("tanslating to: " + settings.settings.language);
-					//let angular-translate know that from now on this language has to be used
-					//this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
+					// let angular-translate know that from now on this language has to be used
+					// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
 					return $translate.use(settings.settings.language)
 				}
 			).then(
 				function(data){
-					//Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
-					//this has to be called after the translation is loaded in order to display translated error messages
+					// Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
+					// this has to be called after the translation is loaded in order to display translated error messages
 					Log.add("initializing CordovaBluetoothLE");
 					initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log);
 				}
@@ -38,18 +38,18 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
 			/*not used at the moment
 			$rootScope.$on("setLocaleSettingDone", function(event, data){
-				//do something with it
+				// do something with it
 			});
 			setLocaleSetting($rootScope, settings, Log);*/
 
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
-			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
-			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
+			$ionicPlatform.on("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
+			$ionicPlatform.on("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
 
         })
     })
 
-	//add languages here if you add a new language to the lang folder
+	// add languages here if you add a new language to the lang folder
 	.constant('availableLanguages', ['en-us', 'de-de', 'hu-hu'])
 	.constant('defaultLanguage', 'en-us')
 
@@ -89,7 +89,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                     }
                 }
             })
-			
+
             .state('tab.graph', {
                 url: '/graph',
                 views: {
@@ -102,8 +102,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
-	
-		//This means: load the language file lang/{preferredLanguage}.json
+
+		// This means: load the language file lang/{preferredLanguage}.json
 		$translateProvider.useStaticFilesLoader({
 			prefix: 'lang/',
 			suffix: '.json'
@@ -160,26 +160,26 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
 
 function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log){
-	//disable built in request as we use our own request below because
-	//with the built in request we can not recognize if the request was declined, or at least do not know how
+	// Disable built in request as we use our own request below because
+	// With the built in request we can not recognize if the request was declined, or at least do not know how
 	$cordovaBluetoothLE.initialize({ request: false }).then(null,
 		function (result) {
-			//Handle errors
+			// Handle errors
 			Log.add("Init Fail: " + JSON.stringify(result));
 			navigator.notification.alert($translate.instant("PROMPT_DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
 		},
 		function (obj) {
-			//Handle successes of initialize
+			// Handle successes of initialize
 			if (obj.status == "disabled") {
 				var enableFunction = function () {
 					$cordovaBluetoothLE.enable().then(null, function (obj) {
-						//there was a failure of the internal enable() function
+						// There was a failure of the internal enable() function
 						Log.add("Enable Error : " + JSON.stringify(obj));
 						navigator.notification.alert($translate.instant("PROMPT_INTERNAL_ERROR_ENABLING_BT"),
 													 function () { navigator.app.exitApp(); });
 					});
 				}
-				//our own request. gets called everytime there was a change to the BT state
+				// Our own request. gets called everytime there was a change to the BT state
 				navigator.notification.confirm($translate.instant("PROMPT_TURN_ON_BLUETOOTH"), function (buttonIndex) {
 					if (buttonIndex == 1){
 						enableFunction();
@@ -215,30 +215,30 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 
 function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage){
 
-	//this promise does nothing. It is just returned, so it can be used in the same way as when a real promise is returned like below
+	// This promise does nothing. It is just returned, so it can be used in the same way as when a real promise is returned like below
 	var initialLangSettingDone = $q(function(resolve, reject) {
-		//do nothing
+		// Do nothing
 		resolve();
 	});
 	var lang;
 	if(typeof navigator.globalization == "undefined") {
-		//At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
+		// At the moment navigator is undefined if you do "ionic serve" but it works with "cordova run browser --target=firefox"
 		settings.settings.language = defaultLanguage;
 		Log.add("navigator.globalization undefined. Probably running in browser. Using default language: " + defaultLanguage);
 		return initialLangSettingDone;
 	}
-	//If this is true its the first run. So use the system language:
+	// If this is true its the first run. So use the system language:
 	if(settings.settings.language == "system"){
-		//Get the BCP 47 language tag for the client's current language. For example "en-US"
-		//"en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
-		//use AngularJS wrapper from ngCordova for cordova-plugin-globalization instead of navigator.globalization.getPreferredLanguage
-		//that way we can work with a promise instead of callbacks
+		// Get the BCP 47 language tag for the client's current language. For example "en-US"
+		// "en" ist the ISO 639-1 two-letter language code and  "US" is the ISO 3166-1 country code
+		// Use AngularJS wrapper from ngCordova for cordova-plugin-globalization instead of navigator.globalization.getPreferredLanguage
+		// That way we can work with a promise instead of callbacks
 		initialLangSettingDone = $cordovaGlobalization.getPreferredLanguage().then(
-			//success
+			// Success
 			function(language) {
-				//value is a string already
+				// Value is a string already
 				lang = language.value;
-				//depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
+				// Depending on the phone the codes may be uppercase or lowercase. Prevent problems by lowercasing everything
 				lang = lang.toLowerCase();
 				Log.add("getPreferredLanguage success: preferred language is: " + lang);
 				var langExists = false;
@@ -254,7 +254,7 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 					Log.add("Preferred Language does not exist. Using default language: " + defaultLanguage);
 				}
 			},
-			//error
+			// Error
 			function(error) {
 				settings.settings.language = defaultLanguage;
 				Log.add("getPreferredLanguage error: " + error);
@@ -265,16 +265,16 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 }
 
 function setLocaleSetting($rootScope, settings, Log){
-	//Returns the BCP 47 compliant locale identifier. For example "en-US"
-	//Android does not distinguish between "language" and "locale" so this will be the same as above
+	// Returns the BCP 47 compliant locale identifier. For example "en-US"
+	// Android does not distinguish between "language" and "locale" so this will be the same as above
 	if(typeof navigator.globalization !== "undefined") {
 		navigator.globalization.getLocaleName(function (locale) {
-				//value is a string already
+				// Value is a string already
 				var locale = locale.value;
-				//depending on the phone the string may be uppercase or lowercase. Prevent problems by lowercasing everything
+				// Depending on the phone the string may be uppercase or lowercase. Prevent problems by lowercasing everything
 				locale = locale.toLowerCase();
 				Log.add("getLocaleName success: preferred locale is: " + locale);
-				//set language setting
+				// Set language setting
 				settings.settings.locale = locale;
 				$rootScope.$emit('setLocaleSettingDone');
 			}, function (error) {
@@ -283,7 +283,7 @@ function setLocaleSetting($rootScope, settings, Log){
 				$rootScope.$emit('setLocaleSettingDone');
 		});
 	} else {
-		//fallback if the navigator object is missing. Should never happen on actual devices
+		// Fallback if the navigator object is missing. Should never happen on actual devices
 		settings.settings.locale = "en-us";
 		$rootScope.$emit('setLocaleSettingDone');
 	}
