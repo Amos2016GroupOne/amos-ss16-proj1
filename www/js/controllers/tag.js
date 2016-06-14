@@ -159,6 +159,8 @@ angular.module('app.controllers')
             }, function (obj) {
                 deferred.reject();
                 Log.add("Subscribe Error : " + JSON.stringify(obj));
+                navigator.notification.alert("The device is interrupted or out of range! Please move the device closer!");
+                $scope.disconnect(device);
             }, function (obj) {
                 //Log.add("Subscribe Success : " + JSON.stringify(obj));
                 if (obj.status == "subscribedResult") {
