@@ -845,8 +845,9 @@ angular.module('app.controllers', [])
                 var up = 10;
 
                 // Catch if volume 91 to 100, update to max 100
-                if (vol > 90)
+                if (vol > 90) {
                     up = 100 - vol;
+                }
                 vol = vol + up;
 
                 settings.settings.volume = vol;
@@ -869,8 +870,9 @@ angular.module('app.controllers', [])
                 var down = 10;
 
                 // Catch if volume 9 to 0, update to min 0
-                if (vol < 10)
+                if (vol < 10) {
                     down = vol;
+                }
                 vol = vol - down;
 
                 settings.settings.volume = vol;
@@ -897,7 +899,9 @@ angular.module('app.controllers', [])
     $scope.dragged = false;
 
     // If less than 100 data points are available set the startpoint to 0
-    if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+    if($scope.currentStartPoint < 0) {
+      $scope.currentStartPoint = 0;
+    }
 
     // This function extracs a 100 item data slice from the data starting at $scope.currentStartPoint
     // This data slice is set as the chart data.
@@ -934,7 +938,9 @@ angular.module('app.controllers', [])
 
 
       // If less than $scope.numberOfDatapoints data points are available set the startpoint to 0
-      if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+      if($scope.currentStartPoint < 0) {
+        $scope.currentStartPoint = 0;
+      }
 
       createAndSetDataSlice();
     });
@@ -997,7 +1003,9 @@ angular.module('app.controllers', [])
           $scope.currentStartPoint = $scope.startOffset + numberOfBars;
 
           // Don't let it become negative.
-          if($scope.currentStartPoint < 0) $scope.currentStartPoint = 0;
+          if($scope.currentStartPoint < 0) {
+            $scope.currentStartPoint = 0;
+          }
           createAndSetDataSlice();
         }
       }
