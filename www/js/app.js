@@ -43,8 +43,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 			setLocaleSetting($rootScope, settings, Log);*/
 
 			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
-			document.addEventListener("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
-			document.addEventListener("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
+			$ionicPlatform.on("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
+			$ionicPlatform.on("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
 
         })
     })
@@ -89,7 +89,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                     }
                 }
             })
-			
+
             .state('tab.graph', {
                 url: '/graph',
                 views: {
@@ -102,7 +102,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
-	
+
 		//This means: load the language file lang/{preferredLanguage}.json
 		$translateProvider.useStaticFilesLoader({
 			prefix: 'lang/',
