@@ -19,6 +19,7 @@ angular.module('app.controllers')
 
     $scope.motionOn = false;
 
+    var outOfRange = false;  // true if the device is out of range, false if the device is near
 
     // Create Database for Graph. Better in service.. but no native plugins in service possible
     // here: ugly workaround
@@ -159,6 +160,8 @@ angular.module('app.controllers')
             }, function (obj) {
                 deferred.reject();
                 Log.add("Subscribe Error : " + JSON.stringify(obj));
+                navigator.notification.alert("The device is interrupted or out of range! Please check if it is turned on.");
+                $scope.disconnect(device);
             }, function (obj) {
                 //Log.add("Subscribe Success : " + JSON.stringify(obj));
                 if (obj.status == "subscribedResult") {
@@ -221,6 +224,8 @@ angular.module('app.controllers')
                 Log.add("Subscribe Auto Unsubscribe : " + JSON.stringify(obj));
             }, function (obj) {
                 Log.add("Subscribe Error : " + JSON.stringify(obj));
+                navigator.notification.alert("The device is interrupted or out of range! Please check if it is turned on.");
+                $scope.disconnect(device);
                 deferred.reject();
             }, function (obj) {
                 //Log.add("Subscribe Success : " + JSON.stringify(obj));
@@ -317,6 +322,9 @@ angular.module('app.controllers')
     $scope.connect = function(device) {
 
         var onConnect = function(obj) {
+
+            // The app will stop scanning if the device already connected
+            $scope.stopScan();
 
             if ($scope.dev1Connected && $scope.dev2Connected) {
                 navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
