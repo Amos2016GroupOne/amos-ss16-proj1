@@ -317,6 +317,8 @@ angular.module('app.controllers')
     };
 
     $scope.connect = function(device) {
+            
+            $scope.stopScan();
 
         var onConnect = function(obj) {
 
