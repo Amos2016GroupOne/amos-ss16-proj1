@@ -21,8 +21,12 @@ angular.module('app.controllers')
 
 
     // Create Database for Graph. Better in service.. but no native plugins in service possible
-    // here: ugly workaround
-    $rootScope.db = null;
+    // Mock database for browser testing:
+    $rootScope.db = {
+        transaction: function() {
+            console.log('Mocking db transaction');
+        }
+    };
     $ionicPlatform.ready(function() {
         //dataStorage.storeData_graph("" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(), acc[3], acc[4], acc[5]);
         initDB();
@@ -317,7 +321,7 @@ angular.module('app.controllers')
     };
 
     $scope.connect = function(device) {
-            
+
             $scope.stopScan();
 
         var onConnect = function(obj) {
