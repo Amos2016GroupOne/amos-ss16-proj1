@@ -35,18 +35,29 @@ describe('SettingsCtrl:', function() {
   // This will also make all app intern services available per inject()
   beforeEach(module('app', function ($provide, $translateProvider) {
 
-	  //use a custom Loader for angular-translate. Otherwise some test will fail with
-	  //"Error: Unexpected request: GET en-us.json"
-	  //why this has to be done is explained in detail here:
-	  //https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
-      $translateProvider.translations('en-us', {
+	//use a custom Loader for angular-translate. Otherwise some test will fail with
+	//"Error: Unexpected request: GET en-us.json"
+	//why this has to be done is explained in detail here:
+	//https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
+	$provide.factory('customLoader', function ($q) {
+		return function () {
+			var deferred = $q.defer();
+			deferred.resolve({});
+			return deferred.promise;
+		};
+	});
+
+	$translateProvider.useLoader('customLoader');
+
+	$translateProvider.translations('en-us', {
 		"LANGUAGE": "language",
-		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth"
-	  });
-	  $translateProvider.translations('de-de', {
-	    "LANGUAGE": "Sprache",
+		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
+		"ONLY_AVAIL_IN_EN_US": "this translation is only available in en-us"
+	});
+	$translateProvider.translations('de-de', {
+		"LANGUAGE": "Sprache",
 		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote möchte Bluetooth aktivieren"
-	  });
+	});
 
   }));
 
@@ -144,6 +155,12 @@ describe('SettingsCtrl:', function() {
 		});
 		$rootScope.$digest();
 		expect(translationString).toBe('BLE Remote möchte Bluetooth aktivieren');
+	});
+
+	it('should translate to english if the translation id is not found', function(){
+		setLanguage('de-de');
+		$translate.fallbackLanguage('en-us');
+		expect($translate.instant('ONLY_AVAIL_IN_EN_US')).toBe('this translation is only available in en-us');
 	});
 
   });
