@@ -135,6 +135,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 		});
 		$translateProvider.preferredLanguage(defaultLanguage);
 
+		// sanitize the HTML in the translation text using angulars $sanitize
+		$translateProvider.useSanitizeValueStrategy('sanitize');
+
     })
     // Adopted from ng-cordova-ble example
     .factory('Log', function ($rootScope, $ionicPopup) {
