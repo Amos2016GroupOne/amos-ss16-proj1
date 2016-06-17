@@ -321,7 +321,7 @@ angular.module('app.controllers')
                 startScan();
             }
             else {
-                navigator.notification.confirm($translate.instant("PROMPT_ENABLE_LOCATION_SERVICE"), function(buttonIndex) {
+                navigator.notification.confirm($translate.instant("PROMPT.ENABLE_LOCATION_SERVICE"), function(buttonIndex) {
                     if (buttonIndex == 1) {
                         $cordovaBluetoothLE.requestLocation().then(function(obj) {
                             console.log(JSON.stringify(obj));
@@ -329,13 +329,13 @@ angular.module('app.controllers')
                                 startScan();
                             }
                             else {
-                                navigator.notification.alert($translate.instant("PROMPT_SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
+                                navigator.notification.alert($translate.instant("PROMPT.SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
                             }
                         }, null);
                     } else if (buttonIndex == 0 || buttonIndex == 2) {
-                        navigator.notification.alert($translate.instant("PROMPT_SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
+                        navigator.notification.alert($translate.instant("PROMPT.SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE"), null);
                     }
-                }, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("ACCEPT"), $translate.instant("CANCEL")]);
+                }, $translate.instant("PROMPT.HEADER_ENABLE_BT"), [$translate.instant("PROMPT.ACCEPT"), $translate.instant("PROMPT.CANCEL")]);
             }
         }, function(err)
         {
@@ -352,7 +352,7 @@ angular.module('app.controllers')
         var onConnect = function(obj) {
 
             if ($scope.dev1Connected && $scope.dev2Connected) {
-                navigator.notification.alert($translate.instant("PROMPT_CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
+                navigator.notification.alert($translate.instant("PROMPT.CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                 return;
             }
 
@@ -383,7 +383,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.connect(params).then(null, function(obj) {
             Log.add("Connect Error : " + JSON.stringify(obj));
-            navigator.notification.alert($translate.instant("PROMPT_CONNECTION_FAILED"), null);
+            navigator.notification.alert($translate.instant("PROMPT.CONNECTION_FAILED"), null);
             $scope.close(params.address);  // Best practice is to close on connection error
         }, function() {
             $scope.discover(device.address, onConnect);

@@ -221,7 +221,7 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 					}else if(buttonIndex == 0 || buttonIndex == 2){
 						navigator.notification.alert($translate.instant("PROMPT_APP_ONLY_WORKS_WITH_BT"), function () { navigator.app.exitApp(); });
 					}
-				}, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("ACCEPT"), $translate.instant("CANCEL")]);
+				}, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("PROMPT.ACCEPT"), $translate.instant("PROMPT.CANCEL")]);
 			}
 			else if (obj.status == "enabled") {
 				Log.add("Enable Success : " + JSON.stringify(obj));

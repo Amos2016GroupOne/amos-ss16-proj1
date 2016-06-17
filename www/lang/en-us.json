@@ -35,17 +35,17 @@
 		"TRACK_GRAPH": "Track Graph",
 		"BAR_GRAPH": "Bar Graph"
 	},
-	"PROMPTS": {
+	"PROMPT": {
 		"ACCEPT": "Accept",
 		"CANCEL": "Cancel",
-		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
-		"PROMPT_DEVICE_DOES_NOT_SUPPORT_BLE": "Sorry. Your device does not support BTLE",
-		"PROMPT_INTERNAL_ERROR_ENABLING_BT": "There was an internal error when enabling Bluetooth. This app only works with Bluetooth enabled",
-		"PROMPT_APP_ONLY_WORKS_WITH_BT": "Sorry. This app only works with Bluetooth enabled",
-		"PROMPT_HEADER_ENABLE_BT": "Enable Bluetooth",
-		"PROMPT_ENABLE_LOCATION_SERVICE": "To scan for devices you need to enable location services. Do you want to do that now?",
-		"PROMPT_SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Sorry. Scanning only works with location services enabled.",
-		"PROMPT_CONNECT_MORE_THAN_TWO_DEVICES": "Sorry. You cannot connect to more than two devices!",
-		"PROMPT_CONNECTION_FAILED": "Connection failed. Please try again"
+		"TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
+		"DEVICE_DOES_NOT_SUPPORT_BLE": "Sorry. Your device does not support BTLE",
+		"INTERNAL_ERROR_ENABLING_BT": "There was an internal error when enabling Bluetooth. This app only works with Bluetooth enabled",
+		"APP_ONLY_WORKS_WITH_BT": "Sorry. This app only works with Bluetooth enabled",
+		"HEADER_ENABLE_BT": "Enable Bluetooth",
+		"ENABLE_LOCATION_SERVICE": "To scan for devices you need to enable location services. Do you want to do that now?",
+		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Sorry. Scanning only works with location services enabled.",
+		"CONNECT_MORE_THAN_TWO_DEVICES": "Sorry. You cannot connect to more than two devices!",
+		"CONNECTION_FAILED": "Connection failed. Please try again"
 	}
 }
