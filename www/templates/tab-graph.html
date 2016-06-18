@@ -23,13 +23,13 @@
 
 -->
 
-<ion-view view-title="{{ 'GRAPH' | translate }}">
+<ion-view view-title="{{ 'GRAPH_TAB.GRAPH' | translate }}">
   <ion-content class="padding">
-    <h1>{{ 'GRAPH' | translate }}</h1>
+    <h1>{{ 'GRAPH_TAB.GRAPH' | translate }}</h1>
 
     <div class="card">
         <div class="item item-divider">
-            {{ 'BAR_GRAPH' | translate }}
+            {{ 'GRAPH_TAB.BAR_GRAPH' | translate }}
         </div>
         <div class="item item-text-wrap">
             <canvas id="bar" class="chart chart-bar" data="data" labels="labels"
@@ -38,7 +38,7 @@
              on-drag-left="mouseMove($event)"
              on-drag-right="mouseMove($event)"
              on-release="stopDrag($event)"></canvas>
-             <button class="button button-royal" id="btnTrackGraph" ng-click="followGraph();">{{ 'TRACK_GRAPH' | translate }}</button>
+             <button class="button button-royal" id="btnTrackGraph" ng-click="followGraph();">{{ 'GRAPH_TAB.TRACK_GRAPH' | translate }}</button>
 
         </div>
     </div>

@@ -23,14 +23,14 @@
 
 -->
 
-<ion-view view-title="{{ 'SETTINGS' | translate }}">
+<ion-view view-title="{{ 'SETTINGS_TAB.SETTINGS' | translate }}">
   <ion-content class="padding">
 
-    <h1>{{ 'SETTINGS' | translate }}</h1>
+    <h1>{{ 'SETTINGS_TAB.SETTINGS' | translate }}</h1>
 
 	  <ion-list>
 	    <div class="item item-divider">
-        	{{ 'LANGUAGE' | translate }}
+        	{{ 'SETTINGS_TAB.LANGUAGE' | translate }}
         </div>
 	    <ion-radio
 			ng-repeat="lang in availableLanguages"
@@ -41,11 +41,11 @@
 			{{ lang }}
         </ion-radio>
 		<div class="item item-divider">
-			{{ 'CONNECTION_TYPE' | translate }}
+			{{ 'SETTINGS_TAB.CONNECTION_TYPE' | translate }}
         </div>
-        <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">{{ 'AUTO_RECONNECT' | translate }}</ion-toggle>
+        <ion-toggle ng-model="settings.reconnect" ng-change="update()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.AUTO_RECONNECT' | translate }}</ion-toggle>
 	  	<div class="item item-divider">
-            {{ 'SCAN_DURATION' | translate }}
+            {{ 'SETTINGS_TAB.SCAN_DURATION' | translate }}
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
@@ -62,10 +62,10 @@
 																		   translate: volumeSliderLabel, hideLimitLabels: true}"></rzslider>
           <i class="icon ion-volume-high"></i>
         </div>
-        <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">{{ 'MUTE' | translate }}</ion-toggle>
+        <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.MUTE' | translate }}</ion-toggle>
         <ion-list ng-show="settings.volumeProfiles.length > 0">
           <div class="item item-divider">
-            {{ 'VOLUME_PROFILES' | translate }}
+            {{ 'SETTINGS_TAB.VOLUME_PROFILES' | translate }}
           </div>
           <!-- REMEMBER: ng-values are compared by ==. Two objects equal each other in js
             if they refer to the same object! so we need to compare the objects into a
@@ -76,13 +76,13 @@
                ng-model="settings.currentVolumeProfile"
                ng-change="changeVolumeProfile()"
 			   name="volumeProfileRadios">
-               {{ volumeProfile.name | translate }}
+               {{ 'SETTINGS_TAB.' + volumeProfile.name | translate }}
           </ion-radio>
         </ion-list>
         <div class="item item-divider">
-      		{{ 'ENVIRONMENT_VOLUME' | translate }}: {{ decibel }} dB
+      		{{ 'SETTINGS_TAB.ENVIRONMENT_VOLUME' | translate }}: {{ decibel }} dB
         </div>
-        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'ACTIVATE_DB_METER' | translate }}</ion-toggle>
+        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
       </ion-list>
 
   </ion-content>
