@@ -135,6 +135,14 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 		});
 		$translateProvider.preferredLanguage(defaultLanguage);
 
+		// sanitize the HTML in the translation text using angulars $sanitize
+		// $translateProvider.useSanitizeValueStrategy('sanitize');
+		// this would be the better solution but it doesnt display special characters after that.
+		// angular-translate website states: Currently there is an issue with the sanitize mode,
+		// it will double encode UTF-8 characters or special characters.
+		//Recommendation: use the 'escape' stratey, until this is resolved.
+		$translateProvider.useSanitizeValueStrategy('escape');
+
     })
     // Adopted from ng-cordova-ble example
     .factory('Log', function ($rootScope, $ionicPopup) {
