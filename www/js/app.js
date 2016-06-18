@@ -31,47 +31,49 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate) {
-        $ionicPlatform.ready(function () {
-            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-            // for form inputs)
-            if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-                cordova.plugins.Keyboard.disableScroll(true);
-            }
-            if (window.StatusBar) {
-                // org.apache.cordova.statusbar required
-                StatusBar.styleDefault();
-            }
 
-			// It sets the language to the system language. Only on the very first run of the app
-			setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
-			.then(
-				function(data){
-					Log.add("tanslating to: " + settings.settings.language);
-					// let angular-translate know that from now on this language has to be used
-					// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
-					return $translate.use(settings.settings.language)
-				}
-			).then(
-				function(data){
+		// It sets the language to the system language. Only on the very first run of the app
+		setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
+		.then(
+			function(data){
+				Log.add("tanslating to: " + settings.settings.language);
+
+				//If there are translation ids, that are available in the en-us translation table, but not in the currently used one
+				//angular-translate would return the translation id by default.
+				//So we register a fallback language, so angular-translate will return this translation instead of the missing one
+				$translate.fallbackLanguage(defaultLanguage);
+
+				// let angular-translate know that from now on this language has to be used
+				// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
+				return $translate.use(settings.settings.language)
+
+			}
+		).then(function(data){
+				//make sure ionic specific stuff is only done after the translation was loaded, so warning popups are localized
+				$ionicPlatform.ready(function () {
+					// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+					// for form inputs)
+					if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+						cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+						cordova.plugins.Keyboard.disableScroll(true);
+					}
+					if (window.StatusBar) {
+						// org.apache.cordova.statusbar required
+						StatusBar.styleDefault();
+					}
+
 					// Initialize the cordovaBluetoothLE plugin. Prompts the user to enable BT if not already activated
 					// this has to be called after the translation is loaded in order to display translated error messages
 					Log.add("initializing CordovaBluetoothLE");
 					initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log);
-				}
-			);
 
-			/*not used at the moment
-			$rootScope.$on("setLocaleSettingDone", function(event, data){
-				// do something with it
-			});
-			setLocaleSetting($rootScope, settings, Log);*/
+					// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
+					$ionicPlatform.on("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
+					$ionicPlatform.on("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
 
-			// Add EventListener for Volume UP and DOWN (works only for Android + BlackBerry)
-			$ionicPlatform.on("volumeupbutton", function (event) { $rootScope.$broadcast('volumeupbutton'); });
-			$ionicPlatform.on("volumedownbutton", function (event) { $rootScope.$broadcast('volumedownbutton'); });
-
-        })
+				})
+			}
+		);
     })
 
 	// add languages here if you add a new language to the lang folder
@@ -128,7 +130,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/tag');
 
-		// This means: load the language file lang/{preferredLanguage}.json
+		// This means: load the language file lang/{preferredLanguage}.json asynchronously
 		$translateProvider.useStaticFilesLoader({
 			prefix: 'lang/',
 			suffix: '.json'
@@ -297,6 +299,7 @@ function setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settin
 	return initialLangSettingDone;
 }
 
+//currently not used
 function setLocaleSetting($rootScope, settings, Log){
 	// Returns the BCP 47 compliant locale identifier. For example "en-US"
 	// Android does not distinguish between "language" and "locale" so this will be the same as above
