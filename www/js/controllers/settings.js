@@ -39,6 +39,12 @@ angular.module('app.controllers')
     $scope.changeLanguage = function() {
         console.log("tanslating to: " + $scope.settings.language);
         $translate.use($scope.settings.language);
+        //depending on the language, the text should float to the left or right
+        if($scope.settings.language == 'ar-sy'){
+            $rootScope.default_float = 'right';
+        }else{
+            $rootScope.default_float = 'left';
+        }
         $scope.update();
     }
     

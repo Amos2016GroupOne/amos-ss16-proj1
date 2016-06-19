@@ -32,6 +32,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate) {
 
+        $rootScope.default_float = 'left';
+
 		// It sets the language to the system language. Only on the very first run of the app
 		setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
 		.then(
@@ -77,7 +79,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
     })
 
 	// add languages here if you add a new language to the lang folder
-	.constant('availableLanguages', ['en-us', 'de-de', 'hu-hu'])
+	.constant('availableLanguages', ['en-us', 'de-de', 'hu-hu', 'ar-sy'])
 	.constant('defaultLanguage', 'en-us')
 
     .config(function ($stateProvider, $urlRouterProvider, $translateProvider, defaultLanguage) {
