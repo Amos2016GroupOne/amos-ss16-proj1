@@ -201,7 +201,7 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 		function (result) {
 			// Handle errors
 			Log.add("Init Fail: " + JSON.stringify(result));
-			navigator.notification.alert($translate.instant("PROMPT_DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
+			navigator.notification.alert($translate.instant("PROMPT.DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
 		},
 		function (obj) {
 			// Handle successes of initialize
@@ -210,18 +210,18 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 					$cordovaBluetoothLE.enable().then(null, function (obj) {
 						// There was a failure of the internal enable() function
 						Log.add("Enable Error : " + JSON.stringify(obj));
-						navigator.notification.alert($translate.instant("PROMPT_INTERNAL_ERROR_ENABLING_BT"),
+						navigator.notification.alert($translate.instant("PROMPT.INTERNAL_ERROR_ENABLING_BT"),
 													 function () { navigator.app.exitApp(); });
 					});
 				}
 				// Our own request. gets called everytime there was a change to the BT state
-				navigator.notification.confirm($translate.instant("PROMPT_TURN_ON_BLUETOOTH"), function (buttonIndex) {
+				navigator.notification.confirm($translate.instant("PROMPT.TURN_ON_BLUETOOTH"), function (buttonIndex) {
 					if (buttonIndex == 1){
 						enableFunction();
 					}else if(buttonIndex == 0 || buttonIndex == 2){
-						navigator.notification.alert($translate.instant("PROMPT_APP_ONLY_WORKS_WITH_BT"), function () { navigator.app.exitApp(); });
+						navigator.notification.alert($translate.instant("PROMPT.APP_ONLY_WORKS_WITH_BT"), function () { navigator.app.exitApp(); });
 					}
-				}, $translate.instant("PROMPT_HEADER_ENABLE_BT"), [$translate.instant("PROMPT.ACCEPT"), $translate.instant("PROMPT.CANCEL")]);
+				}, $translate.instant("PROMPT.HEADER_ENABLE_BT"), [$translate.instant("PROMPT.ACCEPT"), $translate.instant("PROMPT.CANCEL")]);
 			}
 			else if (obj.status == "enabled") {
 				Log.add("Enable Success : " + JSON.stringify(obj));
