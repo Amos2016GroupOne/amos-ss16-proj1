@@ -29,8 +29,13 @@ angular.module('app.controllers')
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
-
+    var counter = 0;
+    $scope.seconds = "00";
+    $scope.minutes = "00";
+    $scope.hours = "00";
+    var timer;
     $scope.numberOfDatapoints = 10;
+    $scope.date = [];
 
     // Initialize the current start point
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
@@ -54,12 +59,9 @@ angular.module('app.controllers')
         //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
         $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
         $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
+    
     }
-
-
-
-
-
+         
     createAndSetDataSlice();
 
     $scope.barOffset = 0;
@@ -81,6 +83,11 @@ angular.module('app.controllers')
         if($scope.currentStartPoint < 0) {
             $scope.currentStartPoint = 0;
         }
+        
+        //Counter starts with the same phase as the graph when connected
+        counter++;
+        //Convert it to hh:mm:ss
+        convertToHms(counter);
 
         createAndSetDataSlice();
     });
@@ -144,5 +151,37 @@ angular.module('app.controllers')
             }
         }
     };
+      
+    //Convert to hh:mm:ss
+    function convertToHms(secs) {
+            secs = Number(secs);
+            var h = Math.floor(secs / 3600);
+            var m = Math.floor(secs % 3600 / 60);
+            var s = Math.floor(secs % 3600 % 60);
+            
+            if(h < 10) {
+            $scope.hours = "0" + h;
+            }
+            else {
+            $scope.hours = h;
+            }
+            if (m < 10) {
+            $scope.minutes = "0" + m;
+            }
+            else {
+            $scope.minutes = m;
+            }
+            if (s < 10) {
+            $scope.seconds = "0" + s;
+            }
+            else {
+            $scope.seconds = s;
+            }
+    }
+    
+    //Reset the counter when the device is disconnected
+    $scope.$on("resetTime", function() {
+        counter = 0;
+    });
 })
 

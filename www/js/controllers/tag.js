@@ -41,7 +41,6 @@ angular.module('app.controllers')
     $scope.accelerometer = {
         accelerometerDev1: "", accelerometerDev2: ""
     };
-
     $scope.motionOn = false;
 
 
@@ -350,7 +349,7 @@ angular.module('app.controllers')
             $scope.stopScan();
 
         var onConnect = function(obj) {
-
+            
             if ($scope.dev1Connected && $scope.dev2Connected) {
                 navigator.notification.alert($translate.instant("PROMPT.CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                 return;
@@ -415,6 +414,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
+            $rootScope.$broadcast("resetTime");
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));
         });
