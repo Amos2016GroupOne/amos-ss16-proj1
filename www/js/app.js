@@ -32,22 +32,35 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate) {
 
-        $rootScope.default_float = 'left';
+        ////defines were the html text should float (left or right). This is used in index.html then
+        //$rootScope.default_float = settings.settings.default_float;
+        $rootScope.default_float = '';
 
-		// It sets the language to the system language. Only on the very first run of the app
+        $rootScope.changeLanguage = function () {
+            console.log("tanslating to: " + settings.settings.language);
+            // let angular-translate know that from now on this language has to be used
+            var promise = $translate.use(settings.settings.language);
+            //depending on the language, the text should float to the left or right
+            if(settings.settings.language == 'ar-sy'){
+                $rootScope.default_float = 'right';
+            }else{
+                $rootScope.default_float = 'left';
+            }
+            settings.persistSettings();
+            return promise;
+        }
+
+        // It sets the language to the system language. Only on the very first run of the app
 		setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
 		.then(
 			function(data){
-				Log.add("tanslating to: " + settings.settings.language);
-
 				//If there are translation ids, that are available in the en-us translation table, but not in the currently used one
 				//angular-translate would return the translation id by default.
 				//So we register a fallback language, so angular-translate will return this translation instead of the missing one
 				$translate.fallbackLanguage(defaultLanguage);
 
-				// let angular-translate know that from now on this language has to be used
 				// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
-				return $translate.use(settings.settings.language)
+				return $rootScope.changeLanguage();
 
 			}
 		).then(function(data){
