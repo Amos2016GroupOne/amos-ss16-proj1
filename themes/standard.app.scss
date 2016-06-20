@@ -21,3 +21,14 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+.arrow {
+        height: 100px;
+}
+
+.popover {
+        opacity: 1;
+}
+
+.tour-backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+}

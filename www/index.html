@@ -42,6 +42,12 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
+    <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="lib/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
+    <script src="lib/ez-ng/dist/ez-ng.js"></script>
+    <script src="lib/angular-hotkeys/build/hotkeys.js"></script>
+    <script src="lib/angular-ui-tour/dist/angular-ui-tour.js"></script>
+
     <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script type="text/javascript" src="lib/ng-cordova-ble/ng-cordova-bluetoothle.js"></script>
 
@@ -66,7 +72,7 @@
     <script type="text/javascript" src="js/init.js"></script>
 </head>
 
-<body>
+<body ui-tour ui-tour-animation="false" ui-tour-backdrop="true" ui-tour-popupDelay="0" ui-tour-appendToBody="true">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->

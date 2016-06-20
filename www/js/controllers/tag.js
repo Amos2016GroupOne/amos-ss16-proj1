@@ -25,7 +25,7 @@
 
 // Controller for Tag View
 angular.module('app.controllers')
-.controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, $cordovaSQLite, Log, settings, dataStorage, $translate) {
+.controller('TagCtrl', function($scope, $rootScope, $q, $cordovaBluetoothLE, $ionicPlatform, $cordovaDeviceMotion, $cordovaSQLite, Log, settings, dataStorage, $translate, uiTourService) {
     $scope.devices = {};
     $scope.scanDevice = false;
     $scope.noDevice = true;
@@ -43,6 +43,14 @@ angular.module('app.controllers')
     };
 
     $scope.motionOn = false;
+
+    $scope.startTour = function() {
+            console.log("here");
+            console.log(uiTourService.getTour());
+            uiTourService.getTour().start().then(function() {
+                    console.log('show now');
+            });
+    }
 
 
     // Create Database for Graph. Better in service.. but no native plugins in service possible
@@ -65,7 +73,7 @@ angular.module('app.controllers')
             $rootScope.db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
         }
         else { // Without a phone (e.g. ionic serve)
-            db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+            //db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
         }
 
         $cordovaSQLite.execute($scope.db, "CREATE TABLE IF NOT EXISTS graph (id integer primary key, time text, x integer, y integer, z integer)");

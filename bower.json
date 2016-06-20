@@ -17,6 +17,7 @@
     "angular-animate": "1.4.3"
   },
   "dependencies": {
-    "ngCordova": "^0.1.26-alpha"
+    "ngCordova": "^0.1.26-alpha",
+    "angular-ui-tour": "^0.5.4"
   }
 }

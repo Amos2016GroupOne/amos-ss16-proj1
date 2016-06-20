@@ -26,8 +26,16 @@
 <ion-view view-title="{{ 'TAG_TAB.SENSOR_TAG' | translate }}">
     <ion-content class="padding">
         <h1>{{ 'TAG_TAB.SENSOR_TAG' | translate }}</h1>
+        <button ng-click="startTour()">test</button>
 
         <div id="overviewPage">
+          <div tour-step tour-step-title="Attached Step" tour-step-content="I belong to 'myTour' because I don't have a 'belongsTo' attribute.">
+            This step belongs to it's ancestral tour, not the detached tour.
+          </div>
+
+          <div tour-step  tour-step-title="Detached Step" tour-step-content="I belong to 'myDetachedTour' because I have specified my tour">
+            This step belongs to "myDetachedTour" because it is specified, otherwise it would also belong to "myTour".
+          </div>
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
                 <li ng-repeat="(address, device) in devices" >
