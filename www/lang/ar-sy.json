@@ -1,0 +1,51 @@
+{
+	"SETTINGS_TAB": {
+		"SETTINGS": "إعدادات",
+		"LANGUAGE": "لغة",
+		"AUTO_RECONNECT": "إعادة الاتصال التلقائي",
+		"CONNECTION_TYPE": "نوع الاتصال",
+		"NOT_MEASURED_YET": "[لا تقاس بعد]",
+		"SCAN_DURATION": "مدة المسح الضوئي",
+		"MUTE": "كتم الصوت",
+		"VOLUME_PROFILES": "لمحات حجم",
+		"HOME": "الصفحة الرئيسية",
+		"OFFICE": "مكتب",
+		"OUTDOOR": "في الهواء الطلق",
+		"ENVIRONMENT_VOLUME": "حجم البيئة",
+		"ACTIVATE_DB_METER": "تفعيل ديسيبل متر"
+	},
+	"TAG_TAB": {
+		"STATUS": "الحالة",
+		"SENSOR_TAG": "استشعار الكلمات الدلالية",
+		"CONNECT": "ربط",
+		"NO_DEVICE_FOUND": "لم يتم العثور على جهاز",
+		"SCAN_FOR_DEVICES": "مسح للأجهزة",
+		"STOP_SCANNING": "توقف المسح الضوئي",
+		"DISCONNECT": "قطع الاتصال",
+		"DEVICE": "جهاز",
+		"TEMPERATURE": "درجة الحرارة",
+		"PRESSURE": "الضغط",
+		"ACCELEROMETER": "التسارع",
+		"SMARTPHONE_MOTIONS": "الهاتف الذكي الاقتراحات",
+		"SHOW_MOTION": "مشاهدة الحركة",
+		"HIDE_MOTION": "إخفاء الحركة"
+	},
+	"GRAPH_TAB": {
+		"GRAPH": "رسم بياني",
+		"TRACK_GRAPH": "مسار الرسم البياني",
+		"BAR_GRAPH": "شريط الرسم البياني"
+	},
+	"PROMPT": {
+		"ACCEPT": "قبول",
+		"CANCEL": "إلغاء",
+		"TURN_ON_BLUETOOTH": "سيكون BLE Remote ترغب في تشغيل بلوتوث",
+		"DEVICE_DOES_NOT_SUPPORT_BLE": "BTLE آسف. جهازك لا يدعم",
+		"INTERNAL_ERROR_ENABLING_BT": "Bluetooth كان هناك خطأ داخلي عند تمكين بلوتوث. يعمل هذا التطبيق فقط مع تقنية",
+		"APP_ONLY_WORKS_WITH_BT": "Bluetooth آسف. يعمل هذا التطبيق فقط مع تقنية",
+		"HEADER_ENABLE_BT": "Bluetooth تمكين",
+		"ENABLE_LOCATION_SERVICE": "للبحث عن الأجهزة التي تحتاج إلى تمكين خدمات الموقع. هل تريد أن تفعل ذلك الآن؟",
+		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "آسف. مسح يعمل فقط مع خدمات مواقع ممكنة",
+		"CONNECT_MORE_THAN_TWO_DEVICES": "آسف. لا يمكنك الاتصال إلى أكثر من جهازين",
+		"CONNECTION_FAILED": "فشل الاتصال. حاول مرة اخرى"
+	}
+}

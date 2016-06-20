@@ -36,19 +36,15 @@ angular.module('app.controllers')
     // Get the list of all languages that are available as json file
     $scope.availableLanguages = availableLanguages;
 
-    $scope.changeLanguage = function() {
-        console.log("tanslating to: " + $scope.settings.language);
-        $translate.use($scope.settings.language);
-        $scope.update();
-    }
-    
+    $scope.changeLanguage = $rootScope.changeLanguage;
+
     $scope.scanDurationChanged = function() {
         $scope.settings.duration = $scope.durationSlider.getValueForIndex($scope.durationSlider.selectedIndex);
         $scope.update();
     }
-    
+
     $scope.durationSlider = {
-            
+
         //get the index of the persisted duration value on startup
         getInitialIndex: function () {
             for (var i=0; i<13; i++){
@@ -63,7 +59,7 @@ angular.module('app.controllers')
         // http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs/14049482#14049482
         selectedIndex: undefined,
         values: [1,5,10,15,20,25,30,35,40,45,50,55,60],
-        
+
         // This is used by the scanduration slider. It adds ' s' to the tooltip of the slider
         // and returns the corresponding value of the currently set index
         getValueForIndex: function(index) {
@@ -77,7 +73,7 @@ angular.module('app.controllers')
             return $scope.durationSlider.getValueForIndex(index) + ' s';
         }
     }
-    
+
     //set the initial index of the persisted duration value on startup
     $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
 
