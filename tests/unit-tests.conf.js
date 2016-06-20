@@ -47,6 +47,7 @@ module.exports = function(config) {
       '../www/lib/moment.min.js',
       '../www/lib/angular-translate/angular-translate.js',
       '../www/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+      '../www/lib/angular-tour/dist/angular-tour-tpls.min.js',
       '../www/js/**/*.js',
       '../www/lib/angular-mocks/angular-mocks.js',
       '../www/templates/*.html',

@@ -26,7 +26,33 @@
 <ion-view view-title="{{ 'TAG_TAB.SENSOR_TAG' | translate }}">
     <ion-content class="padding">
         <h1>{{ 'TAG_TAB.SENSOR_TAG' | translate }}</h1>
+    <tour step="currentStep" on-show="test" ng-controller="TourCtrl">
+    <div>
+      <span id="tip1">Highlighted</span>
+      <span id="tip2">Elements</span>
+      <input id="input1" />
+      <span id="full1">Full options</span>
+    </div>
 
+    <virtual-step tourtip="tip 1" tourtip-element="#tip1"></virtual-step>
+    <virtual-step tourtip="tip 2" tourtip-element="#tip2"></virtual-step>
+    <virtual-step tourtip="You can use it as an attribute on your element" tourtip-element="#input1"></virtual-step>
+    <virtual-step
+                                                                           tourtip="Full options"
+                                                                           tourtip-step="2"
+                                                                           tourtip-next-label="Next"
+                                                                           tourtip-placement="right"
+                                                                           tourtip-container-element="body"
+                                                                           tourtip-margin="0"
+                                                                           tourtip-offset-vertical="0"
+                                                                           tourtip-offset-horizontal="0"
+                                                                           on-show="someFunc"
+                                                                           on-proceed="someFunc"
+                                                                           use-source-scope="false"
+                                                                           tourtip-element="#full1"></virtual-step>
+    <a ng-click="test()" style="position: absolute; top:100px; z-index:10;" id="e5">Open Tour</a>
+    <a ng-click="closeTour()" style="position: absolute; top:120px; z-index:10;">Close Tour</a>
+    </tour>
         <div id="overviewPage">
             <h2 id="reconnectMessage"></h2>
             <ul id="SensorTagList">
