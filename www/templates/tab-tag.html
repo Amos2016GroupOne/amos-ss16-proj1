@@ -79,5 +79,39 @@
 			</ul>
 		</div>
 
+    <h1 id="one">Chapter One</h1>
+    <h1>Chapter Two</h1>
+    <h1>Chapter <a>Three</a></h1>
+    <h1>Chapter Four</h1>
+    <button class="btn" ng-click="currentStep=3">Go to 3</button>
+    <button class="btn" ng-click="currentStep='chapter3'">Go to 'chapter3'</button>
+    <button class="btn" ng-click="currentStep=0">Go to 0</button>
+    <button class="btn" ng-click="currentStep=false">Go to false</button>
+    <button class="btn" ng-click="currentStep=true">Go to true</button>
+    <button class="btn" ng-click="currentStep={}">Go to {}</button>
+    <ul ui-tour="currentStep">
+      <li target="h1:eq(0)" at="right" class="popover right in" overlay>
+        <div class="arrow"></div>
+        <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+        <div class="popover-content">And here's some amazing content. It's very engaging. right? First <button class="btn" ng-click="currentStep=currentStep+1">Next</button> <button class="btn" ng-click="currentStep=4">Go to 4</button> <button class="btn" ng-click="currentStep='chapter3'">Go to 'chapter3'</button></div>
+      </li>
+      <li target="h1:eq(1)" at="top" class="popover top in">
+        <div class="arrow"></div>
+        <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+        <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Second <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+      </li>
+      <li target="h1:eq(2)" at="left" name="chapter3" class="popover left in" overlay>
+        <div class="arrow"></div>
+        <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+        <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Third <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+      </li>
+      <li target="h1:eq(3)" at="bottom" class="popover bottom in">
+        <div class="arrow"></div>
+        <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+        <div class="popover-content">Fourth <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+      </li>
+    </ul>
+    <pre>{{currentStep|json}}</pre>
+    <div class="tour-overlay fade"></div>
     </ion-content>
 </ion-view>

@@ -36,11 +36,15 @@
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <link rel="stylesheet" type="text/css" href="css/angular-chart.css">
     <link rel="stylesheet" type="text/css" href="lib/angularjs-slider/dist/rzslider.css"/>
+    <link rel="stylesheet" href="lib/bootstrap/docs/assets/css/bootstrap.css">
+
 
 
     <script src="lib/jquery/dist/jquery.min.js"></script>
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <script type="text/javascript" src="lib/angular-ui-tour/src/tour.js"></script>
 
     <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script type="text/javascript" src="lib/ng-cordova-ble/ng-cordova-bluetoothle.js"></script>
@@ -64,10 +68,90 @@
     <script type="text/javascript" src="js/controllers/tag.js"></script>
     <script type="text/javascript" src="js/controllers/settings.js"></script>
     <script type="text/javascript" src="js/init.js"></script>
+     <style>
+/*
+   [ui-tour] li.active {
+     display: block;
+     position: absolute;
+     background: blue;
+     color: white;
+     padding: 20px;
+     margin-top: 10px;
+
+   }
+   [ui-tour] li.active div {
+     position: relative;
+     margin: -20px;
+     padding: 20px;
+   }
+   [ui-tour] li.active div:after {
+     content: '';
+     display: block;
+     position: absolute;
+     left: 50%;
+     top: -10px;
+     margin-left: -5px;
+     width: 0;
+     height: 0;
+     border-bottom: 10px solid black;
+     border-left: 10px solid transparent;
+     border-right: 10px solid transparent;
+   }
+   [ui-tour] li.active[at=top] div:after {
+     border-top: 10px solid black;
+     border-left: 10px solid transparent;
+     border-right: 10px solid transparent;
+   }
+   [ui-tour] li.active[at=right] div:after {
+     left: -10px;
+     top: 50%;
+     margin-left: 0;
+     margin-top: -5px;
+     border-right: 10px solid black;
+     border-top: 10px solid transparent;
+     border-bottom: 10px solid transparent;
+   }
+ */
+h1 { width: 50%; margin: 100px auto; text-align: center; background: lightblue; color: white;}
+
+.popover {
+  opacity: 1;
+}
+
+[ui-tour] > li {
+  display: none;
+}
+            .active {
+              display: block !important;
+            }
+            .tour-overlay {
+              z-index: -10;
+              display: none;
+              height: 500px;
+              width: 500px;
+              top: -4100px;
+              left: -4100px;
+              background: transparent;
+              border-radius: 8000px;
+              border: 4000px solid rgba(0,0,0,.5);
+              position: fixed;
+              -webkit-transition: all 1s ease;
+              -moz-transition: all 1s ease;
+              -ms-transition: all 1s ease;
+              -o-transition: all 1s ease;
+              transition: all 1s ease;
+            }
+            .tour-overlay.in {
+              height: 300px;
+              width: 300px;
+              top: -4000px;
+              left: -4000px;
+            }
+     </style>
 </head>
 
 <!-- the text should float left or right depending on the language-->
-<body class="text-{{ default_float }}">
+<body ng-init="currentStep=3" class="text-{{ default_float }}">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
