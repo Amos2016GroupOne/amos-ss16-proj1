@@ -90,7 +90,7 @@ describe('SettingsCtrl:', function() {
       '$scope': $scope,
       // '$ionicPlatform':  - not specified, so it will take the original ionicPlatform
       'Log': LogMock,
-      'settings': settingsMock
+      //'settings': settingsMock
     });
 
   }));
@@ -167,6 +167,12 @@ describe('SettingsCtrl:', function() {
 		setLanguage('de-de');
 		$translate.fallbackLanguage('en-us');
 		expect($translate.instant('ONLY_AVAIL_IN_EN_US')).toBe('this translation is only available in en-us');
+	});
+
+	it('should change floating direction to right if changing language to ar-sy', function(){
+	    setLanguage('de-de');
+	    setLanguage('ar-sy');
+	    expect($rootScope.default_float).toBe('right');
 	});
 
   });
