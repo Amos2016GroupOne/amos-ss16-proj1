@@ -194,3 +194,13 @@ further information.
   - see http://stackoverflow.com/questions/21053657/how-to-run-travis-ci-locally to
   reproduce locally
   - add a `--verbose`-flag to commands that fail (e.g. `cordova prepare --verbose`)
+
+- css hell
+  - the generated styles and the standard `ionic.app.css` are setting many many style classes!
+  Especially styles for tooltips and bootstrap classes are set. So when e.g. adding
+  a plugin that uses `bootstrap.css` carfully chosen style adjustments become necessary.
+
+- angular can only work together with specific versions of jquery
+
+- 3rd-Party plugins are sometimes really shitty documentated. Especially for all the plugins
+for ui tours that holds true!
