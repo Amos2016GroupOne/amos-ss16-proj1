@@ -41,11 +41,45 @@ angular.module('app.controllers')
         $translate.use($scope.settings.language);
         $scope.update();
     }
-
-    // This is used by the scanduration slider. It adds ' s' to the tooltip of the slider
-    $scope.durationSliderLabel = function(value) {
-        return value + ' s';
+    
+    $scope.scanDurationChanged = function() {
+        $scope.settings.duration = $scope.durationSlider.getValueForIndex($scope.durationSlider.selectedIndex);
+        $scope.update();
     }
+    
+    $scope.durationSlider = {
+            
+        //get the index of the persisted duration value on startup
+        getInitialIndex: function () {
+            for (var i=0; i<13; i++){
+                if($scope.durationSlider.values[i] == $scope.settings.duration){
+                    return result = i;
+                }
+            }
+            console.log("invalid value for scan duration during loading of the controller!");
+            return 0;
+        },
+        // do not use a primitve for rz-slider-model. Because it wont get updated! Explanation:
+        // http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs/14049482#14049482
+        selectedIndex: undefined,
+        values: [1,5,10,15,20,25,30,35,40,45,50,55,60],
+        
+        // This is used by the scanduration slider. It adds ' s' to the tooltip of the slider
+        // and returns the corresponding value of the currently set index
+        getValueForIndex: function(index) {
+            if(index >= 0 && index < $scope.durationSlider.values.length){
+                return $scope.durationSlider.values[index];
+            }
+            console.log('duration slider index out of bounds: index is: ' + index);
+            return ''; //error case
+        },
+        label: function(index){
+            return $scope.durationSlider.getValueForIndex(index) + ' s';
+        }
+    }
+    
+    //set the initial index of the persisted duration value on startup
+    $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
 
     // This is used by the volume slider. It adds '%' to the tooltip of the slider
     $scope.volumeSliderLabel = function(value) {
@@ -61,11 +95,9 @@ angular.module('app.controllers')
     }
 
     $scope.changeVolumeProfile = function() {
-
         $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
         $scope.settings.mute = false;
         $scope.settings.volume = angular.fromJson($scope.settings.currentVolumeProfile).volume;
-
         $scope.update();
     }
 

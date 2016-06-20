@@ -117,6 +117,12 @@ describe('SettingsCtrl:', function() {
 	$scope.settings.language = lang;
 	$scope.changeLanguage();
   }
+  
+  function setScanDuration(index) {
+    $scope.durationSlider.selectedIndex = index;
+    $scope.scanDurationChanged();
+  }
+
 
   describe('Translation', function(){
 
@@ -287,6 +293,34 @@ describe('SettingsCtrl:', function() {
       jasmine.clock().tick(102);  // to ensure it has stopped it somehow...
       expect(DBMeter.callCounter).toEqual(old);
     });
+
+  });
+  
+  describe('Scan Duration', function() {
+ 
+      it('should set the right scan duration value according to the index of the slider', function(){
+          var index = 0;
+          setScanDuration(index);
+          expect($scope.settings.duration).toBe(1);
+          var index = 12;
+          setScanDuration(index);
+          expect($scope.settings.duration).toBe(60);
+          var index = 4;
+          setScanDuration(index);
+          expect($scope.settings.duration).toBe(20);
+      });
+
+      it('should set the right index according to scan duration value the slider shows on app start', function(){
+          $scope.settings.duration = 1;
+          $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
+          expect($scope.durationSlider.selectedIndex).toBe(0);
+          $scope.settings.duration = 20;
+          $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
+          expect($scope.durationSlider.selectedIndex).toBe(4);
+          $scope.settings.duration = 60;
+          $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
+          expect($scope.durationSlider.selectedIndex).toBe(12);
+      });
 
   });
 

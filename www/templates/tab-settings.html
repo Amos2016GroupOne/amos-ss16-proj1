@@ -49,11 +49,10 @@
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
-			 <!-- minLimit prevents the slider to actually be settable to 0 although 0 is displayed
-			      translate refers to a function which modifies the String of the label
+			 <!-- translate refers to a function which modifies the String of the label using the rz-slider-model
 				  onChange calls the specified method when there was a change to the rz-slider-model -->
-			<rzslider rz-slider-model="settings.duration" rz-slider-options="{floor: 0, minLimit: 1, ceil: 60, step: 5, onChange: update,
-																			 translate: durationSliderLabel, hideLimitLabels: true}"></rzslider>
+			<rzslider rz-slider-model="durationSlider.selectedIndex" rz-slider-options="{floor: 0, ceil: 12, onChange: scanDurationChanged,
+																			 translate: durationSlider.label, hideLimitLabels: true}"></rzslider>
 		  <i class="icon ion-clock"></i>
 		</div>
         <div class="item range">
