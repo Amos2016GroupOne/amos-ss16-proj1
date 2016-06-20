@@ -4,7 +4,9 @@ This document will discuss how to best implement a tour to show new users the fe
 the given ionic app.
 
 
+
 ## Therefore the following plugins were tested:
+
 - ui-tour: https://github.com/benmarch/angular-ui-tour
   - supports a very easy concept of tour generating:
     - directives with tourtip content and titles are given per tag to describe
@@ -18,3 +20,9 @@ the given ionic app.
 
 
 All frameworks are under MIT or simular license.
+
+
+
+# Different Tabs, views dynamically generated.
+
+What happens if the next ui step is on a different tab?
