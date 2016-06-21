@@ -194,3 +194,31 @@ further information.
   - see http://stackoverflow.com/questions/21053657/how-to-run-travis-ci-locally to
   reproduce locally
   - add a `--verbose`-flag to commands that fail (e.g. `cordova prepare --verbose`)
+
+
+If it seems that your ng-model (eg. ng-model="myPrimitive") does not change value
+although the expression is evaluated correctly (eg. {{mymyPrimitive}}) and changes value
+
+The problem is the following: [From](https://github.com/angular/angular.js/wiki/Understanding-Scopes):
+
+Suppose we have in our controller:
+
+	$scope.myPrimitive = 50;
+	$scope.myObject    = {aNumber: 11};
+
+And in our HTML:
+
+<script type="text/ng-template" id="/tpl1.html">
+    <input ng-model="myPrimitive">
+</script>
+<div ng-include src="'/tpl1.html'"></div>
+<script type="text/ng-template" id="/tpl2.html">
+    <input ng-model="myObject.aNumber">
+</script>
+<div ng-include src="'/tpl2.html'"></div>
+
+Each ng-include generates a new child scope, which prototypically inherits from the parent scope.
+Typing (say, "77") into the first input textbox causes the child scope to get a new myPrimitive scope property
+that hides/shadows the parent scope property of the same name. This is probably not what you want/expect.
+
+
