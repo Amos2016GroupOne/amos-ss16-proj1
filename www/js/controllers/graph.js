@@ -25,7 +25,7 @@
 
 // Controller for Settings
 angular.module('app.controllers')
-.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage) {
+.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, settings, dataStorage) {
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
@@ -67,7 +67,6 @@ angular.module('app.controllers')
     // If we receive new data then update the graph
     $rootScope.$on("newAccelerometerData", function() {
         $scope.totalPoints = dataStorage.retrieveData("accelerometer-time").length;
-        Log.add("Dragged is : " + $scope.dragged);
         // Initialize the current start point if not dragged
         if(!$scope.dragged)
         {
@@ -102,33 +101,27 @@ angular.module('app.controllers')
 
     // When starting drag set dragging to true and log the startPosition
     $scope.startDrag = function($event) {
-        Log.add("Start Drag: " + JSON.stringify($event));
         $scope.dragging = true;
         $scope.startOffset = $scope.currentStartPoint;
     };
 
     // When stopping the dragging set dragging to false and persist the barOffset
     $scope.stopDrag = function($event) {
-        Log.add("Stop Drag: " + JSON.stringify($event));
         $scope.dragging = false;
     };
 
     // On mouse move we need to update the dragging
     $scope.mouseMove = function($event) {
-        Log.add("Mousemove: " + JSON.stringify($event));
         // Only do something if currently dragging
         if($scope.dragging)
         {
             // The width of a single bar in the bar graph
             var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
-            console.log("Width of bar is " + widthOfBar);
 
             // The number of bars we've dragged is dependent on the space moved and
             // the width of a single bar
             // Number of bars should be positive if dragging to the left.
             var numberOfBars = ($event.gesture.deltaX / widthOfBar) * -2;
-
-            Log.add("Number of Bars: " + numberOfBars);
 
             // If we dragged to the end then set start point to the max
             if(numberOfBars + $scope.startOffset > ($scope.totalPoints - $scope.numberOfDatapoints)) {
