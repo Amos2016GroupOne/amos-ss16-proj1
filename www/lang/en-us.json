@@ -42,6 +42,7 @@
 		"DEVICE_DOES_NOT_SUPPORT_BLE": "Sorry. Your device does not support BTLE",
 		"INTERNAL_ERROR_ENABLING_BT": "There was an internal error when enabling Bluetooth. This app only works with Bluetooth enabled",
 		"APP_ONLY_WORKS_WITH_BT": "Sorry. This app only works with Bluetooth enabled",
+		"APP_ONLY_WORKS_WITH_LOCATION": "Sorry. This app only works with Location enabled",
 		"HEADER_ENABLE_BT": "Enable Bluetooth",
 		"ENABLE_LOCATION_SERVICE": "To scan for devices you need to enable location services. Do you want to do that now?",
 		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Sorry. Scanning only works with location services enabled.",

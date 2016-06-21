@@ -42,6 +42,7 @@
 		"DEVICE_DOES_NOT_SUPPORT_BLE": "Entschuldigung. Dein Gerät unterstützt kein BTLE",
 		"INTERNAL_ERROR_ENABLING_BT": "Es ist ein interner Fehler beim Aktivieren von Bluetooth aufgetreten. Die App funktioniert nur mit aktiviertem Bluetooth",
 		"APP_ONLY_WORKS_WITH_BT": "Entschuldigung. Die App funktioniert nur mit aktiviertem Bluetooth",
+		"APP_ONLY_WORKS_WITH_LOCATION": "Entschuldigung. Die App funktioniert nur mit aktivierter Ortung",
 		"HEADER_ENABLE_BT": "Bluetooth aktivieren",
 		"ENABLE_LOCATION_SERVICE": "Sie müssen Standortdienste aktivieren um nach Geräten suchen zu können. Möchten Sie das jetzt tun?",
 		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Entschuldigung. Scannen funktioniert nur mit aktiverten Standortdiensten",

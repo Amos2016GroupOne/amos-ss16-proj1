@@ -246,6 +246,10 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 					if (obj.hasPermission == false) {
 						$cordovaBluetoothLE.requestPermission().then(function (obj) {
 							Log.add("Request Permission Success : " + JSON.stringify(obj));
+							if(obj.requestPermission == false)
+							{
+								navigator.notification.alert($translate.instant("PROMPT.APP_ONLY_WORKS_WITH_LOCATION"), function () { navigator.app.exitApp(); });
+							}
 						}, function (obj) {
 							Log.add("Request Permission Error : " + JSON.stringify(obj));
 						});
