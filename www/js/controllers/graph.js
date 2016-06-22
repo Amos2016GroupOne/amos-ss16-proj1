@@ -25,7 +25,8 @@
 
 // Controller for Settings
 angular.module('app.controllers')
-.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, settings, dataStorage) {
+.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage, $timeout) {
+
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
@@ -83,11 +84,6 @@ angular.module('app.controllers')
         if($scope.currentStartPoint < 0) {
             $scope.currentStartPoint = 0;
         }
-        
-        //Counter starts with the same phase as the graph when connected
-        counter++;
-        //Convert it to hh:mm:ss
-        convertToHms(counter);
 
         createAndSetDataSlice();
     });
@@ -151,7 +147,20 @@ angular.module('app.controllers')
             }
         }
     };
-      
+    
+    $rootScope.startTime = function() {
+        
+        updateCounter();
+                       
+    };
+            
+    function updateCounter = function() {
+        var t = counter++;
+        convertToHms(t);
+        timer = $timeout(updateCounter, 1000);
+    };
+            
+
     //Convert to hh:mm:ss
     function convertToHms(secs) {
             secs = Number(secs);
@@ -180,8 +189,8 @@ angular.module('app.controllers')
     }
     
     //Reset the counter when the device is disconnected
-    $scope.$on("resetTime", function() {
+    $rootScope.resetTime = function() {
         counter = 0;
-    });
+    };
 })
 

@@ -42,6 +42,8 @@ angular.module('app.controllers')
         accelerometerDev1: "", accelerometerDev2: ""
     };
     $scope.motionOn = false;
+    $scope.startTime = $rootScope.startTime;
+    $scope.resetTime = $rootScope.resetTime;
 
 
     // Create Database for Graph. Better in service.. but no native plugins in service possible
@@ -350,6 +352,8 @@ angular.module('app.controllers')
 
         var onConnect = function(obj) {
             
+            $scope.startTime;
+            
             if ($scope.dev1Connected && $scope.dev2Connected) {
                 navigator.notification.alert($translate.instant("PROMPT.CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                 return;
@@ -414,7 +418,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
-            $rootScope.$broadcast("resetTime");
+            $scope.resetTime;
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));
         });
