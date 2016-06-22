@@ -26,3 +26,10 @@ All frameworks are under MIT or simular license.
 # Different Tabs, views dynamically generated.
 
 What happens if the next ui step is on a different tab?
+
+
+# Designing a Tour
+
+As our app will mainly run on screens with a small width a speech bubble approach for
+tourtips might be unsuitable. Maybe the tour should better be shown at the bottom of the
+screen in a fixed box and only the described control is highlighted in the upper section.
