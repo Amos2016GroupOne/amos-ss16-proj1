@@ -36,7 +36,8 @@
 	"GRAPH_TAB": {
 		"GRAPH": "Graph",
 		"TRACK_GRAPH": "Graph folgen",
-		"BAR_GRAPH": "Balkendiagramm"
+		"BAR_GRAPH": "Balkendiagramm",
+		"NO_GRAPH_DATA": "Keine Daten verfügbar. Bitte verbinden Sie ein Gerät."
 	},
 	"PROMPT": {
 		"ACCEPT": "Annehmen",

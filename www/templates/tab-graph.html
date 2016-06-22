@@ -27,7 +27,7 @@
   <ion-content class="padding">
     <h1>{{ 'GRAPH_TAB.GRAPH' | translate }}</h1>
 
-    <div class="card">
+    <div class="card" ng-if="showGraph == true">
         <div class="item item-divider">
             {{ 'GRAPH_TAB.BAR_GRAPH' | translate }}
         </div>
@@ -39,11 +39,15 @@
              on-drag-right="mouseMove($event)"
              on-release="stopDrag($event)"></canvas>
              <button class="button button-royal" id="btnTrackGraph" ng-click="followGraph();">{{ 'GRAPH_TAB.TRACK_GRAPH' | translate }}</button>
-
         </div>
+
+        <h2> Usage Time <br/>
+            <div id="usage-time">{{hours}}:{{minutes}}:{{seconds}}</div>
+        </h2>
     </div>
-    <h2> Usage Time <br/>
-        <div id="usage-time">{{hours}}:{{minutes}}:{{seconds}}</div>
-    </h2>
+
+	<div ng-if="showGraph == false">
+		{{ 'GRAPH_TAB.NO_GRAPH_DATA' | translate }}
+	</div>
   </ion-content>
 </ion-view>

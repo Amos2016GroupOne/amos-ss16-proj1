@@ -36,7 +36,8 @@
 	"GRAPH_TAB": {
 		"GRAPH": "Graph",
 		"TRACK_GRAPH": "Track Graph",
-		"BAR_GRAPH": "Bar Graph"
+		"BAR_GRAPH": "Bar Graph",
+		"NO_GRAPH_DATA": "No data available. Please connect a device."
 	},
 	"PROMPT": {
 		"ACCEPT": "Accept",
