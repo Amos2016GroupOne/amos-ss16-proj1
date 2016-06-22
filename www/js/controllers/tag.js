@@ -351,6 +351,9 @@ angular.module('app.controllers')
 
         var onConnect = function(obj) {
 
+		    //broadcast an event where if the device connected, usage time start
+		    $rootScope.$broadcast("startTime");
+
             if ($scope.dev1Connected && $scope.dev2Connected) {
                 navigator.notification.alert($translate.instant("PROMPT.CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
                 return;
@@ -415,6 +418,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
+			$rootScope.$broadcast("resetTime");
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));
         });

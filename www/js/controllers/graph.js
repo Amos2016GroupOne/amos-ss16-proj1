@@ -25,10 +25,14 @@
 
 // Controller for Settings
 angular.module('app.controllers')
-.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage) {
+.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, Log, settings, dataStorage, $timeout) {
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
+    $scope.hours = "00";
+    $scope.minutes = "00";
+    $scope.seconds = "00";
+    var timer;
 
     $scope.numberOfDatapoints = 10;
 
@@ -151,5 +155,55 @@ angular.module('app.controllers')
             }
         }
     };
+
+    //The counting of usage time start when the device is connected, format hh:mm:ss
+    $scope.$on("startTime", function() {
+
+        var counter=0;
+       
+        var updateCounter = function() {
+		    var t = counter++;
+		    convertToHms(t);
+		    timer = $timeout(updateCounter, 1000);
+        };
+        
+        updateCounter();
+       
+       	//Convert the seconds into hh:mm:ss format
+		function convertToHms(secs) {
+			secs = Number(secs);
+			var h = Math.floor(secs / 3600);
+			var m = Math.floor(secs % 3600 / 60);
+			var s = Math.floor(secs % 3600 % 60);
+
+			if(h < 10) {
+				$scope.hours = "0" + h;
+			}
+			else {
+				$scope.hours = h;
+			}
+			if (m < 10) {
+				$scope.minutes = "0" + m;
+			}
+			else {
+				$scope.minutes = m;
+			}
+			if (s < 10) {
+				$scope.seconds = "0" + s;
+			}
+			else {
+				$scope.seconds = s;
+			}
+		}
+	});
+         
+    //The time will reset back to 00:00:00 if the device is disconnected
+    $scope.$on("resetTime", function() {
+        $timeout.cancel(timer);
+        $scope.hours = "00";
+        $scope.minutes = "00";
+        $scope.seconds = "00";
+    });
+
 })
 
