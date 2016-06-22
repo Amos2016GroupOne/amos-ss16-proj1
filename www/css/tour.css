@@ -69,6 +69,10 @@
 
 .popover {
   opacity: 1;
+  margin-left: 0;
+  left: 5%;
+  width: 90%;
+  max-width: none;
 }
 
 [ui-tour] > li {

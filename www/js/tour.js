@@ -27,7 +27,7 @@
  */
 angular.module('ui.tour', [])
 
-.directive('uiTour', ['$timeout', '$parse', function($timeout, $parse){
+.directive('uiTour', ['$timeout', '$parse', '$window', function($timeout, $parse, $window){
   return {
     link: function($scope, $element, $attributes) {
       var model = $parse($attributes.uiTour);
@@ -75,7 +75,7 @@ angular.module('ui.tour', [])
             offset = {};
 
             offset.top = target.offsetTop;
-            offset.left = target.offsetLeft;
+            //offset.left = target.offsetLeft;
 
             elm.addClass('active');
 
@@ -86,15 +86,17 @@ angular.module('ui.tour', [])
             } else {
               offset.top += target.offsetHeight / 2 - elm[0].offsetHeight / 2;
             }
-            if (at.indexOf('left') > -1) {
-              offset.left -= elm[0].offsetWidth;
-            } else if (at.indexOf('right') > -1) {
-              offset.left += target.offsetWidth;
-            } else {
-              offset.left += target.offsetWidth / 2 - elm[0].offsetWidth / 2;
-            }
+            //if (at.indexOf('left') > -1) {
+              //offset.left -= elm[0].offsetWidth;
+            //} else if (at.indexOf('right') > -1) {
+              //offset.left += target.offsetWidth;
+            //} else {
+              //offset.left += target.offsetWidth / 2 - elm[0].offsetWidth / 2;
+            //}
 
+            //offset.left = $window.innerWidth / 2;
             elm.css(offset);
+            elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.position().left)});
           });
         } else {
           $('.tour-overlay').removeClass('in');
