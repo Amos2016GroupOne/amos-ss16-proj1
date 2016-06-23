@@ -49,10 +49,7 @@
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
-			 <!-- translate refers to a function which modifies the String of the label using the rz-slider-model
-				  onChange calls the specified method when there was a change to the rz-slider-model -->
-			<rzslider rz-slider-model="durationSlider.selectedIndex" rz-slider-options="{floor: 0, ceil: 12, onChange: scanDurationChanged,
-																			 translate: durationSlider.label, hideLimitLabels: true}"></rzslider>
+			<rzslider rz-slider-model="durationSlider.selectedIndex" rz-slider-options="durationSlider.options"></rzslider>
 		  <i class="icon ion-clock"></i>
 		</div>
         <div class="item range">

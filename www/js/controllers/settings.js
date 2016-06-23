@@ -69,10 +69,25 @@ angular.module('app.controllers')
             console.log('duration slider index out of bounds: index is: ' + index);
             return ''; //error case
         },
-        label: function(index){
-            return $scope.durationSlider.getValueForIndex(index) + ' s';
+        options: {
+            floor: 0,   //floor and ceil are the index! of $scope.durationSlider.values
+            ceil: 12,   //In the translate function the index is converted to the right value
+            onChange: $scope.scanDurationChanged,  //onChange calls the specified method when there was a change to the rz-slider-model
+            rightToLeft: false,
+            translate: function(index){   //translate refers to a function which modifies the String of the label using the rz-slider-model
+                return $scope.durationSlider.getValueForIndex(index) + ' s';
+            },
+            hideLimitLabels: true
         }
     }
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        if($scope.settings.language == 'ar-sy'){
+            $scope.durationSlider.options.rightToLeft = true;
+        }else{
+            $scope.durationSlider.options.rightToLeft = false;
+        }
+    });
 
     //set the initial index of the persisted duration value on startup
     $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
