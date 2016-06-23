@@ -81,21 +81,31 @@ angular.module('app.controllers')
         }
     }
 
-    $rootScope.$on('$translateChangeSuccess', function () {
-        if($scope.settings.language == 'ar-sy'){
-            $scope.durationSlider.options.rightToLeft = true;
-        }else{
-            $scope.durationSlider.options.rightToLeft = false;
-        }
-    });
-
     //set the initial index of the persisted duration value on startup
     $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
 
-    // This is used by the volume slider. It adds '%' to the tooltip of the slider
-    $scope.volumeSliderLabel = function(value) {
-        return value + '%';
+    $scope.volumeSlider = {
+        options: {
+            floor: 0,
+            ceil: 100,
+            onChange: $scope.changedVolume,
+            rightToLeft: false,
+            translate: function(value) { // This is used by the volume slider. It adds '%' to the tooltip of the slider
+                return value + '%';
+            },
+            hideLimitLabels: true
+        }
     }
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        if($scope.settings.language == 'ar-sy'){
+            $scope.durationSlider.options.rightToLeft = true;
+            $scope.volumeSlider.options.rightToLeft = true;
+        }else{
+            $scope.durationSlider.options.rightToLeft = false;
+            $scope.volumeSlider.options.rightToLeft = false;
+        }
+    });
 
     $scope.newVolumeProfileName = "";
 
