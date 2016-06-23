@@ -43,9 +43,7 @@ angular.module('app.controllers')
     };
     $scope.motionOn = false;
     $scope.startTime = $rootScope.startTime;
-    $scope.resetTime = $rootScope.resetTime;
-
-
+    
     // Create Database for Graph. Better in service.. but no native plugins in service possible
     // Mock database for browser testing:
     $rootScope.db = {
@@ -352,7 +350,9 @@ angular.module('app.controllers')
 
         var onConnect = function(obj) {
             
-            $scope.startTime;
+            $scope.startTime();
+            
+            Log.add("StartTime: " + $rootScope.connectedTime);
             
             if ($scope.dev1Connected && $scope.dev2Connected) {
                 navigator.notification.alert($translate.instant("PROMPT.CONNECT_MORE_THAN_TWO_DEVICES"), function() { });
@@ -418,7 +418,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
-            $scope.resetTime;
+            $rootScope.connectedTime = -1;
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));
         });
@@ -513,6 +513,7 @@ angular.module('app.controllers')
     }
 
     $scope.disconnect = function(device) {
+        
         if ($scope.dev1Connected && $scope.currentDevice1.address == device.address) {
             $scope.dev1Connected = false;
             $scope.close($scope.currentDevice1.address);
