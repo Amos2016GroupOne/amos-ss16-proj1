@@ -350,6 +350,7 @@ angular.module('app.controllers')
 
         var onConnect = function(obj) {
             
+            //when the device is connected, get the time when the device is connected
             $scope.startTime();
             
             Log.add("StartTime: " + $rootScope.connectedTime);
@@ -418,6 +419,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
+            //when the device is disconnected set the connected time to -1
             $rootScope.connectedTime = -1;
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));

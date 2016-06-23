@@ -51,6 +51,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             return promise;
         }
          
+         //It will set the connected time in seconds format
          $rootScope.startTime = function() {
             var time = new Date;
             $rootScope.connectedTime = time.getTime() / 1000;

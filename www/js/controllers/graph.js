@@ -40,6 +40,10 @@ angular.module('app.controllers')
     var a = new Date;
     var now = a.getTime()/1000;
     
+    /* if the connected time is determined, then substract the current time with the connected time
+       to get the usage time. When the device is disconnected, the usage time will be reset.
+     */
+            
     if ($scope.connectedTime != -1) {
         var counter = Math.round(now-$scope.connectedTime);
         updateCounter();
@@ -165,6 +169,8 @@ angular.module('app.controllers')
             timer = $timeout(updateCounter, 1000);
 
     }
+    
+    //convert the usage time into hh:mm:ss format
             
     function convertToHms(secs) {
             secs = Number(secs);
