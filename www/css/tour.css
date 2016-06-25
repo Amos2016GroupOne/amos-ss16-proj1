@@ -96,6 +96,18 @@
         opacity: 1;
 }
 
+[ui-tour] >* .popover-navigation {
+        color: white;
+        font-size: 24px;
+
+}
+
+[ui-tour] >* .popover-navigation > .icon {
+        margin-left: 1%;
+        margin-right: 1%;
+        margin-bottom: 1%
+}
+
 [ui-tour] > li {
   display: none;
 }

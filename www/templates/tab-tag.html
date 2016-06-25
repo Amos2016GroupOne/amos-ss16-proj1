@@ -90,25 +90,52 @@
     <button class="btn" ng-click="currentStep=true">Go to true</button>
     <button class="btn" ng-click="currentStep={}">Go to {}</button>
     <ul ui-tour="currentStep">
-      <li target="h1:eq(0)" at="right" class="popover right in" overlay>
+      <div target="#btnRefresh" class="tooltip ng-isolate-scope top fade in" tooltip-animation-class="fade" uib-tooltip-classes="" ng-class="{ in: isOpen() }" uib-tooltip-html-popup="" uib-title="" content-exp="'oma<b>asdf</b><button class=\\\'btn\\\' ng-click=\\\'currentStep=currentStep+1\\\'>next</button>'" placement="top" popup-class="" animation="animation" is-open="isOpen" origin-scope="origScope">
+      </div>
+
+      <li target="#btnRefresh" at="bottom" class="popover bottom in" overlay>
         <div class="arrow"></div>
         <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
-        <div class="popover-content">And here's some amazing content. It's very engaging. right? First <button class="btn" ng-click="currentStep=currentStep+1">Next</button> <button class="btn" ng-click="currentStep=4">Go to 4</button> <button class="btn" ng-click="currentStep='chapter3'">Go to 'chapter3'</button></div>
+        <div class="popover-content">
+          And here's some amazing content. It's very engaging. right? First
+        </div>
+        <div class="popover-navigation">
+          <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>
+          <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>
+        </div>
       </li>
-      <li target="h1:eq(1)" at="top" class="popover top in">
+      <li target="h1:eq(0)" at="bottom" class="popover bottom in" overlay>
         <div class="arrow"></div>
         <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
-        <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Second <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+        <div class="popover-content">
+          And here's some amazing content. It's very engaging. right? First
+        </div>
+        <div class="popover-navigation">
+          <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>
+          <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>
+        </div>
       </li>
-      <li target="h1:eq(2)" at="bottom" name="chapter3" class="popover bottom in" overlay>
+      <li target="h1:eq(1)" at="bottom" class="popover bottom in" overlay>
         <div class="arrow"></div>
         <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
-        <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Third <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+        <div class="popover-content">
+          And here's some amazing content. It's very engaging. right? First
+        </div>
+        <div class="popover-navigation">
+          <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>
+          <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>
+        </div>
       </li>
-      <li target="h1:eq(3)" at="bottom" class="popover bottom in">
+      <li target="h1:eq(2)" at="bottom" class="popover bottom in" overlay>
         <div class="arrow"></div>
         <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
-        <div class="popover-content">Fourth <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+        <div class="popover-content">
+          And here's some amazing content. It's very engaging. right? First
+        </div>
+        <div class="popover-navigation">
+          <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>
+          <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>
+        </div>
       </li>
     </ul>
     <pre>{{currentStep|json}}</pre>
