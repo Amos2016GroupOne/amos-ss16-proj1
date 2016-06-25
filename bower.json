@@ -8,7 +8,10 @@
     "angular-mocks": "^1.5.6",
     "jquery": "^2.2.4",
     "angular-translate": "^2.11.0",
-    "angular-translate-loader-static-files": "^2.11.0"
+    "angular-translate-loader-static-files": "^2.11.0",
+    "ngCordova": "^0.1.26-alpha",
+    "angular-ui-tour": "https://github.com/angular-ui/ui-tour.git",
+    "bootstrap": "^3.3.6"
   },
   "resolutions": {
     "ionic": "1.3.0",
@@ -19,7 +22,5 @@
     "angular-ui-tour": "983c756d7b"
   },
   "dependencies": {
-    "ngCordova": "^0.1.26-alpha",
-    "angular-ui-tour": "https://github.com/angular-ui/ui-tour.git"
   }
 }
