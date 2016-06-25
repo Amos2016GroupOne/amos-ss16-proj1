@@ -25,17 +25,48 @@
 
 // Controller for Tour
 angular.module('app.controllers')
-.controller('TourCtrl', function($scope, settings) {
-    console.log('here');
-    if (settings.getSetting('start-with-tour')) {
+.controller('TourCtrl', function($scope, $compile, settings) {
+    $scope.currentStep = 0;
+
+    $scope.startTutorial = function() {
         $scope.currentStep = 1;
-        settings.setSetting('start-with-tour', false);
-    } else {
-        $scope.currentStep = 2;
     }
 
-    $scope.animation = function() {
-        // dummy to prevent errorlog.
+    var isFirstTourStep = true;  // first tourtip has no back button.
+    $scope.appendTourStep = function(target, title, content) {
+
+        function miniTemplate(template, options) {
+            for (o in options) {
+                template = template.replace(new RegExp('{'+o+'}', 'g'), options[o]);
+            }
+            return template;
+        }
+
+        // If we use more different tour tips one should start using a template engine!
+        var template =
+            '<li target="{target}" at="bottom" class="popover bottom in" overlay>' +
+            '  <div class="arrow"></div>' +
+            '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=false">&times;</a></h3>' +
+            '  <div class="popover-content">' +
+            '    {content} ' +
+            '  </div>' +
+            '  <div class="popover-navigation">' +
+            '    <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>' +
+            '    <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>' +
+            '  </div>' +
+            '</li>';
+        var rendered = miniTemplate(template, {target: target, title: title, content: content});
+
+        // Compile ng-directives and other angular stuff.
+        $compile($('[ui-tour]').append(rendered))($scope);
+
     };
+
+    $scope.appendTourStep("#clockSetting", "Clock", "Set Clock time here!");
+
+    if (settings.getSetting('start-with-tour')) {
+        $scope.$scope.startTutorial();
+        settings.setSetting('start-with-tour', false);
+    }
 });
 
