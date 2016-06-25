@@ -15,7 +15,9 @@
 		"ACTIVATE_DB_METER": "Activate Decibel Meter",
 		"VOLUME": "Volume",
 		"SHOW_ADVANCED": "Show advanced settings",
-		"HIDE_ADVANCED": "Hide advanced settings"
+		"HIDE_ADVANCED": "Hide advanced settings",
+		"TUTORIAL": "Tutorial",
+		"START_TUTORIAL": "Start Tutorial"
 	},
 	"TAG_TAB": {
 		"STATUS": "Status",
