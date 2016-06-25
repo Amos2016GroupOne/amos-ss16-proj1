@@ -79,14 +79,11 @@ angular.module('ui.tour', [])
 
             elm.addClass('active');
 
-            if (at.indexOf('bottom') > -1) {
-              offset.top += target.offsetHeight;
-            } else if (at.indexOf('top') > -1) {
+            if (at.indexOf('top') > -1) {
               offset.top -= elm[0].offsetHeight;
             } else {
-              offset.top += target.offsetHeight / 2 - elm[0].offsetHeight / 2;
-            }
-            //if (at.indexOf('left') > -1) {
+              offset.top += target.offsetHeight;
+            }             //if (at.indexOf('left') > -1) {
               //offset.left -= elm[0].offsetWidth;
             //} else if (at.indexOf('right') > -1) {
               //offset.left += target.offsetWidth;
@@ -96,7 +93,7 @@ angular.module('ui.tour', [])
 
             //offset.left = $window.innerWidth / 2;
             elm.css(offset);
-            elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.position().left)});
+            elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.offsetLeft - elm[0].offsetLeft)});
           });
         } else {
           $('.tour-overlay').removeClass('in');

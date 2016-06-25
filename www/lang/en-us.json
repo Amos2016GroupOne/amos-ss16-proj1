@@ -12,7 +12,9 @@
 		"OFFICE": "Office",
 		"OUTDOOR": "Outdoor",
 		"ENVIRONMENT_VOLUME": "Environment Volume",
-		"ACTIVATE_DB_METER": "Activate Decibel Meter"
+		"ACTIVATE_DB_METER": "Activate Decibel Meter",
+		"TUTORIAL": "Tutorial",
+		"START_TUTORIAL": "Start Tutorial"
 	},
 	"TAG_TAB": {
 		"STATUS": "Status",

@@ -48,7 +48,8 @@ angular.module('app.services')
         "volProfileBeforeMute": false,
         "isListeningDecibel": true,
         "language": "system",   //initial setting is "system" so the app will choose the system language in app.js
-        "locale": "en-us"
+        "locale": "en-us",
+        "start-with-tour": true
     };
 
     var storedSettingsVersion = angular.fromJson(localStorage.getItem("settings-version"))
