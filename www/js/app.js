@@ -35,7 +35,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
         ////defines were the html text should float (left or right). This is used in index.html then
         //$rootScope.default_float = settings.settings.default_float;
         $rootScope.default_float = '';
-        $rootScope.connectedTime = 0;
+       
 
         $rootScope.changeLanguage = function () {
             console.log("tanslating to: " + settings.settings.language);
@@ -50,13 +50,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             settings.persistSettings();
             return promise;
         }
-         
-         //It will set the connected time in seconds format
-         $rootScope.startTime = function() {
-            var time = new Date;
-            $rootScope.connectedTime = time.getTime() / 1000;
-         }
-         
+    
         // It sets the language to the system language. Only on the very first run of the app
 		setInitialLanguageSetting($rootScope, $q, $cordovaGlobalization, settings, Log, availableLanguages, defaultLanguage)
 		.then(

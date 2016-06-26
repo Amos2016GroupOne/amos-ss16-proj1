@@ -42,7 +42,7 @@ angular.module('app.controllers')
         accelerometerDev1: "", accelerometerDev2: ""
     };
     $scope.motionOn = false;
-    $scope.startTime = $rootScope.startTime;
+    $rootScope.connectedTime = -1;
     
     // Create Database for Graph. Better in service.. but no native plugins in service possible
     // Mock database for browser testing:
@@ -419,8 +419,7 @@ angular.module('app.controllers')
 
         $cordovaBluetoothLE.close(params).then(function(obj) {
             Log.add("Close Success : " + JSON.stringify(obj));
-            //when the device is disconnected set the connected time to -1
-            $rootScope.connectedTime = -1;
+            Log.add("Connected Time: " + $rootScope.connectedTime);
         }, function(obj) {
             Log.add("Close Error : " + JSON.stringify(obj));
         });
@@ -515,7 +514,9 @@ angular.module('app.controllers')
     }
 
     $scope.disconnect = function(device) {
-        
+            
+        $rootScope.connectedTime = -1;
+ 
         if ($scope.dev1Connected && $scope.currentDevice1.address == device.address) {
             $scope.dev1Connected = false;
             $scope.close($scope.currentDevice1.address);
@@ -713,5 +714,11 @@ angular.module('app.controllers')
 
         }
     });
-
+            
+    //It will set the connected time in seconds format
+    $rootScope.startTime = function() {
+        var time = new Date;
+        $rootScope.connectedTime = time.getTime() / 1000;
+    }
+            
 })
