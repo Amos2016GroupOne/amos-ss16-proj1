@@ -63,7 +63,7 @@
         </div>
         {{ 'SETTINGS_TAB.TUTORIAL' | translate }}
       </div>
-      <div class="item" ng-click="startTutorial()">
+      <div class="item" ng-click="startTutorial()" id="startTutorial">
         <i class="icon ion-help-circled"></i>
         {{ 'SETTINGS_TAB.START_TUTORIAL' | translate }}
       </div>
@@ -71,6 +71,7 @@
         {{ 'SETTINGS_TAB.LANGUAGE' | translate }}
       </div>
 	    <ion-radio
+          id="languageSetting"
 			ng-repeat="lang in availableLanguages"
 			ng-value="lang"
 			ng-model="settings.language"
@@ -93,7 +94,7 @@
         <div class="item item-divider">
       		{{ 'SETTINGS_TAB.ENVIRONMENT_VOLUME' | translate }}: {{ decibel }} dB
         </div>
-        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
+        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm"i id="dbMeterSetting">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
       </ion-list>
 
 	  <br><br>

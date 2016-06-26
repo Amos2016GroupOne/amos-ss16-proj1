@@ -67,7 +67,7 @@
    }
  */
 
-[ui-tour] > .popover {
+.tour.popover {
   opacity: 0.9;
   margin-left: 0;
   left: 5%;
@@ -78,37 +78,37 @@
   color: white;
 }
 
-[ui-tour] >* .popover-title {
+.tour .popover-title {
         background-color: black;
 }
 
-[ui-tour] >* .arrow:after {
+.tour .arrow:after {
         border-bottom-color: rgba(0, 0, 0, 1.0) !important;
         opacity: 0.9 !important;
 }
 
-.arrow {
+.tour .arrow {
         border-bottom-color: rgba(0, 0, 0, 1.0) !important;
 }
 
-[ui-tour] >* .close, [ui-tour] >* .close:hover {
+.tour .close, [ui-tour] >* .close:hover {
         color: white;
         opacity: 1;
 }
 
-[ui-tour] >* .popover-navigation {
+.tour .popover-navigation {
         color: white;
         font-size: 24px;
 
 }
 
-[ui-tour] >* .popover-navigation > .icon {
+.tour .popover-navigation > .icon {
         margin-left: 1%;
         margin-right: 1%;
         margin-bottom: 1%
 }
 
-[ui-tour] > li {
+.tour > li {
   display: none;
 }
 .active {

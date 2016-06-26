@@ -44,7 +44,7 @@ angular.module('app.controllers')
 
         // If we use more different tour tips one should start using a template engine!
         var template =
-            '<li target="{target}" at="bottom" class="popover bottom in" overlay>' +
+            '<li target="{target}" at="bottom" class="tour popover bottom in" overlay>' +
             '  <div class="arrow"></div>' +
             '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=false">&times;</a></h3>' +
             '  <div class="popover-content">' +
@@ -58,11 +58,16 @@ angular.module('app.controllers')
         var rendered = miniTemplate(template, {target: target, title: title, content: content});
 
         // Compile ng-directives and other angular stuff.
-        $compile($('[ui-tour]').append(rendered))($scope);
+        //$compile($('[ui-tour]').append(rendered))($scope);
+        $('[ui-tour]').append(rendered);
 
     };
 
-    $scope.appendTourStep("#clockSetting", "Clock", "Set Clock time here!");
+    $scope.appendTourStep("#scanDurationSetting", "Scanning timeout", "This setting influences the time that is searched for hering aids when starting the Scan.");
+    $scope.appendTourStep("#volumeSetting", "Volume", "Select the amplification of your hearing aid here.");
+    $scope.appendTourStep("#languageSetting", "Language", "Here you can select your prefered Language.");
+    $scope.appendTourStep("#dbMeterSetting", "DB-Meter", "This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volumeprofile to outdoor if it gets too loud.");
+    $scope.appendTourStep("#startTutorial", "Restart the tutorial", "Click this here to restart the tutorial.");
 
     if (settings.getSetting('start-with-tour')) {
         $scope.$scope.startTutorial();

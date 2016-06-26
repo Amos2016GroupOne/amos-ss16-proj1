@@ -27,10 +27,11 @@
  */
 angular.module('ui.tour', [])
 
-.directive('uiTour', ['$timeout', '$parse', '$window', function($timeout, $parse, $window){
+.directive('uiTour', ['$timeout', '$parse', '$window', '$compile', function($timeout, $parse, $window, $compile){
   return {
     link: function($scope, $element, $attributes) {
       var model = $parse($attributes.uiTour);
+
 
       // Watch model and change steps
       $scope.$watch($attributes.uiTour, function(newVal, oldVal){
@@ -51,12 +52,21 @@ angular.module('ui.tour', [])
         }
       });
 
+      var detachedStep = null;
       // Show step
       function showStep(stepNumber) {
         var elm, at, children = $element.children().removeClass('active');
+        if (detachedStep) {
+            detachedStep.removeClass('active');
+            detachedStep.detach();
+            // TODO: Hope for clever garbage collection ;)
+            detachedStep = null;
+        }
+
         elm = children.eq(stepNumber - 1);
         if (stepNumber && elm.length) {
           at = elm.attr('at');
+          elm = elm.clone();
           $timeout(function(){
             var target = angular.element(elm.attr('target'))[0];
 
@@ -74,7 +84,11 @@ angular.module('ui.tour', [])
             }
             offset = {};
 
-            offset.top = target.offsetTop;
+            // The element in which the Tourtip is appended.
+            var anchor = $('.scroll');
+
+            //offset.top = target.offsetTop;
+            offset.top = $(target).offset().top - anchor.offset().top;
             //offset.left = target.offsetLeft;
 
             elm.addClass('active');
@@ -94,6 +108,10 @@ angular.module('ui.tour', [])
             //offset.left = $window.innerWidth / 2;
             elm.css(offset);
             elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.offsetLeft - elm[0].offsetLeft)});
+
+            // Adding the element does not work as relative styling will break.
+            detachedStep = elm.appendTo(anchor);
+            $compile(detachedStep)($scope);
           });
         } else {
           $('.tour-overlay').removeClass('in');
