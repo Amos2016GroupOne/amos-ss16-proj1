@@ -25,7 +25,7 @@
 
 // Controller for Tour
 angular.module('app.controllers')
-.controller('TourCtrl', function($scope, $compile, settings) {
+.controller('TourCtrl', function($scope, $ionicPlatform, settings) {
     $scope.currentStep = 0;
 
     $scope.startTutorial = function() {
@@ -33,7 +33,7 @@ angular.module('app.controllers')
     }
 
     var isFirstTourStep = true;  // first tourtip has no back button.
-    $scope.appendTourStep = function(target, title, content) {
+    $scope.appendTourStep = function(target, targetTab, title, content, at) {
 
         function miniTemplate(template, options) {
             for (o in options) {
@@ -44,7 +44,7 @@ angular.module('app.controllers')
 
         // If we use more different tour tips one should start using a template engine!
         var template =
-            '<li target="{target}" at="bottom" class="tour popover bottom in" overlay>' +
+            '<li target="{target}" target-tab="{targetTab}" at="{at}" class="tour popover {at} in" overlay>' +
             '  <div class="arrow"></div>' +
             '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=false">&times;</a></h3>' +
             '  <div class="popover-content">' +
@@ -55,23 +55,34 @@ angular.module('app.controllers')
             '    <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>' +
             '  </div>' +
             '</li>';
-        var rendered = miniTemplate(template, {target: target, title: title, content: content});
+        var options = {target: target, targetTab: targetTab, title: title, content: content, at: at || "bottom"};
+        var rendered = miniTemplate(template, options);
 
-        // Compile ng-directives and other angular stuff.
-        //$compile($('[ui-tour]').append(rendered))($scope);
         $('[ui-tour]').append(rendered);
 
     };
 
-    $scope.appendTourStep("#scanDurationSetting", "Scanning timeout", "This setting influences the time that is searched for hering aids when starting the Scan.");
-    $scope.appendTourStep("#volumeSetting", "Volume", "Select the amplification of your hearing aid here.");
-    $scope.appendTourStep("#languageSetting", "Language", "Here you can select your prefered Language.");
-    $scope.appendTourStep("#dbMeterSetting", "DB-Meter", "This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volumeprofile to outdoor if it gets too loud.");
-    $scope.appendTourStep("#startTutorial", "Restart the tutorial", "Click this here to restart the tutorial.");
+    // Add tour steps:
+    // REM: Do not use ion elements as they have no width and are not placed well.
+    // REM: if tab id is set to -2 the tab is not changed. TODO: CONSTANT for that?
+    $scope.appendTourStep("a[title='Settings']", -2, "Settings", "Using the settings tab you can customize and optimize your new hearing experience!", "top");
+    $scope.appendTourStep("#scanDurationSetting", 1, "Scanning timeout", "This setting influences the time that is searched for hering aids when starting the Scan.");
+    $scope.appendTourStep("#volumeSetting", 1, "Volume", "Select the amplification of your hearing aid here.");
+    $scope.appendTourStep("#languageSetting", 1, "Language", "Here you can select your prefered Language.");
+    $scope.appendTourStep("#dbMeterSetting", 1, "DB-Meter", "This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volumeprofile to outdoor if it gets too loud.", "top");
 
-    if (settings.getSetting('start-with-tour')) {
-        $scope.$scope.startTutorial();
-        settings.setSetting('start-with-tour', false);
-    }
+    $scope.appendTourStep("a[title='Graph']", -2, "Graph", "The graph tab can show you cool statistics", "top");
+    $scope.appendTourStep("#btnTrackGraph", 2, "Graph Tracking", "If you wish to start the tracking of the graph hit this button. <b>Remember:</b> A device must be connected first!", "bottom");
+
+    $scope.appendTourStep("#startTutorial", 1, "Restart the tutorial", "Click this here to restart the tutorial.");
+
+
+    $ionicPlatform.ready(function() {
+        if (settings.getSetting('start-with-tour')) {
+            console.log('startTutorial');
+            $scope.startTutorial();
+            settings.setSetting('start-with-tour', false);
+        }
+    });
 });
 
