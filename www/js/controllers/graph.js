@@ -35,35 +35,26 @@ angular.module('app.controllers')
     $scope.seconds = "00";
     $scope.numberOfDatapoints = 10;
     $scope.date = [];
-    $scope.connectedTime = $rootScope.connectedTime;
     var counter = 0;
     var timer;
     
     /* if the connected time is determined, then substract the current time with the connected time
        to get the usage time. When the device is disconnected, the usage time will be reset.
      */
-            
-    $ionicPlatform.ready(function() {
-        $rootScope.updateCounter();
-        Log.add("Connected Time 2: " + $scope.connectedTime);
-    });
-            
+
     function updateCounter() {
-        if($scope.connectedTime === -1) {
-            Log.add("true");
-            resetTime();
-            return;
-        }
-        else {
-            Log.add("false");
+        if($rootScope.connectedTime === -1) {
+            counter = 0;
+        } else {
             var a = new Date();
             var now = a.getTime() / 1000;
-            counter= Math.round(now - $scope.connectedTime);
+            counter= Math.round(now - $rootScope.connectedTime);
             convertToHms(counter);
-        }
-            
+        }      
         timer = $timeout(updateCounter, 1000);
     };
+    
+    updateCounter();
 
     // Initialize the current start point
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
@@ -203,11 +194,6 @@ angular.module('app.controllers')
             else {
             $scope.seconds = s;
             }
-    }
-            
-    function resetTime() {
-        $timeout.cancel(timer);
-        counter = 0;
     }
      
 })
