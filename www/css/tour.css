@@ -84,11 +84,13 @@
 
 .tour .arrow:after {
         border-bottom-color: rgba(0, 0, 0, 1.0) !important;
+        border-top-color: rgba(0, 0, 0, 1.0) !important;
         opacity: 0.9 !important;
 }
 
 .tour .arrow {
         border-bottom-color: rgba(0, 0, 0, 1.0) !important;
+        border-top-color: rgba(0, 0, 0, 1.0) !important;
 }
 
 .tour .close, [ui-tour] >* .close:hover {
