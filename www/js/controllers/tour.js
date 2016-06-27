@@ -65,12 +65,13 @@ angular.module('app.controllers')
     // Add tour steps:
     // REM: Do not use ion elements as they have no width and are not placed well.
     // REFACTOR: Actually the following should happen in the html file as it is about the VIEW!
-    $scope.appendTourStep("a[title='Settings']",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
+    // TODO: only works in english :(
+    $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
     $scope.appendTourStep("#scanDurationSetting", 1, "{{'SETTINGS_TAB.SCAN_DURATION' | translate}}",     "{{'TOUR.T2' | translate}}");
     $scope.appendTourStep("#volumeSetting",       1, "{{'TOUR.VOLUME' | translate}}",                    "{{'TOUR.T3' | translate}}");
     $scope.appendTourStep("#languageSetting",     1, "{{'SETTINGS_TAB.LANGUAGE' | translate}}",          "{{'TOUR.T4' | translate}}");
     $scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
-    $scope.appendTourStep("a[title='Graph']",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
+    $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
     $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
     $scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
 
