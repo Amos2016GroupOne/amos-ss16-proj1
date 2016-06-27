@@ -148,12 +148,12 @@ angular.module('ui.tour', [])
                         offset.top = calculateTop();
 
                         // If not fitting on screen mirror it: top <--> bottom
-                        if (offset.top < 0 || offset.top + elm[0].offsetHeight > anchor.height()) {
-                            $(elm[0]).removeClass(atTop ? 'top' : 'bottom');
-                            atTop = !atTop;
-                            $(elm[0]).addClass(atTop ? 'top' : 'bottom');
-                            offset.top = calculateTop();
-                        }
+                        //if (offset.top < 0 || offset.top + elm[0].offsetHeight > anchor.height()) {
+                            //$(elm[0]).removeClass(atTop ? 'top' : 'bottom');
+                            //atTop = !atTop;
+                            //$(elm[0]).addClass(atTop ? 'top' : 'bottom');
+                            //offset.top = calculateTop();
+                        //}
                         elm.css(offset);
                         elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.offsetLeft - elm[0].offsetLeft)});
                         oldStep = elm;

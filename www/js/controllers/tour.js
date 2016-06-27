@@ -66,14 +66,24 @@ angular.module('app.controllers')
     // REM: Do not use ion elements as they have no width and are not placed well.
     // REFACTOR: Actually the following should happen in the html file as it is about the VIEW!
     // TODO: only works in english :(
-    $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
+    if (ionic.Platform.isIOS()) {
+        $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
+    } else {
+        $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "bottom");
+    }
     $scope.appendTourStep("#scanDurationSetting", 1, "{{'SETTINGS_TAB.SCAN_DURATION' | translate}}",     "{{'TOUR.T2' | translate}}");
     $scope.appendTourStep("#volumeSetting",       1, "{{'TOUR.VOLUME' | translate}}",                    "{{'TOUR.T3' | translate}}");
     $scope.appendTourStep("#languageSetting",     1, "{{'SETTINGS_TAB.LANGUAGE' | translate}}",          "{{'TOUR.T4' | translate}}");
-    $scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
-    $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
-    $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
-    $scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
+    // TODO: broken...
+    //$scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
+    if (ionic.Platform.isIOS()) {
+        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
+    } else {
+        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "bottom");
+    }
+        $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
+        // TODO: tab switch somehow breaks it.
+    //$scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
 
 
     $ionicPlatform.ready(function() {
