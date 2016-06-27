@@ -54,5 +54,17 @@
 		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Sorry. Scanning only works with location services enabled.",
 		"CONNECT_MORE_THAN_TWO_DEVICES": "Sorry. You cannot connect to more than two devices!",
 		"CONNECTION_FAILED": "Connection failed. Please try again"
-	}
+	},
+    "TOUR": {
+        "VOLUME": "Volume",
+		"RESTART_THE_TUTORIAL":"Restart the tutorial",
+		"T1":"Using the settings tab you can customize and optimize your new hearing experience!",
+		"T2":"This setting influences the time that is searched for hearing aids when starting the scan.",
+		"T3":"Select the amplification of your hearing aid here.",
+		"T4":"Here you can select your preferred Language.",
+		"T5":"This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volume Profile to outdoor if it gets too loud.",
+		"T6":"The graph tab can show you cool statistics.",
+		"T7":"If you wish to start the tracking of the graph hit this button. Remember: A device must be connected first!",
+		"T8":"Click this to restart the tutorial."
+    }
 }

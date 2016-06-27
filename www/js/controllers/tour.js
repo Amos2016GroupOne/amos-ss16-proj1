@@ -64,17 +64,15 @@ angular.module('app.controllers')
 
     // Add tour steps:
     // REM: Do not use ion elements as they have no width and are not placed well.
-    // REM: if tab id is set to -2 the tab is not changed. TODO: CONSTANT for that?
-    $scope.appendTourStep("a[title='Settings']", -2, "Settings", "Using the settings tab you can customize and optimize your new hearing experience!", "top");
-    $scope.appendTourStep("#scanDurationSetting", 1, "Scanning timeout", "This setting influences the time that is searched for hering aids when starting the Scan.");
-    $scope.appendTourStep("#volumeSetting", 1, "Volume", "Select the amplification of your hearing aid here.");
-    $scope.appendTourStep("#languageSetting", 1, "Language", "Here you can select your prefered Language.");
-    $scope.appendTourStep("#dbMeterSetting", 1, "DB-Meter", "This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volumeprofile to outdoor if it gets too loud.", "top");
-
-    $scope.appendTourStep("a[title='Graph']", -2, "Graph", "The graph tab can show you cool statistics", "top");
-    $scope.appendTourStep("#btnTrackGraph", 2, "Graph Tracking", "If you wish to start the tracking of the graph hit this button. <b>Remember:</b> A device must be connected first!", "bottom");
-
-    $scope.appendTourStep("#startTutorial", 1, "Restart the tutorial", "Click this here to restart the tutorial.");
+    // REFACTOR: Actually the following should happen in the html file as it is about the VIEW!
+    $scope.appendTourStep("a[title='Settings']",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
+    $scope.appendTourStep("#scanDurationSetting", 1, "{{'SETTINGS_TAB.SCAN_DURATION' | translate}}",     "{{'TOUR.T2' | translate}}");
+    $scope.appendTourStep("#volumeSetting",       1, "{{'TOUR.VOLUME' | translate}}",                    "{{'TOUR.T3' | translate}}");
+    $scope.appendTourStep("#languageSetting",     1, "{{'SETTINGS_TAB.LANGUAGE' | translate}}",          "{{'TOUR.T4' | translate}}");
+    $scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
+    $scope.appendTourStep("a[title='Graph']",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
+    $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
+    $scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
 
 
     $ionicPlatform.ready(function() {
@@ -85,4 +83,3 @@ angular.module('app.controllers')
         }
     });
 });
-
