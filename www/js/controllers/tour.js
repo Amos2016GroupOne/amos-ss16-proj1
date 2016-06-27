@@ -66,20 +66,20 @@ angular.module('app.controllers')
     // REM: Do not use ion elements as they have no width and are not placed well.
     // REFACTOR: Actually the following should happen in the html file as it is about the VIEW!
     // TODO: only works in english :(
-    if (ionic.Platform.isIOS()) {
-        $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
-    } else {
+    if (ionic.Platform.isAndroid()) {
         $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "bottom");
+    } else {
+        $scope.appendTourStep("div.tab-nav>a:eq(1)",  1, "{{'SETTINGS_TAB.SETTINGS' | translate}}",          "{{'TOUR.T1' | translate}}", "top");
     }
     $scope.appendTourStep("#scanDurationSetting", 1, "{{'SETTINGS_TAB.SCAN_DURATION' | translate}}",     "{{'TOUR.T2' | translate}}");
     $scope.appendTourStep("#volumeSetting",       1, "{{'TOUR.VOLUME' | translate}}",                    "{{'TOUR.T3' | translate}}");
     $scope.appendTourStep("#languageSetting",     1, "{{'SETTINGS_TAB.LANGUAGE' | translate}}",          "{{'TOUR.T4' | translate}}");
     // TODO: broken...
     //$scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
-    if (ionic.Platform.isIOS()) {
-        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
-    } else {
+    if (ionic.Platform.isAndroid()) {
         $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "bottom");
+    } else {
+        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
     }
         $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
         // TODO: tab switch somehow breaks it.
