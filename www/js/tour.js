@@ -137,11 +137,22 @@ angular.module('ui.tour', [])
 
                         // Set tourtip position
                         offset = {};
-                        offset.top = relativeTop
-                        if (at.indexOf('top') > -1) {
-                            offset.top -= elm[0].offsetHeight;
-                        } else {
-                            offset.top += target.offsetHeight;
+                        offset.top = relativeTop;
+                        var atTop = (at.indexOf('top') > -1);
+
+                        // Little helper, full of side effects:
+                        function calculateTop() {
+                            return relativeTop + (atTop ? (-1*elm[0].offsetHeight) : (target.offsetHeight));
+                        }
+
+                        offset.top = calculateTop();
+
+                        // If not fitting on screen mirror it: top <--> bottom
+                        if (offset.top < 0 || offset.top + elm[0].offsetHeight > anchor.height()) {
+                            $(elm[0]).removeClass(atTop ? 'top' : 'bottom');
+                            atTop = !atTop;
+                            $(elm[0]).addClass(atTop ? 'top' : 'bottom');
+                            offset.top = calculateTop();
                         }
                         elm.css(offset);
                         elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.offsetLeft - elm[0].offsetLeft)});
