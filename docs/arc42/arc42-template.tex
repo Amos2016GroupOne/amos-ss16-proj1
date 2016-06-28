@@ -297,30 +297,54 @@ insert description here
 
 The following diagram shows the main building blocks of the system and
 their interdependencies:
+\begin{figure}
+\center
+\begin{tikzpicture}
+\begin{umlcomponent}{BLE Remote}
 
-\textless{}insert overview diagram here\textgreater{}
+\umlbasiccomponent{TagCtrl}
+\umlbasiccomponent[x=4]{GraphCtrl}
+\umlbasiccomponent[x=8]{SettingsCtrl}
 
+\umlbasiccomponent[x=4,y=-3]{SettingsService}
+\umlbasiccomponent[x=0,y=-3]{DataStorage}
+\umldep{TagCtrl}{DataStorage}
+\umldep{GraphCtrl}{DataStorage}
+
+\umldep{TagCtrl}{SettingsService}
+\umldep{SettingsCtrl}{SettingsService}
+
+\end{umlcomponent}
+\end{tikzpicture}
+\caption{System Building Block View}
+\end{figure}
 Comments regarding structure and interdependencies at Level 1:
 
-\subsubsection{Building Block Name 1 (Black Box Description)}
+\subsubsection{TagCtrl (Black Box Description)}
 
-\textless{}insert the building block's black box template
-here\textgreater{}
+The TagCtrl subsystem handles all interactions with the Sensor Tags. It exposes some of those methods to the user interface so the user can trigger scanning and connection with the tags. 
 
-\subsubsection{Building Block Name 2 (Black Box Description)}
+It retrieves specific configuration like scan duration from the SettingsService and stores data it gets from the tags in the DataStorage 
 
-\textless{}insert the building block's black box template
-here\textgreater{}
+\subsubsection{GraphCtrl (Black Box Description)}
 
-\subsubsection{\ldots{}}
+The GraphCtrl subsystem handles all interaction with the information graph. It exposes certain functions to the user interface so the user can interact with the graph. 
 
-\textless{}insert the building block's black box template
-here\textgreater{}
+It retrieves the data to display from the DataStorage.
 
-\subsubsection{Building Block Name n (Black Box Description)}
 
-\textless{}insert the building block's black box template
-here\textgreater{}
+\subsubsection{SettingsCtrl (Black Box Description)}
+
+The SettingsCtrl subsystem handles the display of current preferences and allows the user to change these settings. It stores and retrieves the settings from the SettingsService.
+
+
+\subsubsection{DataStorage (Black Box Description)}
+
+The DataStorage subsystem is designed to store data in a structured way and allows for easy storage and retrieval of said data. 
+
+\subsubsection{SettingsService (Black Box Description)}
+
+The SettingsService subsystem allows for storage and retrieval of the settings. It is accessed by multiple parts of the application to provide a way for users to set custom preferences.
 
 \subsubsection{Open Issues}
 
