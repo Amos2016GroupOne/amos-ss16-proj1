@@ -17,9 +17,16 @@ the given ionic app.
   - seems extremely minimalistic and is therefore easily adjustable
   - is the only one that could be easily setup together with ionic
   - seems to be oldest and outdated
+- All those frameworks are under MIT or simular license.
 
 
-All frameworks are under MIT or simular license.
+- Also We had a look at https://github.com/loringdodge/ionic-tour
+  - there was no licence given
+  - there seems to be an issue when using multiple tabs what we are doing.
+
+
+
+
 
 
 
