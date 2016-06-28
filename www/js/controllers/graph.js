@@ -45,16 +45,20 @@ angular.module('app.controllers')
     function updateCounter() {
         if($rootScope.connectedTime === -1) {
             counter = 0;
+            $timeout.cancel(timer);
         } else {
             var a = new Date();
             var now = a.getTime() / 1000;
             counter= Math.round(now - $rootScope.connectedTime);
             convertToHms(counter);
+            timer = $timeout(updateCounter, 1000);
         }      
-        timer = $timeout(updateCounter, 1000);
-    };
+        
+    }
     
-    updateCounter();
+    $scope.$on('$ionicView.enter', function() {
+        updateCounter();
+    });
 
     // Initialize the current start point
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
