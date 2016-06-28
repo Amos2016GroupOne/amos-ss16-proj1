@@ -25,12 +25,40 @@
 
 // Controller for Settings
 angular.module('app.controllers')
-.controller('GraphCtrl', function($scope, $rootScope, $cordovaSQLite, settings, dataStorage) {
+.controller('GraphCtrl', function($scope, $rootScope, $ionicPlatform, $cordovaSQLite, Log, settings, dataStorage, $timeout) {
+
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
-
+    $scope.hours = "00";
+    $scope.minutes = "00";
+    $scope.seconds = "00";
     $scope.numberOfDatapoints = 10;
+    $scope.date = [];
+    var counter = 0;
+    var timer;
+    
+    /* if the connected time is determined, then substract the current time with the connected time
+       to get the usage time. When the device is disconnected, the usage time will be reset.
+     */
+
+    function updateCounter() {
+        if($rootScope.connectedTime === -1) {
+            counter = 0;
+            $timeout.cancel(timer);
+        } else {
+            var a = new Date();
+            var now = a.getTime() / 1000;
+            counter= Math.round(now - $rootScope.connectedTime);
+            convertToHms(counter);
+            timer = $timeout(updateCounter, 1000);
+        }      
+        
+    }
+    
+    $scope.$on('$ionicView.enter', function() {
+        updateCounter();
+    });
 
     // Initialize the current start point
     $scope.currentStartPoint = ((dataStorage.retrieveData("accelerometer-time")).length - $scope.numberOfDatapoints);
@@ -43,7 +71,8 @@ angular.module('app.controllers')
     if($scope.currentStartPoint < 0) {
         $scope.currentStartPoint = 0;
     }
-
+    
+            
     // This function extracs a 100 item data slice from the data starting at $scope.currentStartPoint
     // This data slice is set as the chart data.
     function createAndSetDataSlice()
@@ -54,12 +83,9 @@ angular.module('app.controllers')
         //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
         $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
         $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
+    
     }
-
-
-
-
-
+         
     createAndSetDataSlice();
 
     $scope.barOffset = 0;
@@ -83,6 +109,7 @@ angular.module('app.controllers')
         }
 
         createAndSetDataSlice();
+
     });
 
     // Variables relating to dragging
@@ -144,5 +171,34 @@ angular.module('app.controllers')
             }
         }
     };
+    
+    //convert the usage time into hh:mm:ss format
+            
+    function convertToHms(secs) {
+            secs = Number(secs);
+            var h = Math.floor(secs / 3600);
+            var m = Math.floor(secs % 3600 / 60);
+            var s = Math.floor(secs % 3600 % 60);
+            
+            if(h < 10) {
+            $scope.hours = "0" + h;
+            }
+            else {
+            $scope.hours = h;
+            }
+            if (m < 10) {
+            $scope.minutes = "0" + m;
+            }
+            else {
+            $scope.minutes = m;
+            }
+            if (s < 10) {
+            $scope.seconds = "0" + s;
+            }
+            else {
+            $scope.seconds = s;
+            }
+    }
+     
 })
 
