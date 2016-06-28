@@ -1,0 +1,737 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={arc42 Template},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{\includegraphics{images/arc42-logo.png} Template}
+\date{2016-06-16}
+
+\begin{document}
+\maketitle
+
+\section{About arc42}
+
+arc42, the Template for documentation of software and system
+architecture.
+
+By Dr. Gernot Starke, Dr. Peter Hruschka and contributors.
+
+Template Revision: 6.5 EN (based on asciidoc), Juni 2014
+
+© We acknowledge that this document uses material from the arc 42
+architecture template, \url{http://www.arc42.de}. Created by Dr. Peter
+Hruschka \& Dr. Gernot Starke. For additional contributors see
+\url{http://arc42.de/sonstiges/contributors.html}
+
+\begin{quote}
+\textbf{Note}
+
+This version of the template contains some help and explanations. It is
+used for familiarization with arc42 and the understanding of the
+concepts. For documentation of your own system you use better the
+\emph{plain} version.
+\end{quote}
+
+\section{Introduction and Goals}
+
+The introduction to the architecture documentation should list the
+driving forces that software architects must consider in their
+decisions. This includes on the one hand the fulfillment of functional
+requirements of the stakeholders, on the other hand the fulfillment of
+or compliance with required constraints, always in consideration of the
+architecture goals.
+
+\subsection{Requirements Overview}
+
+\subsection{Quality Goals}
+
+\subsection{Stakeholders}
+
+\section{Architecture Constraints}
+
+\subsection{Technical Constraints}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+Technical Constraints
+\end{minipage}
+\\\addlinespace
+\midrule\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Hardware Constraints}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C1
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C2
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C3
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Software Constraints}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C4
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C5
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C6
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Operating System Constraints}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C7
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C8
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C9
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Programming Constraints}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C10
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C11
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C12
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\bottomrule
+\addlinespace
+\caption{List of Technical Constraints}
+\end{longtable}
+
+\subsection{Organizational Constraints}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+Organizational Constraints
+\end{minipage}
+\\\addlinespace
+\midrule\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Organization and Structure}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C1
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C2
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Resources (Budget, Time, Personnel)}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C3
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C4
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Organizational Standards}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C5
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C6
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\emph{Legal Factors}
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C7
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+C8
+\end{minipage} & \begin{minipage}[t]{0.75\columnwidth}\raggedright
+insert description here
+\end{minipage}
+\\\addlinespace
+\bottomrule
+\addlinespace
+\caption{List of Organizational Constraints}
+\end{longtable}
+
+\subsection{Conventions}
+
+\section{System Scope and Context}
+
+\subsection{Business Context}
+
+\subsection{Technical Context}
+
+\subsection{External Interfaces}
+
+\section{Solution Strategy}
+
+\section{Building Block View}
+
+\subsection{Level 1}
+
+The following diagram shows the main building blocks of the system and
+their interdependencies:
+
+\textless{}insert overview diagram here\textgreater{}
+
+Comments regarding structure and interdependencies at Level 1:
+
+\subsubsection{Building Block Name 1 (Black Box Description)}
+
+\textless{}insert the building block's black box template
+here\textgreater{}
+
+\subsubsection{Building Block Name 2 (Black Box Description)}
+
+\textless{}insert the building block's black box template
+here\textgreater{}
+
+\subsubsection{\ldots{}}
+
+\textless{}insert the building block's black box template
+here\textgreater{}
+
+\subsubsection{Building Block Name n (Black Box Description)}
+
+\textless{}insert the building block's black box template
+here\textgreater{}
+
+\subsubsection{Open Issues}
+
+\subsection{Level 2}
+
+\subsubsection{Building Block Name 1 (White Box Description)}
+
+\textless{}insert diagram of building block 1 here\textgreater{}
+
+\paragraph{Building Block Name 1.1 (Black Box Description)}
+
+\paragraph{Building Block Name 1.2 (Black Box Description)}
+
+Structure according to black box template
+
+\paragraph{\ldots{}}
+
+\paragraph{Building Block Name 1.n (Black Box Description)}
+
+\paragraph{Description of Relationships}
+
+\paragraph{Open Issues}
+
+\subsubsection{Building Block Name 2 (White Box Description)}
+
+\ldots{}
+
+\textless{}insert diagram of building block 2 here\textgreater{}
+
+\paragraph{Building Block Name 2.1 (Black Box Description)}
+
+Structure according to black box template
+
+\paragraph{Building Block Name 2.2 (Black Box Description)}
+
+\paragraph{\ldots{}}
+
+\paragraph{Building Block Name 2.n (Black Box Description)}
+
+\paragraph{Description of Relationships}
+
+\paragraph{Open Issues}
+
+\subsubsection{Building Block Name 3 (White Box Description)}
+
+\ldots{}
+
+\textless{}insert diagram of building block 3 here\textgreater{}
+
+\paragraph{Building Block Name 3.1 (Black Box Description)}
+
+\paragraph{Building Block Name 3.2 (Black Box Description)}
+
+\paragraph{\ldots{}}
+
+\paragraph{Building Block Name 3.n (Black Box Description)}
+
+\paragraph{Description of Relationships}
+
+\paragraph{Open Issues}
+
+\subsection{Level 3}
+
+\section{Runtime View}
+
+\subsection{Runtime Scenario 1}
+
+\subsection{Runtime Scenario 2}
+
+\subsection{\ldots{}}
+
+some more
+
+\subsection{Runtime Scenario n}
+
+\section{Deployment View}
+
+\subsection{Infrastructure Level 1}
+
+\subsubsection{Deployment Diagram Level 1}
+
+\subsubsection{Processor 1}
+
+\textless{}insert node template here\textgreater{}
+
+\subsubsection{Processor 2}
+
+\textless{}insert node template here\textgreater{}
+
+\subsubsection{\ldots{}}
+
+\subsubsection{Processor n}
+
+\textless{}insert node template here\textgreater{}
+
+\subsubsection{Channel 1}
+
+\subsubsection{Channel 2}
+
+\subsubsection{\ldots{}}
+
+\subsubsection{Channel m}
+
+\subsection{Infrastructure Level 2}
+
+\section{Concepts}
+
+\subsection{Domain Models}
+
+This section is designed to give a short overview of the components of the app and how they interact.
+
+The app is split into a number of background services and controllers. Each controller handles a certain aspect of the application such as TagCtrl handling tags and GraphControl handling the graph. Since the domain model is rather simple this section is rather 
+
+\begin{figure}
+\center
+\begin{tikzpicture}
+\umlclass{TagCtrl}{tags : list<SensorTag>}{connectToTag \\ scanForTags \\ onSensorData}
+\umlclass[x=6]{SensorTag}{}{getSensorData}
+\umlclass[x=-7]{DataStore}{}{storeData \\ retrieveData}
+\umlaggreg[arg1=1, arg2=0..2]{TagCtrl}{SensorTag}
+\umlassoc[arg2=storesData]{TagCtrl}{DataStore}
+\end{tikzpicture}
+\caption{This shows the relation between the TagCtrl and the SensorTags. The DataStore service is explained in more detail in below in the section about persistence}
+\label{figTagCtrl}
+\end{figure}
+
+The TagCtrl controls the direct interaction with the sensor tag. It can scan for tags and connect to them. It is also the handler for all data retrieved from the tags. The relationship is shown in figure \ref{figTagCtrl}.
+
+\begin{figure}
+\center
+\begin{tikzpicture}
+\umlclass{GraphCtrl}{}{drawGraph \\ }
+\umlclass[x=-7]{DataStore}{}{storeData \\ retrieveData}
+\umlassoc[arg1=retrievesData]{GraphCtrl}{DataStore}
+\end{tikzpicture}
+\caption{This shows the relation between the GraphControl and the DataStore. The DataStore service is explained in more detail in below in the section about persistence}
+\label{figGraphCtrl}
+\end{figure}
+
+The GraphCtrl retrieves data from the DataStore to draw informative graphs for the user.
+
+
+\subsection{Recurring or Generic Structures and Patterns}
+
+\subsubsection{Recurring or Generic Structure 1}
+
+\textless{}insert diagram and descriptions here\textgreater{}
+
+\subsubsection{Recurring or Generic Structure 2}
+
+\textless{}insert diagram and descriptions here\textgreater{}
+
+\subsection{Persistency}
+
+There are two things that require persistency in the application: Settings and recorded data.
+
+The settings are important to persist so that the user has a consistent experience and can adjust the application to his/her preferences. However the preferences are rather simple key-value pairs which don't need sophisticated storage.
+
+Since the application is built on web technologies the HTML5 local data store is used for simple key value pair storage. This is a simple but easy to use method with little to no additional setup.
+
+The recorded data however requires a different storage scheme as it can have multiple values associated with a single key and sometimes explicitly needs to define a type of the stored data. Also a much larger volume of data needs to be persisted. 
+
+This is solved by using a file backed SQLite database which can be queried using SQL statements. This allows for very flexible data storage and is available on both iOS and Android platforms.
+
+\subsection{User Interface}
+
+The user interface is designed as multiple tabs with separation of concerns between the tabs. Each tab has an associated controller which only interacts with the other tabs via the background services. 
+
+\begin{tabular}{|c|c|c|}
+\hline
+ Tab & Function\\
+ \hline
+ Tag & Search Tags, Establish Connection \\
+ Graph & Visualize Information retrieved by Tags \\
+ Settings & Allow for user adjustment of runtime parameters\\
+ \hline
+\end{tabular}
+
+\subsection{Ergonomics}
+
+\subsection{Flow of Control}
+
+\subsection{Transaction Processing}
+
+\subsection{Session Handling}
+
+\subsection{Security}
+
+\subsection{Safety}
+
+\subsection{Communications and Integration}
+
+\subsection{Distribution}
+
+\subsection{Plausibility and Validity Checks}
+
+\subsection{Exception/Error Handling}
+
+Exceptions can occur during runtime either due to malformed javascript code as it is an interpreted language or due to underlying OS errors. In general these need to be handled differently.
+
+The underlying OS errors should be handled by the respective plugins which interface directly with the OS. Handling those at the application level is not possible unless they are communicated as errors to the application by the plugin. An uncaught exception at the OS level terminates the program.
+
+Javascript exceptions on the other hand can be caught using try catch functionality. However this is not done anywhere in the code.
+
+Error conditions which can result from OS errors during plugin execution or malformed user input are checked for and reported to the user in the form of notifications. In the case of nonrecoverable errors the program is terminated after informing the user.
+
+\subsection{System Management and Administration}
+
+\subsection{Logging, Tracing}
+
+There is a logging service which cumulates logs from multiple locations in the application. The application logs what it is currently doing allowing developers to trace back errors to recent events. These logs are accesible using the debug interface and are not meant for the end user. 
+
+\subsection{Business Rules}
+
+\subsection{Configurability}
+
+The application has several parameters such as length of BLE scan, language etc. which are customizable by the user using the settings tab. 
+
+Those settings are stored in the settings key-value store described above.
+
+\subsection{Parallelization and Threading}
+
+\subsection{Internationalization}
+
+The application has full support for multiple languages as well as left to right languages. The language can be selected by the user in the settings tab.
+
+\subsection{Migration}
+
+\subsection{Testability}
+
+There are both unit tests of each controller and background service as well as end to end tests. 
+
+The unit tests can only test a small subset of the functionality while the end to end tests can test the interconnection between the various components.
+
+\subsection{Scaling, Clustering}
+
+\subsection{High Availability}
+
+\subsection{Code Generation}
+
+\subsection{Build-Management}
+
+Builds can be fully automated using the provided build scripts which also automatically run all tests at build time. 
+
+Current build automation uses Travis CI.
+
+\section{Design Decisions}
+
+For now see other docs.
+
+\subsection{Decision Topic Template}
+
+\subsection{Decision Topic 1}
+
+\textbf{Decision.}
+
++
+
+\subsection{Decision Topic 2}
+
++
+
+\subsection{Decision Topic 3}
+
++
+
+\subsection{\ldots{}}
+
++
+
+\section{Quality Scenarios}
+
+\subsection{Quality Tree}
+
+\subsection{Evaluation Scenarios}
+
+\section{Technical Risks}
+
+\section{Glossary}
+
+\begin{longtable}[c]{@{}llll@{}}
+\toprule\addlinespace
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Glossary
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+\end{minipage}
+\\\addlinespace
+\midrule\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Synonym
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\end{minipage}
+\\\addlinespace
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Synonym
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\end{minipage}
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\section{Literature and references}
+
+\begin{description}
+\item[Starke-2014]
+Gernot Starke: Effektive Softwarearchitekturen - Ein praktischer
+Leitfaden. Carl Hanser Verlag, 6, Auflage 2014.
+\item[Starke-Hruschka-2011]
+Gernot Starke und Peter Hruschka: Softwarearchitektur kompakt. Springer
+Akademischer Verlag, 2. Auflage 2011.
+\item[Zörner-2013]
+Softwarearchitekturen dokumentieren und kommunizieren, Carl Hanser
+Verlag, 2012
+\end{description}
+
+\section{Examples}
+
+\begin{itemize}
+\item
+  \href{http://aim42.github.io/htmlSanityCheck/hsc_arc42.html}{HTML
+  Sanity Checker}
+\item
+  \href{http://www.dokchess.de/dokchess/arc42/}{DocChess} (german)
+\item
+  \href{http://www.embarc.de/arc42-starschnitt-gradle/}{Gradle} (german)
+\item
+  \href{http://confluence.arc42.org/display/arc42beispielmamacrm}{MaMa
+  CRM} (german)
+\item
+  \href{http://confluence.arc42.org/display/migrationEg/Financial+Data+Migration}{Financial
+  Data Migration} (german)
+\end{itemize}
+
+\section{Acknowledgements and collaborations}
+
+arc42 originally envisioned by \href{http://b-agile.de}{Dr. Peter
+Hruschka} and \href{http://gernotstarke.de}{Dr. Gernot Starke}.
+
+\begin{description}
+\item[Sources]
+We maintain arc42 in \emph{asciidoc} format at the moment, hosted in
+\href{https://github.com/aim42/aim42}{GitHub under the
+aim42-Organisation}.
+\item[Issues]
+We maintain a list of
+\href{https://github.com/arc42/arc42-template/issues}{open topics and
+bugs}.
+\end{description}
+
+We are looking forward to your corrections and clarifications! Please
+fork the repository mentioned over this lines and send us a \emph{pull
+request}!
+
+\subsection{Collaborators}
+
+We are very thankful and acknowledge the support and help provided by
+all active and former collaborators, uncountable (anonymous) advisors,
+bug finders and users of this method.
+
+\subsubsection{Currently active}
+
+\begin{itemize}
+\item
+  Gernot Starke
+\item
+  Stefan Zörner
+\item
+  Markus Schärtel
+\item
+  Ralf D. Müller
+\item
+  Peter Hruschka
+\item
+  Jürgen Krey
+\end{itemize}
+
+\subsubsection{Former collaborators}
+
+(in alphabetical order)
+
+\begin{itemize}
+\item
+  Anne Aloysius
+\item
+  Matthias Bohlen
+\item
+  Karl Eilebrecht
+\item
+  Manfred Ferken
+\item
+  Phillip Ghadir
+\item
+  Carsten Klein
+\item
+  Prof. Arne Koschel
+\item
+  Axel Scheithauer
+\end{itemize}
+
+\section{Approved Practitioner for arc42}
+
+(TODO)
+
+\end{document}
