@@ -82,11 +82,14 @@ angular.module('app.controllers')
     {
         var start = $scope.currentStartPoint;
         var end = start + $scope.numberOfDatapoints;
+
         //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
         //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
         $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
         $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
 
+        console.log("We have start: " + start + " end " + end + " data length " +
+                    $scope.data[0].length + " total data length " + dataStorage.retrieveData("accelerometer-z").length);
     		// Are there any DataPoints?
     		if($scope.data[0].length > 0) {
     			$scope.showGraph = true;
