@@ -1,0 +1,20 @@
+// RTL languages directions:
+
+$default-float:         right;
+$opposite-float:         left;
+
+$default-direction:       rtl;
+$opposite-direction:      ltr;
+
+/*
+Customize the ion-radio elements by overriding the variables
+in ionic's _radio.scss file:
+*/
+
+.item-radio .item-content{
+    padding-#{$opposite-float}: $item-padding * 4 !important;
+}
+
+.item-radio .radio-icon{
+    left:0 !important;
+}
