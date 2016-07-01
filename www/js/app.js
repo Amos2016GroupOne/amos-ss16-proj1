@@ -31,23 +31,23 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate, $timeout) {
-
-        ////defines were the html text should float (left or right). This is used in index.html then
-        //$rootScope.default_float = settings.settings.default_float;
-        $rootScope.default_float = '';
-       
-
+        
+        //this function is used in app.js and in the settings controller
         $rootScope.changeLanguage = function () {
             console.log("tanslating to: " + settings.settings.language);
             // let angular-translate know that from now on this language has to be used
             var promise = $translate.use(settings.settings.language);
             //depending on the language, the text should float to the left or right
             if(settings.settings.language == 'ar-sy'){
-                $rootScope.default_float = 'right';
+                $rootScope.default_direction = 'rtl';
+                $rootScope.opposite_direction = 'ltr';
             }else{
-                $rootScope.default_float = 'left';
+                $rootScope.default_direction = 'ltr';
+                $rootScope.opposite_direction = 'rtl';
             }
             settings.persistSettings();
+            console.log("$rootScope.default_direction: " + $rootScope.default_direction
+                    + "   $rootScope.opposite_direction:" + $rootScope.opposite_direction);
             return promise;
         }
     

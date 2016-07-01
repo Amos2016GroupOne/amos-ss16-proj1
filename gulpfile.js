@@ -11,6 +11,8 @@ var paths = {
   sass: ['./scss/**/*.scss']
 };
 
+gulp.task('default', ['sass-ltr', 'sass-rtl']);
+
 gulp.task('sass-ltr', function(done) {
   gulp.src('./scss/ionic-ltr.app.scss')
     .pipe(sass())
