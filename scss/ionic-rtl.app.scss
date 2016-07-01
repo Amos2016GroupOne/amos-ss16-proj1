@@ -11,7 +11,7 @@ in ionic's _radio.scss file:
 .item-radio .item-content{
     /* give some room to the left for the checkmark icon */
     padding-left: $item-padding * 4 !important;
-    padding-right: 16px !important;
+    padding-right: $item-padding !important;
 }
 
 .item-radio .radio-icon{
