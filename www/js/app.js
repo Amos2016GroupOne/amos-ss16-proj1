@@ -31,7 +31,7 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBluetoothLE', 'chart.js', 'rzModule', 'ngCordova', 'pascalprecht.translate'])
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate, $timeout) {
-        
+
         //this function is used in app.js and in the settings controller
         $rootScope.changeLanguage = function () {
             console.log("tanslating to: " + settings.settings.language);
@@ -46,8 +46,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
                 $rootScope.opposite_direction = 'rtl';
             }
             settings.persistSettings();
-            console.log("$rootScope.default_direction: " + $rootScope.default_direction
-                    + "   $rootScope.opposite_direction:" + $rootScope.opposite_direction);
+            
+            deletethis($rootScope);
+            addthis($rootScope);
+
             return promise;
         }
     
@@ -345,6 +347,27 @@ function setLocaleSetting($rootScope, settings, Log){
 	}
 }
 
+function deletethis($rootScope){
+    var allsuspects = document.getElementsByTagName("link");
+    for (var i = allsuspects.length; i >= 0; i--){ //search backwards within nodelist for matching elements to remove
+        if (allsuspects[i] && allsuspects[i].getAttribute("href")!=null &&
+                allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.opposite_direction + ".app.css") != -1){
+            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
+        }
+        if (allsuspects[i] && allsuspects[i].getAttribute("href")!=null &&
+                allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.default_direction + ".app.css") != -1){
+            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
+        }
+    }
+}
 
-
-
+function addthis($rootScope){
+    //dynamically load css file for RTL or LTR version of the app
+    var fileref = document.createElement("link");
+    fileref.setAttribute("rel", "stylesheet");
+    fileref.setAttribute("type", "text/css");
+    fileref.setAttribute("href", "css/ionic-" + $rootScope.default_direction + ".app.css");
+    if (typeof fileref!="undefined"){
+        document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
+}
