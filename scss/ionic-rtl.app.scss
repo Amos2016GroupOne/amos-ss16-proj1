@@ -3,20 +3,18 @@
 //include the main scss file so that we now can overwrite some properties to make it RTL
 @import "ionic-ltr.app.scss";
 
-// RTL languages directions:
-
-$default-float:         right;
-$opposite-float:         left;
-
 /*
 Customize the ion-radio elements by overriding the variables
 in ionic's _radio.scss file:
 */
 
 .item-radio .item-content{
-    padding-#{$opposite-float}: $item-padding * 4 !important;
+    /* give some room to the left for the checkmark icon */
+    padding-left: $item-padding * 4 !important;
+    padding-right: 16px !important;
 }
 
 .item-radio .radio-icon{
     left:0 !important;
+    right: auto;
 }

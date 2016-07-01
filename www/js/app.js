@@ -41,9 +41,11 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             if(settings.settings.language == 'ar-sy'){
                 $rootScope.default_direction = 'rtl';
                 $rootScope.opposite_direction = 'ltr';
+                $rootScope.default_float = 'right';
             }else{
                 $rootScope.default_direction = 'ltr';
                 $rootScope.opposite_direction = 'rtl';
+                $rootScope.default_float = 'left';
             }
             settings.persistSettings();
             
