@@ -47,8 +47,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
             }
             settings.persistSettings();
             
-            deletethis($rootScope);
-            addthis($rootScope);
+            switchDirectionIfNeeded($rootScope);
 
             return promise;
         }
@@ -61,12 +60,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 				//angular-translate would return the translation id by default.
 				//So we register a fallback language, so angular-translate will return this translation instead of the missing one
 				$translate.fallbackLanguage(defaultLanguage);
-
+				
 				// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
 				return $rootScope.changeLanguage();
 
 			}
 		).then(function(data){
+		        
+                //load the css file for the reading direction of the initial language
+                addcssForCurrDirection($rootScope);
+		    
 				//make sure ionic specific stuff is only done after the translation was loaded, so warning popups are localized
 				$ionicPlatform.ready(function () {
 					// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -347,21 +350,21 @@ function setLocaleSetting($rootScope, settings, Log){
 	}
 }
 
-function deletethis($rootScope){
+function switchDirectionIfNeeded($rootScope){
     var allsuspects = document.getElementsByTagName("link");
     for (var i = allsuspects.length; i >= 0; i--){ //search backwards within nodelist for matching elements to remove
         if (allsuspects[i] && allsuspects[i].getAttribute("href")!=null &&
-                allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.opposite_direction + ".app.css") != -1){
-            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
-        }
-        if (allsuspects[i] && allsuspects[i].getAttribute("href")!=null &&
-                allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.default_direction + ".app.css") != -1){
-            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
+        allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.opposite_direction + ".app.css") != -1){
+            
+            allsuspects[i].parentNode.removeChild(allsuspects[i]); //remove element by calling parentNode.removeChild()
+            addcssForCurrDirection($rootScope);
+            break;
+            
         }
     }
 }
 
-function addthis($rootScope){
+function addcssForCurrDirection($rootScope){
     //dynamically load css file for RTL or LTR version of the app
     var fileref = document.createElement("link");
     fileref.setAttribute("rel", "stylesheet");
