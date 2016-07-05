@@ -33,7 +33,7 @@
         </div>
         <div class="item item-text-wrap">
 		    <canvas id="hero-bar" class="chart chart-line ng-isolate-scope" chart-data="data" chart-labels="labels"
-             legend="true" series="series" options="{showTooltips: true, responsie: true, responsiveAnimationDuration: 0, animation: false}"
+             legend="true" series="series" options="{scales: { yAxes: [{ ticks: { suggestedMin: -1, suggestedMax: 1 } }] }, showTooltips: true, responsie: true, responsiveAnimationDuration: 0, animation: false}"
              on-touch="startDrag($event)"
              on-drag-left="mouseMove($event)"
              on-drag-right="mouseMove($event)"
