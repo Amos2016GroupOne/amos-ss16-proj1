@@ -51,12 +51,12 @@ describe('SettingsCtrl:', function() {
 
 	$translateProvider.translations('en-us', {
 		"LANGUAGE": "language",
-		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
+		"PROMPT_TURN_ON_BLUETOOTH": "BLEaring would like to turn on Bluetooth",
 		"ONLY_AVAIL_IN_EN_US": "this translation is only available in en-us"
 	});
 	$translateProvider.translations('de-de', {
 		"LANGUAGE": "Sprache",
-		"PROMPT_TURN_ON_BLUETOOTH": "BLE Remote möchte Bluetooth aktivieren"
+		"PROMPT_TURN_ON_BLUETOOTH": "BLEaring möchte Bluetooth aktivieren"
 	});
 
   }));
@@ -117,7 +117,7 @@ describe('SettingsCtrl:', function() {
 	$scope.settings.language = lang;
 	$scope.changeLanguage();
   }
-  
+
   function setScanDuration(index) {
     $scope.durationSlider.selectedIndex = index;
     $scope.scanDurationChanged();
@@ -142,9 +142,9 @@ describe('SettingsCtrl:', function() {
 
 	it('should translate notification text instantly to currently set language', function(){
 		setLanguage('en-us');
-		expect($translate.instant('PROMPT_TURN_ON_BLUETOOTH')).toBe('BLE Remote would like to turn on Bluetooth');
+		expect($translate.instant('PROMPT_TURN_ON_BLUETOOTH')).toBe('BLEaring would like to turn on Bluetooth');
 		setLanguage('de-de');
-		expect($translate.instant('PROMPT_TURN_ON_BLUETOOTH')).toBe('BLE Remote möchte Bluetooth aktivieren');
+		expect($translate.instant('PROMPT_TURN_ON_BLUETOOTH')).toBe('BLEaring möchte Bluetooth aktivieren');
 	});
 
 	it('should translate notifications text asynchronously to currently set language', function(){
@@ -154,13 +154,13 @@ describe('SettingsCtrl:', function() {
             translationString = translation;
 		});
 		$rootScope.$digest();
-		expect(translationString).toBe('BLE Remote would like to turn on Bluetooth');
+		expect(translationString).toBe('BLEaring would like to turn on Bluetooth');
 		setLanguage('de-de');
 		$translate('PROMPT_TURN_ON_BLUETOOTH').then(function (translation) {
             translationString = translation;
 		});
 		$rootScope.$digest();
-		expect(translationString).toBe('BLE Remote möchte Bluetooth aktivieren');
+		expect(translationString).toBe('BLEaring möchte Bluetooth aktivieren');
 	});
 
 	it('should translate to english if the translation id is not found', function(){
@@ -301,9 +301,9 @@ describe('SettingsCtrl:', function() {
     });
 
   });
-  
+
   describe('Scan Duration', function() {
- 
+
       it('should set the right scan duration value according to the index of the slider', function(){
           var index = 0;
           setScanDuration(index);
