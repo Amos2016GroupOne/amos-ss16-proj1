@@ -83,6 +83,16 @@ angular.module('app.controllers')
         var start = $scope.currentStartPoint;
         var end = start + $scope.numberOfDatapoints;
 
+		if(start < 0)
+		{
+			start = 0;
+		}
+		
+		if(end >= dataStorage.retrieveData("accelerometer-z").length)
+		{
+			end = dataStorage.retrieveData("accelerometer-z").length - 1;
+		}
+		
         //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
         //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
         $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
