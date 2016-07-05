@@ -224,7 +224,10 @@ function initCordovaBluetoothLE($cordovaBluetoothLE, $rootScope, $translate, Log
 		function (result) {
 			// Handle errors
 			Log.add("Init Fail: " + JSON.stringify(result));
-			navigator.notification.alert($translate.instant("PROMPT.DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
+			if(navigator.notification)
+			{
+				navigator.notification.alert($translate.instant("PROMPT.DEVICE_DOES_NOT_SUPPORT_BLE"), function () { navigator.app.exitApp(); });
+			}
 		},
 		function (obj) {
 			// Handle successes of initialize
