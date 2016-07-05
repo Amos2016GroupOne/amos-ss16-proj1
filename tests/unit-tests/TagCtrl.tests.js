@@ -105,9 +105,48 @@ var controller,
 
   });
 
+   it('should store barometer data', function() {
+      var value = 23.3;
+      value = value * (100);
+      // Turn it into an integer
+      value = value|0;
+      var bytes = new Int8Array(18);
+      // Write the int into the byte array
+      var i = 0;
+      bytes[i*3] = value & 0xff;
+      bytes[i*3+1] = (value >> 8) & 0xff;
+      bytes[i*3+2] = (value >> 16) & 0xff;
 
-  //it('should restore default settings when localStorage version is outdated', function() {
+      value /= 100;
+      
+      var value2 = 46.6;
+      value2 *= 100;
 
-  //});
+      i = 1;
+      bytes[i*3] = value2 & 0xff;
+      bytes[i*3+1] = (value2 >> 8) & 0xff;
+      bytes[i*3+2] = (value2 >> 16) & 0xff;
+      value2 /=100;
+
+      var obj = { 
+        value: bytes
+      }
+
+      var device = {
+        address: "null"
+      }
+
+      $scope.currentDevice1 = device;
+
+
+      $scope.onBarometerData(obj, device);
+      // The value should be stored in the dataStorage and be almost equal to the value passed (limited precision can change the value slightly)
+      expect($scope.barometer.temperatureDev1).toBe(value + "°C");
+
+      expect($scope.barometer.pressureDev1).toBe(value2 + "hPa");
+
+  });
+
+
 
 });
