@@ -1,21 +1,25 @@
 # amos-ss16-proj1: BLEaring
 The repository for the AMOS Project 2016 Group 1
 
-Prerequisites:
+## Description
 
-Cordova:
+An Evaluation project for using the ionic stack to develop a medical health care App for monitoring and controlling bluetooth low energy hearing aids.
+
+## Prerequisites:
+
+### Cordova/ionic:
 - NodeJS + NPM
 
-Android:
+### Android:
 - Android SDK
 - JDK 1.8
 
-E2E Tests:
+### E2E Tests:
 - Protractor
 - Java for Selenium
 - Firefox
 
-Install and build:
+## Install and build:
 
 - npm install -g cordova ionic bower gulp karma-cli protractor cordova-icon
   - to run cordova-icon you need `imagemagick`
@@ -26,13 +30,11 @@ Install and build:
 - ionic prepare
 - ionic build
 
-Test:
+## Test:
 - npm test
 
-Run:
+## Run:
 
 - `ionic emulate` OR `ionic run`
 - OR `ionic run android --device` to test on connected Android device
-- OR `ionic serve` to test GUI-design in Webbrowser.
-
-
+- OR `ionic serve` to test GUI-design in webbrowser.
