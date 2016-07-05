@@ -166,7 +166,7 @@ angular.module('app.controllers')
         if($scope.dragging)
         {
             // The width of a single bar in the bar graph
-            var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
+            var widthOfBar = angular.element("#hero-bar").attr("width")/$scope.numberOfDatapoints;
 
             // The number of bars we've dragged is dependent on the space moved and
             // the width of a single bar
