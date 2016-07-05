@@ -12,7 +12,10 @@
 		"OFFICE": "Büro",
 		"OUTDOOR": "Draußen",
 		"ENVIRONMENT_VOLUME": "Umgebungslautstärke",
-		"ACTIVATE_DB_METER": "Dezibelzähler aktivieren"
+		"ACTIVATE_DB_METER": "Dezibelzähler aktivieren",
+		"VOLUME": "Lautstärke",
+		"SHOW_ADVANCED": "Mehr Einstellungen",
+		"HIDE_ADVANCED": "Weniger Einstellungen"
     },
 	"TAG_TAB": {
 		"STATUS": "Status",

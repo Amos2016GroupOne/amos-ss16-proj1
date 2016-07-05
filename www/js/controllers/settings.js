@@ -29,6 +29,9 @@ angular.module('app.controllers')
 
     // Link the scope settings to the settings service
     $scope.settings = settings.settings;
+	
+	// Show/Hide advanced Settings
+	$scope.advanced = false;
 
     // Scope update function is the settings service persist function
     $scope.update = settings.persistSettings;
@@ -136,6 +139,17 @@ angular.module('app.controllers')
         // Persist settings
         $scope.update();
     }
+	
+	// Show advanced Settings
+	$scope.showAdvanced = function()
+	{
+		$scope.advanced = true;
+	}
+	
+	$scope.hideAdvanced = function()
+	{
+		$scope.advanced = false;
+	}
 
     // Helper function to start the DBMeter and its output
     function startDBMeter() {
