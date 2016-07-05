@@ -30,14 +30,17 @@ angular.module('app.controllers')
     $scope.labels = [];
     $scope.series = [/*'ACC-X', 'ACC-Y', */'ACC-Z'];
     $scope.data = [  [] ];
+
     $scope.hours = "00";
     $scope.minutes = "00";
     $scope.seconds = "00";
+
+	  $scope.showGraph = false;
     $scope.numberOfDatapoints = 10;
     $scope.date = [];
     var counter = 0;
     var timer;
-    
+
     /* if the connected time is determined, then substract the current time with the connected time
        to get the usage time. When the device is disconnected, the usage time will be reset.
      */
@@ -52,10 +55,10 @@ angular.module('app.controllers')
             counter= Math.round(now - $rootScope.connectedTime);
             convertToHms(counter);
             timer = $timeout(updateCounter, 1000);
-        }      
-        
+        }
+
     }
-    
+
     $scope.$on('$ionicView.enter', function() {
         updateCounter();
     });
@@ -71,21 +74,41 @@ angular.module('app.controllers')
     if($scope.currentStartPoint < 0) {
         $scope.currentStartPoint = 0;
     }
-    
-            
+
+
     // This function extracs a 100 item data slice from the data starting at $scope.currentStartPoint
     // This data slice is set as the chart data.
     function createAndSetDataSlice()
     {
         var start = $scope.currentStartPoint;
         var end = start + $scope.numberOfDatapoints;
+
+		if(start < 0)
+		{
+			start = 0;
+		}
+		
+		if(end >= dataStorage.retrieveData("accelerometer-z").length)
+		{
+			end = dataStorage.retrieveData("accelerometer-z").length - 1;
+		}
+		
         //$scope.data[0] = dataStorage.retrieveData("accelerometer-x").slice(start,end;
         //$scope.data[1] = dataStorage.retrieveData("accelerometer-y").slice(start,end);
         $scope.data[0] = dataStorage.retrieveData("accelerometer-z").slice(start,end);
         $scope.labels = dataStorage.retrieveData("accelerometer-time").slice(start, end);
-    
+
+        console.log("We have start: " + start + " end " + end + " data length " +
+                    $scope.data[0].length + " total data length " + dataStorage.retrieveData("accelerometer-z").length);
+    		// Are there any DataPoints?
+    		if($scope.data[0].length > 0) {
+    			$scope.showGraph = true;
+    		}
+    		else {
+    			$scope.showGraph = false;
+    		}
     }
-         
+
     createAndSetDataSlice();
 
     $scope.barOffset = 0;
@@ -143,7 +166,7 @@ angular.module('app.controllers')
         if($scope.dragging)
         {
             // The width of a single bar in the bar graph
-            var widthOfBar = angular.element("#bar").attr("width")/$scope.numberOfDatapoints;
+            var widthOfBar = angular.element("#hero-bar").attr("width")/$scope.numberOfDatapoints;
 
             // The number of bars we've dragged is dependent on the space moved and
             // the width of a single bar
@@ -171,15 +194,15 @@ angular.module('app.controllers')
             }
         }
     };
-    
+
     //convert the usage time into hh:mm:ss format
-            
+
     function convertToHms(secs) {
             secs = Number(secs);
             var h = Math.floor(secs / 3600);
             var m = Math.floor(secs % 3600 / 60);
             var s = Math.floor(secs % 3600 % 60);
-            
+
             if(h < 10) {
             $scope.hours = "0" + h;
             }
@@ -199,6 +222,5 @@ angular.module('app.controllers')
             $scope.seconds = s;
             }
     }
-     
-})
 
+})
