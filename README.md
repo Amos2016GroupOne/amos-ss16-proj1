@@ -36,4 +36,3 @@ Run:
 - OR `ionic serve` to test GUI-design in Webbrowser.
 
 
-To regenerate icons from `app-icon.svg` execute `./generateAppIcons.sh`
