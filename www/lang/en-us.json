@@ -41,7 +41,7 @@
 	"PROMPT": {
 		"ACCEPT": "Accept",
 		"CANCEL": "Cancel",
-		"TURN_ON_BLUETOOTH": "BLE Remote would like to turn on Bluetooth",
+		"TURN_ON_BLUETOOTH": "BLEaring would like to turn on Bluetooth",
 		"DEVICE_DOES_NOT_SUPPORT_BLE": "Sorry. Your device does not support BTLE",
 		"INTERNAL_ERROR_ENABLING_BT": "There was an internal error when enabling Bluetooth. This app only works with Bluetooth enabled",
 		"APP_ONLY_WORKS_WITH_BT": "Sorry. This app only works with Bluetooth enabled",

@@ -1,7 +1,7 @@
 {
-  "name": "BLE-Remote",
+  "name": "BLEaring",
   "version": "1.1.1",
-  "description": "BLE Remote: An Evaluation project",
+  "description": "BLEaring: An Evaluation project for using the ionic stack to develop a medical health care App for monitoring and controlling bluetooth low energy hearing aids.",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Amos2016GroupOne/amos-ss16-proj1.git"

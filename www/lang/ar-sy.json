@@ -38,7 +38,7 @@
 	"PROMPT": {
 		"ACCEPT": "قبول",
 		"CANCEL": "إلغاء",
-		"TURN_ON_BLUETOOTH": "سيكون BLE Remote ترغب في تشغيل بلوتوث",
+		"TURN_ON_BLUETOOTH": "سيكون BLEaring ترغب في تشغيل بلوتوث",
 		"DEVICE_DOES_NOT_SUPPORT_BLE": "BTLE آسف. جهازك لا يدعم",
 		"INTERNAL_ERROR_ENABLING_BT": "Bluetooth كان هناك خطأ داخلي عند تمكين بلوتوث. يعمل هذا التطبيق فقط مع تقنية",
 		"APP_ONLY_WORKS_WITH_BT": "Bluetooth آسف. يعمل هذا التطبيق فقط مع تقنية",

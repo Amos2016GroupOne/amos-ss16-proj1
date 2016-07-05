@@ -38,7 +38,7 @@
 	"PROMPT": {
 		"ACCEPT": "Elfogadom",
 		"CANCEL": "Mégsem",
-		"TURN_ON_BLUETOOTH": "BLE Remote szeretné kapcsolni a Bluetooth",
+		"TURN_ON_BLUETOOTH": "BLEaring szeretné kapcsolni a Bluetooth",
 		"DEVICE_DOES_NOT_SUPPORT_BLE": "Sajnos. A készülék nem támogatja BTLE",
 		"INTERNAL_ERROR_ENABLING_BT": "Volt egy belső hiba, amely lehetővé teszi a Bluetooth. Ez az alkalmazás csak akkor működik, Bluetooth kompatibilis",
 		"APP_ONLY_WORKS_WITH_BT": "Sajnálom. Ez az alkalmazás csak akkor működik a Bluetooth-",

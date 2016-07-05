@@ -1,4 +1,4 @@
-# amos-ss16-proj1
+# amos-ss16-proj1: BLEaring
 The repository for the AMOS Project 2016 Group 1
 
 Prerequisites:
