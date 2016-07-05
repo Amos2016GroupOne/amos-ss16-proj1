@@ -87,8 +87,9 @@
         <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
       </ion-list>
 	  
-	  <button class="button button-royal" ng-if="advanced == false" id="btnShowAdvanced" ng-click="showAdvanced()">{{ 'TAG_TAB.SHOW_ADVANCED' | translate }}</button>
-      <button class="button button-royal" ng-if="advanced == true" id="btnHideAdvanced" ng-click="hideAdvanced()">{{ 'TAG_TAB.HIDE_ADVANCED' | translate }}</button>
+	  <br><br>
+	  <button class="button button-royal" ng-if="advanced == false" id="btnShowAdvanced" ng-click="showAdvanced()">{{ 'SETTINGS_TAB.SHOW_ADVANCED' | translate }}</button>
+      <button class="button button-royal" ng-if="advanced == true" id="btnHideAdvanced" ng-click="hideAdvanced()">{{ 'SETTINGS_TAB.HIDE_ADVANCED' | translate }}</button>
 	
 
   </ion-content>
