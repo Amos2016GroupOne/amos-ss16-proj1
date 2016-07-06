@@ -242,29 +242,35 @@ describe('SettingsCtrl:', function() {
       muteHelper(true);
       expect($scope.settings.mute).toBe(true);
       $scope.$emit('volumeupbutton');
+      $timeout.flush();
       expect($scope.settings.mute).toBe(false);
       muteHelper(true);
       expect($scope.settings.mute).toBe(true);
       $scope.$emit('volumedownbutton');
+      $timeout.flush();
       expect($scope.settings.mute).toBe(false);
     });
 
     it('should change the volume in the right direction', function() {
       var old = $scope.settings.volume;
       $scope.$emit('volumeupbutton');
+      $timeout.flush();
       expect($scope.settings.volume).toBeGreaterThan(old);
       old = $scope.settings.volume;
       $scope.$emit('volumedownbutton');
+      $timeout.flush();
       expect($scope.settings.volume).toBeLessThan(old);
     });
 
     it('should be capped', function() {
       setVolume(0);
       $scope.$emit('volumedownbutton');
+      $timeout.flush();
       expect($scope.settings.volume).toBe(0);
 
       setVolume(100);
       $scope.$emit('volumeupbutton');
+      $timeout.flush();
       expect($scope.settings.volume).toBe(100);
     });
 
@@ -283,6 +289,7 @@ describe('SettingsCtrl:', function() {
 
     it('should start the measurements', function() {
       jasmine.clock().tick(101);  // wait a bit...
+      $timeout.flush();
       expect($scope.decibel).toBeGreaterThan(0);
       expect(typeof $scope.decibel).toEqual('string');
     });
@@ -290,6 +297,7 @@ describe('SettingsCtrl:', function() {
     it('should run the measurements', function() {
       var old = DBMeter.callCounter;
       jasmine.clock().tick(101);
+      $timeout.flush();
       expect(DBMeter.callCounter).toBeGreaterThan(old);
     });
 
@@ -297,6 +305,7 @@ describe('SettingsCtrl:', function() {
       old = DBMeter.callCounter;
       setListenDecibel(false);
       jasmine.clock().tick(102);  // to ensure it has stopped it somehow...
+      $timeout.flush();
       expect(DBMeter.callCounter).toEqual(old);
     });
 

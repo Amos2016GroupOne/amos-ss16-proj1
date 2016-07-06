@@ -25,7 +25,7 @@
 
 // Controller for Settings
 angular.module('app.controllers')
-.controller('SettingsCtrl', function($scope, $rootScope, $ionicPlatform, Log, settings, $translate, availableLanguages) {
+.controller('SettingsCtrl', function($scope, $rootScope, $timeout, $ionicPlatform, Log, settings, $translate, availableLanguages) {
 
     // Link the scope settings to the settings service
     $scope.settings = settings.settings;
@@ -158,22 +158,24 @@ angular.module('app.controllers')
         DBMeter.start(function(dB){
             // Gets called every 100 ms. to change this, the dbmeter plugins source must be adapted.
             if (delayCounter === 0) {
-                // Refresh datamodel and format
-                $scope.decibel = dB.toFixed(0);
-                //console.log('loudness: '+dB.toFixed(0));
 
-                // Select another volume profile if it is loud!
-                if (dB > 85 && !$scope.settings.mute) {
-                    // Set profile to outdoor as it is soo loud ;)
-                    // REM: The json filter that is used in tab-settings.html for the options automatically
-                    // does prettyfication. To set the current volume profile we must set the pretty flag as well:
-                    $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
-                    $scope.changeVolumeProfile();
-                }
+                $timeout(function() { // Since we cannot be sure that this callback is not fired synchronously we put it in a timeout of 0 which auto applies
+                    // Refresh datamodel and format
+                    $scope.decibel = dB.toFixed(0);
+                    //console.log('loudness: '+dB.toFixed(0));
 
-                // Manual apply is needed, looks like angular does not fire apply here
-                $scope.$apply();
+                    // Select another volume profile if it is loud!
+                    if (dB > 85 && !$scope.settings.mute) {
+                        // Set profile to outdoor as it is soo loud ;)
+                        // REM: The json filter that is used in tab-settings.html for the options automatically
+                        // does prettyfication. To set the current volume profile we must set the pretty flag as well:
+                        $scope.settings.currentVolumeProfile = angular.toJson($scope.settings.volumeProfiles[2], true);
+                        $scope.changeVolumeProfile();
+                    }
 
+                    // Manual apply is needed, looks like angular does not fire apply here
+                    //$scope.$apply();
+                },0);
             }
             delayCounter = (delayCounter + 1) % DELAY;
         }, function(e){
@@ -248,7 +250,8 @@ angular.module('app.controllers')
     });
 
     function volumeButtonPress(volDiff) {
-        $scope.$apply(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
+        $timeout(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand. 
+        // However if angular does fire it or its fired programmatically we have a problem so use $timeout instead.
 
             // Update Volume + checks for valid values (0 to 100)
             if (settings.settings.mute) {
@@ -271,7 +274,7 @@ angular.module('app.controllers')
             settings.settings.volume = vol;
             // Unmute as the user changed the volume and persist
             $scope.changedVolume();
-        });
+        },0);
     }
 
     $scope.$on('volumeupbutton', volumeButtonPress.bind(this, +10));
