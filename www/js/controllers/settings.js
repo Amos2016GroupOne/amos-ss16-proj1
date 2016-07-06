@@ -83,6 +83,12 @@ angular.module('app.controllers')
             hideLimitLabels: true
         }
     }
+    
+    $scope.changedVolume = function() {
+        $scope.settings.currentVolumeProfile = false;
+        $scope.settings.mute = false;
+        $scope.update();
+    }
 
     //set the initial index of the persisted duration value on startup
     $scope.durationSlider.selectedIndex = $scope.durationSlider.getInitialIndex();
@@ -111,12 +117,6 @@ angular.module('app.controllers')
     });
 
     $scope.newVolumeProfileName = "";
-
-    $scope.changedVolume = function() {
-        $scope.settings.currentVolumeProfile = false;
-        $scope.settings.mute = false;
-        $scope.update();
-    }
 
     $scope.changeVolumeProfile = function() {
         $scope.settings.volume = JSON.parse($scope.settings.currentVolumeProfile).volume;
