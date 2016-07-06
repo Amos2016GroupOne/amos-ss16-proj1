@@ -24,7 +24,7 @@
 
 ## Soooo: just use the standard theming and modify it a bit?
 - componentwise styling (http://ionicframework.com/docs/platform-customization/)
-- make use of sass (see `scss/ionic.app.scss`)
+- make use of sass (see `scss` folder)
 
 ## How to style platform independent:
 - `merges` directory is the cleanest way:

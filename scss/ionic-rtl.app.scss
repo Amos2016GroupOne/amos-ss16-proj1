@@ -1,0 +1,20 @@
+//This is the RTL version of the main scss file
+
+//include the main scss file so that we now can overwrite some properties to make it RTL
+@import "ionic-ltr.app.scss";
+
+/*
+Customize the ion-radio elements by overriding the variables
+in ionic's _radio.scss file:
+*/
+
+.item-radio .item-content{
+    /* give some room to the left for the checkmark icon */
+    padding-left: $item-padding * 4 !important;
+    padding-right: $item-padding !important;
+}
+
+.item-radio .radio-icon{
+    left:0 !important;
+    right: auto;
+}

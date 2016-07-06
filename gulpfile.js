@@ -11,15 +11,28 @@ var paths = {
   sass: ['./scss/**/*.scss']
 };
 
-gulp.task('default', ['sass']);
+gulp.task('default', ['sass-ltr', 'sass-rtl']);
 
-gulp.task('sass', function(done) {
-  gulp.src('./scss/ionic.app.scss')
+gulp.task('sass-ltr', function(done) {
+  gulp.src('./scss/ionic-ltr.app.scss')
     .pipe(sass())
     .on('error', sass.logError)
     .pipe(gulp.dest('./www/css/'))
     .pipe(minifyCss({
-      keepSpecialComments: 0
+        keepSpecialComments: 0
+    }))
+    .pipe(rename({ extname: '.min.css' }))
+    .pipe(gulp.dest('./www/css/'))
+    .on('end', done);
+});
+
+gulp.task('sass-rtl', function(done) {
+gulp.src('./scss/ionic-rtl.app.scss')
+    .pipe(sass())
+    .on('error', sass.logError)
+    .pipe(gulp.dest('./www/css/'))
+    .pipe(minifyCss({
+        keepSpecialComments: 0
     }))
     .pipe(rename({ extname: '.min.css' }))
     .pipe(gulp.dest('./www/css/'))
@@ -27,7 +40,7 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.sass, ['default']);
 });
 
 gulp.task('install', ['git-check'], function() {

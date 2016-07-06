@@ -32,22 +32,25 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 
     .run(function ($ionicPlatform, $cordovaBluetoothLE, $rootScope, $q, $cordovaGlobalization, Log, settings, availableLanguages, defaultLanguage, $translate, $timeout) {
 
-        ////defines were the html text should float (left or right). This is used in index.html then
-        //$rootScope.default_float = settings.settings.default_float;
-        $rootScope.default_float = '';
-       
-
+        //this function is used in app.js and in the settings controller
         $rootScope.changeLanguage = function () {
             console.log("tanslating to: " + settings.settings.language);
             // let angular-translate know that from now on this language has to be used
             var promise = $translate.use(settings.settings.language);
             //depending on the language, the text should float to the left or right
             if(settings.settings.language == 'ar-sy'){
+                $rootScope.default_direction = 'rtl';
+                $rootScope.opposite_direction = 'ltr';
                 $rootScope.default_float = 'right';
             }else{
+                $rootScope.default_direction = 'ltr';
+                $rootScope.opposite_direction = 'rtl';
                 $rootScope.default_float = 'left';
             }
             settings.persistSettings();
+            
+            switchDirectionIfNeeded($rootScope);
+
             return promise;
         }
     
@@ -59,12 +62,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'ngCordovaBlu
 				//angular-translate would return the translation id by default.
 				//So we register a fallback language, so angular-translate will return this translation instead of the missing one
 				$translate.fallbackLanguage(defaultLanguage);
-
+				
 				// this returns a promise so we have to return that again. If we wouldnt return it the then() will probably not wait for it.
 				return $rootScope.changeLanguage();
 
 			}
 		).then(function(data){
+		        
+                //load the css file for the reading direction of the initial language
+                addcssForCurrDirection($rootScope);
+		    
 				//make sure ionic specific stuff is only done after the translation was loaded, so warning popups are localized
 				$ionicPlatform.ready(function () {
 					// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -345,6 +352,27 @@ function setLocaleSetting($rootScope, settings, Log){
 	}
 }
 
+function switchDirectionIfNeeded($rootScope){
+    var allsuspects = document.getElementsByTagName("link");
+    for (var i = allsuspects.length; i >= 0; i--){ //search backwards within nodelist for matching elements to remove
+        if (allsuspects[i] && allsuspects[i].getAttribute("href")!=null &&
+        allsuspects[i].getAttribute("href").indexOf("css/ionic-" + $rootScope.opposite_direction + ".app.css") != -1){
+            
+            allsuspects[i].parentNode.removeChild(allsuspects[i]); //remove element by calling parentNode.removeChild()
+            addcssForCurrDirection($rootScope);
+            break;
+            
+        }
+    }
+}
 
-
-
+function addcssForCurrDirection($rootScope){
+    //dynamically load css file for RTL or LTR version of the app
+    var fileref = document.createElement("link");
+    fileref.setAttribute("rel", "stylesheet");
+    fileref.setAttribute("type", "text/css");
+    fileref.setAttribute("href", "css/ionic-" + $rootScope.default_direction + ".app.css");
+    if (typeof fileref!="undefined"){
+        document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
+}

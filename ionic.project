@@ -2,7 +2,8 @@
   "name": "BLEaring",
   "app_id": "",
   "gulpStartupTasks": [
-    "sass",
+    "sass-ltr",
+    "sass-rtl",
     "watch"
   ],
   "watchPatterns": [

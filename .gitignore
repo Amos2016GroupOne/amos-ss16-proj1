@@ -7,10 +7,12 @@ platforms/
 plugins/
 .vscode/
 www/lib
-www/css/ionic.app.css
-www/css/ionic.app.min.css
+www/css/ionic-ltr.app.css
+www/css/ionic-ltr.app.min.css
+www/css/ionic-rtl.app.css
+www/css/ionic-rtl.app.min.css
 resources/
-scss/
+scss/ionic-ltr.app.scss
 icon.png
 .project
 .settings/

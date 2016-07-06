@@ -23,7 +23,7 @@
 # <http://www.gnu.org/licenses/>.
 
 
-if [ ! -e "scss/ionic.app.scss" ]
+if [ ! -e "scss/ionic-ltr.app.scss" ]
 then
         echo "Setting up standard theme"
         echo standard | ./selectTheme.sh
