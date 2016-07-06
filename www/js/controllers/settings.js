@@ -29,9 +29,8 @@ angular.module('app.controllers')
 
     // Link the scope settings to the settings service
     $scope.settings = settings.settings;
-	
-	// Show/Hide advanced Settings
-	$scope.advanced = false;
+
+    $rootScope.advancedSettings = false;
 
     // Scope update function is the settings service persist function
     $scope.update = settings.persistSettings;
@@ -83,7 +82,7 @@ angular.module('app.controllers')
             hideLimitLabels: true
         }
     }
-    
+
     $scope.changedVolume = function() {
         $scope.settings.currentVolumeProfile = false;
         $scope.settings.mute = false;
@@ -153,17 +152,6 @@ angular.module('app.controllers')
         // Persist settings
         $scope.update();
     }
-	
-	// Show advanced Settings
-	$scope.showAdvanced = function()
-	{
-		$scope.advanced = true;
-	}
-	
-	$scope.hideAdvanced = function()
-	{
-		$scope.advanced = false;
-	}
 
     // Helper function to start the DBMeter and its output
     function startDBMeter() {
@@ -264,7 +252,7 @@ angular.module('app.controllers')
     });
 
     function volumeButtonPress(volDiff) {
-        $timeout(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand. 
+        $timeout(function() {	// Angular doesn't fire $apply on the events so if $broadcast is called outside angular's context, you are going to need to $apply by hand.
         // However if angular does fire it or its fired programmatically we have a problem so use $timeout instead.
 
             // Update Volume + checks for valid values (0 to 100)

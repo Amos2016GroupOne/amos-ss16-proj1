@@ -25,14 +25,15 @@
 
 // Controller for Tour
 angular.module('app.controllers')
-.controller('TourCtrl', function($scope, $ionicPlatform, settings) {
+.controller('TourCtrl', function($scope, $rootScope, $ionicPlatform, settings) {
     $scope.currentStep = 0;
 
     $scope.startTutorial = function() {
         $scope.currentStep = 1;
+        // As we tour through advanced settings, show them!
+        $rootScope.advancedSettings = true;
     }
 
-    var isFirstTourStep = true;  // first tourtip has no back button.
     $scope.appendTourStep = function(target, targetTab, title, content, at) {
 
         function miniTemplate(template, options) {
@@ -46,7 +47,7 @@ angular.module('app.controllers')
         var template =
             '<li target="{target}" target-tab="{targetTab}" at="{at}" class="tour popover {at} in" overlay>' +
             '  <div class="arrow"></div>' +
-            '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=false">&times;</a></h3>' +
+            '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=0">&times;</a></h3>' +
             '  <div class="popover-content">' +
             '    {content} ' +
             '  </div>' +
