@@ -30,12 +30,19 @@
 
 	  <ion-list>
 	    <div class="item item-divider">
+        {{ 'SETTINGS_TAB.TUTORIAL' | translate }}
+      </div>
+      <div class="item" ng-click="startTutorial()" id="startTutorial">
+        <i class="icon ion-help-circled"></i>
+        {{ 'SETTINGS_TAB.START_TUTORIAL' | translate }}
+      </div>
+	    <div class="item item-divider">
             {{ 'SETTINGS_TAB.VOLUME' | translate }}
         </div>
         <div class="item range">
           <i class="icon ion-volume-low" ng-if="default_direction == 'ltr'"></i>
           <i class="icon ion-volume-high" ng-if="default_direction == 'rtl'"></i>
-            <rzslider rz-slider-model="settings.volume" rz-slider-options="volumeSlider.options"></rzslider>
+            <rzslider id="volumeSetting" rz-slider-model="settings.volume" rz-slider-options="volumeSlider.options"></rzslider>
           <i class="icon ion-volume-high" ng-if="default_direction == 'ltr'" ng-init="refreshSlider()"></i>
           <i class="icon ion-volume-low" ng-if="default_direction == 'rtl'" ng-init="refreshSlider()"></i>
         </div>
@@ -88,7 +95,7 @@
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
-			<rzslider rz-slider-model="durationSlider.selectedIndex" rz-slider-options="durationSlider.options"></rzslider>
+			<rzslider id="scanDurationSetting" rz-slider-model="durationSlider.selectedIndex" rz-slider-options="durationSlider.options"></rzslider>
 		  <i class="icon ion-clock"></i>
 		</div>
         <div class="item item-divider">
