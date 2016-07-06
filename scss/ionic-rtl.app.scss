@@ -18,3 +18,23 @@ in ionic's _radio.scss file:
     left:0 !important;
     right: auto;
 }
+
+/*
+Customize the ion-toggle elements by overriding the variables
+in ionic's _toggle.scss file:
+*/
+
+.item-toggle .toggle{
+    left: $item-padding !important;
+}
+
+.toggle .track {
+    float: left !important;
+}
+
+.item-toggle,
+.item-toggle.item-complex .item-content {
+  // make sure list item content have enough padding on the left to fit the toggle
+  padding-left: ($item-padding * 3) + $toggle-width !important;
+  padding-right: $item-padding !important;
+}
