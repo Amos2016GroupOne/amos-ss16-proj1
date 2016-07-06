@@ -1,3 +1,5 @@
+"use strict"
+
 /*
  * This file is a modified version of
  * https://github.com/angular-ui/ui-tour/blob/master/src/tour.js
@@ -28,142 +30,116 @@
 angular.module('ui.tour', [])
 
 // REFACTOR: Is there maybe a better way to write this: ?
-.directive('uiTour', ['$timeout', '$parse', '$window', '$compile', '$ionicTabsDelegate', '$ionicScrollDelegate', function($timeout, $parse, $window, $compile, $ionicTabsDelegate, $ionicScrollDelegate){
+.directive('uiTour', ['$ionicPosition', '$q', '$timeout', '$parse', '$window', '$compile', '$ionicTabsDelegate', '$ionicScrollDelegate', function($ionicPosition, $q, $timeout, $parse, $window, $compile, $ionicTabsDelegate, $ionicScrollDelegate){
     return {
         link: function($scope, $element, $attributes) {
-            var model = $parse($attributes.uiTour);
 
+            // Compile all children
+            var children = $element.children();
+            for (var i = 0; i < children.length; ++i) {
+                $compile(children[i])($scope);
+            }
+
+            function validateStepNumber(stepNumber) {
+                if (stepNumber < 0) return 0;
+                if (stepNumber > $element.children().length) return 0;
+                if (!angular.isNumber(stepNumber)) return 0;
+                return stepNumber;
+            }
 
             // Watch model and change steps
             $scope.$watch($attributes.uiTour, function(newVal, oldVal){
-                if (angular.isNumber(newVal)) {
-                    showStep(newVal)
+                hideStep(validateStepNumber(oldVal));
+
+                // showo overlay...
+                if (validateStepNumber(newVal) === 0) {
+                    angular.element('.tour-overlay').removeClass('active');
                 } else {
-                    if (angular.isString(newVal)) {
-                        var stepNumber = 0,
-                            children = $element.children()
-                                angular.forEach(children, function(step, index) {
-                                    if (angular.element(step).attr('name') === newVal)
-                                        stepNumber = index+1;
-                                });
-                        model.assign($scope, stepNumber);
-                    } else {
-                        model.assign($scope, newVal && 1 || 0);
-                    }
+                    angular.element('.tour-overlay').addClass('active');
                 }
+                showStep(validateStepNumber(newVal));
             });
 
-            var oldStep = null;
+            function getStepElement(stepNumber) {
+                return $element.children().eq(stepNumber - 1);
+            }
+
+            function hideStep(stepNumber) {
+                if (stepNumber <= 0) return;
+                var elm = getStepElement(stepNumber);
+                elm.removeClass('active');
+            }
+
             // Show step
             function showStep(stepNumber) {
-                var elm, at, children = $element.children().removeClass('active');
+                if (stepNumber <= 0) return;
+                var stepEl = getStepElement(stepNumber),
+                    at  = stepEl.attr('at');
 
-                if (oldStep) {
-                    // Remove old step!
-                    oldStep.removeClass('active');
-                    oldStep.detach();
-                    // TODO: Hope for clever garbage collection ;)
-                    oldStep = null;
+                // TODO: wait for compile somehow
+
+                // TODO: do we need to do the following in a timeout?
+                // Get id of tab.
+                var targetTabId = parseInt(stepEl.attr('target-tab'));
+                if ($ionicTabsDelegate.selectedIndex() !== targetTabId) {
+                    $ionicTabsDelegate.select(targetTabId);
+
+                    // Fire ionic event loop here to let tab change happen, so that all
+                    // elements are in right place and the tourtip can be positioned correctly
+                    $scope.$digest();
                 }
 
-                elm = children.eq(stepNumber - 1);
-                if (stepNumber && elm.length) {
-                    // Make a copy of current tourtip that will be shown.
-                    elm = elm.clone();
+                var target, scrollView, inScrollView;
+                var windowOffset = { height: $window.innerHeight, width: $window.innerWidth };
 
-                    at = elm.attr('at');
+                // Since now the tab is changed we have a chance to find the target
+                target = angular.element(stepEl.attr('target'));
 
-                    $timeout(function(){
+                scrollView = $ionicScrollDelegate.getScrollView();
 
-                        // Get id of tab.
-                        var targetTabId = parseInt(elm.attr('target-tab'));
-                        if (targetTabId !== -2 && $ionicTabsDelegate.selectedIndex() !== targetTabId) {
-                            $ionicTabsDelegate.select(targetTabId);
+                // Is the target in the scrollView?
+                inScrollView = angular.element(scrollView.__content).find(stepEl.attr('target')).length > 0;
 
-                            // Fire ionic event loop here to let tab change happen, so that all
-                            // elements are in right place and the tourtip can be positioned correctly
-                            $scope.$digest();
-                        }
+                // Reset scroll
+                $ionicScrollDelegate.scrollTop(false); // takes too long. so subtract scrollview position from coordinates!
 
-                        // Since now the tab is changed we have a chance to find the target
-                        var target = angular.element(elm.attr('target'))[0];
+                var atTop = (at.indexOf('top') > -1);
 
-                        // Make the tool tip visible
-                        if (elm.attr('overlay') !== undefined) {
-                            $('.tour-overlay').addClass('active').css({
-                                marginLeft: target.offsetLeft + target.offsetWidth / 2 - 150,
-                                marginTop: target.offsetTop + target.offsetHeight / 2 - 150
-                            }).addClass('in');
-                        } else {
-                            $('.tour-overlay').removeClass('in');
-                            setTimeout(function(){
-                                $('.tour-overlay').removeClass('active');
-                            }, 1000);
-                        }
-                        elm.addClass('active');
-
-                        // Get the anchor element in which the tourtip is appended.
-                        // This leads to smoothly scrolling tooltips.
-                        if (target == angular.element('.scroll ' + elm.attr('target'))[0]) {
-                            var anchor = $('.scroll');
-                            var isInScroll = true;
-                        } else {
-                            var anchor = $('body');
-                        }
-
-
-                        var relativeTop = $(target).offset().top - anchor.offset().top;
-                        if(isInScroll) {
-                            // Scroll to element
-
-                            // Get height of highest scroll container.
-                            // (Highest is the active one)
-                            // TODO: Probably there is a better way to retrieve the scrollable height.
-                            var height = 0;
-                            $('.scroll').parent().each(function() {
-                                height = Math.max(height, $(this).height());
-                            });
-
-                            if (relativeTop > height) {
-                                $ionicScrollDelegate.scrollBottom(true);
-                            } else {
-                                $ionicScrollDelegate.scrollTo(relativeTop, $(target).offset().left, true);
-                            }
-                        }
-
-                        // Insert tourtip in anchor and compile content there
-                        elm = elm.appendTo(anchor);
-                        elm = $compile(elm)($scope);
-
-                        // Set tourtip position
-                        offset = {};
-                        offset.top = relativeTop;
-                        var atTop = (at.indexOf('top') > -1);
-
-                        // Little helper, full of side effects:
-                        function calculateTop() {
-                            return relativeTop + (atTop ? (-1*elm[0].offsetHeight) : (target.offsetHeight));
-                        }
-
-                        offset.top = calculateTop();
-
-                        // If not fitting on screen mirror it: top <--> bottom
-                        //if (offset.top < 0 || offset.top + elm[0].offsetHeight > anchor.height()) {
-                            //$(elm[0]).removeClass(atTop ? 'top' : 'bottom');
-                            //atTop = !atTop;
-                            //$(elm[0]).addClass(atTop ? 'top' : 'bottom');
-                            //offset.top = calculateTop();
-                        //}
-                        elm.css(offset);
-                        elm.find('.arrow').css({left: (target.offsetWidth / 2 + target.offsetLeft - elm[0].offsetLeft)});
-                        oldStep = elm;
-                    });
-                } else {
-                    $('.tour-overlay').removeClass('in');
-                    setTimeout(function(){
-                        $('.tour-overlay').removeClass('active');
-                    }, 1000);
+                // Move tourtip
+                var targetOffset  = $ionicPosition.offset(target);
+                if (inScrollView) {
+                    targetOffset.top += $ionicScrollDelegate.getScrollPosition().top;
                 }
+                var tourtipOffset = $ionicPosition.offset(stepEl);
+
+                var tourtipTop = targetOffset.top + (atTop ? -tourtipOffset.height : targetOffset.height);
+                // TODO: maybe use  tourtipEl.style.transform = tourtipEl.style.webkitTransform = 'translate3d(0,' + tourtipTop(v) +'px,0)';
+                //               arrowEl.style.transform = self._arrowEl.style.webkitTransform = 'translate3d(' + arrowLeft(v) + 'px,0,0)';
+                stepEl.css({top: tourtipTop});
+
+
+                // Make the tourtip visible
+                stepEl.addClass('active');
+
+
+
+                var newArrowLeft = (targetOffset.left + (targetOffset.width / 2)) - ((windowOffset.width - tourtipOffset.width) / 2);
+                stepEl.find('.arrow').css({left: newArrowLeft});
+
+                var stepElOffset = $ionicPosition.offset(stepEl);
+
+                var newTourtipBottom = tourtipTop + stepElOffset.height + 20;
+                if(newTourtipBottom > windowOffset.height && inScrollView) {
+                    var scrollDiff = Math.min(newTourtipBottom - windowOffset.height, scrollView.__maxScrollTop);
+                    $ionicScrollDelegate.scrollBy(0, scrollDiff, true);
+
+                    // Refresh tourtip position:
+                    stepEl.css({top: tourtipTop - scrollDiff});
+                }
+
+                // TODO: maybe do top or bottom half calculation and get the at from it.
+
+
             }
         }
     };
