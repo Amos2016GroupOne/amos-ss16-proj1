@@ -24,62 +24,70 @@
 
 
 /*
-   [ui-tour] li.active {
-     display: block;
-     position: absolute;
-     background: blue;
-     color: white;
-     padding: 20px;
-     margin-top: 10px;
+[ui-tour] li.active {
+display: block;
+position: absolute;
+background: blue;
+color: white;
+padding: 20px;
+margin-top: 10px;
 
-   }
-   [ui-tour] li.active div {
-     position: relative;
-     margin: -20px;
-     padding: 20px;
-   }
-   [ui-tour] li.active div:after {
-     content: '';
-     display: block;
-     position: absolute;
-     left: 50%;
-     top: -10px;
-     margin-left: -5px;
-     width: 0;
-     height: 0;
-     border-bottom: 10px solid black;
-     border-left: 10px solid transparent;
-     border-right: 10px solid transparent;
-   }
-   [ui-tour] li.active[at=top] div:after {
-     border-top: 10px solid black;
-     border-left: 10px solid transparent;
-     border-right: 10px solid transparent;
-   }
-   [ui-tour] li.active[at=right] div:after {
-     left: -10px;
-     top: 50%;
-     margin-left: 0;
-     margin-top: -5px;
-     border-right: 10px solid black;
-     border-top: 10px solid transparent;
-     border-bottom: 10px solid transparent;
-   }
+}
+[ui-tour] li.active div {
+position: relative;
+margin: -20px;
+padding: 20px;
+}
+[ui-tour] li.active div:after {
+content: '';
+display: block;
+position: absolute;
+left: 50%;
+top: -10px;
+margin-left: -5px;
+width: 0;
+height: 0;
+border-bottom: 10px solid black;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+}
+[ui-tour] li.active[at=top] div:after {
+border-top: 10px solid black;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+}
+[ui-tour] li.active[at=right] div:after {
+left: -10px;
+top: 50%;
+margin-left: 0;
+margin-top: -5px;
+border-right: 10px solid black;
+border-top: 10px solid transparent;
+border-bottom: 10px solid transparent;
+}
  */
 
 .tour.popover {
-  opacity: 0.9;
-  margin-left: 0;
-  left: 5%;
-  width: 90%;
-  height: auto;
-  max-width: none;
-  background-color: black;
-  color: white;
+
+        opacity: 0.9;
+        margin: 0 !important;
+        left: 5%;
+        width: 90%;
+        height: auto;
+        max-width: none;
+        background-color: black !important;
+        color: white;
+        visibility: hidden;
+        border-radius: 10px !important;
+}
+
+.tour.active {
+        visibility: visible;
 }
 
 .tour .popover-title {
         background-color: black;
+        color: white;
 }
 
 .tour .arrow:after {
@@ -111,31 +119,33 @@
 }
 
 .tour > li {
-  display: none;
+        display: none;
 }
 .active {
-  display: block !important;
+        display: block !important;
 }
 .tour-overlay {
-  z-index: -10;
-  display: none;
-  /*height: 500px;*/
-  /*width: 500px;*/
-  top: -4100px;
-  left: -4100px;
-  background: transparent;
-  border-radius: 8000px;
-  border: 4000px solid rgba(0,0,0,.5);
-  position: fixed;
-  -webkit-transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  -o-transition: all 1s ease;
-  transition: all 1s ease;
+        z-index: 10;
+
+        display: none;
+        /*height: 500px;*/
+        /*width: 500px;*/
+        top: 0px;
+        left: 0px;
+        background: transparent;
+        background-color: rgba(10,10,10,0.32);
+        position: absolute;
+        width: 100%;
+        height: 100%;
 }
-.tour-overlay.in {
-  /*height: 300px;*/
-  /*width: 300px;*/
-  top: -4000px;
-  left: -4000px;
+
+.tour-overlay.active {
+        display: block;
+}
+
+.popover.bottom {
+        margin-top: 10px !important;
+}
+.popover.top {
+        margin-top: -10px !important;
 }
