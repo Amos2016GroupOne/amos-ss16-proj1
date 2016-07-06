@@ -194,7 +194,7 @@ angular.module('app.controllers')
                 if (obj.status == "subscribedResult") {
                     Log.add("Subscribed Result");
 
-                    onBarometerData(obj, device);
+                    $scope.onBarometerData(obj, device);
 
                     var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                     Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
@@ -257,7 +257,7 @@ angular.module('app.controllers')
 
                 if (obj.status == "subscribedResult") {
                     Log.add("Subscribed Result");
-                    onAccelerometerData(obj, device);
+                    $scope.onAccelerometerData(obj, device);
 
                     var bytes = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
                     Log.add("Subscribe Success ASCII (" + bytes.length + "): " + $cordovaBluetoothLE.bytesToString(bytes));
@@ -428,7 +428,7 @@ angular.module('app.controllers')
         device.services = {};
     };
 
-    function onBarometerData(obj, device) {
+    $scope.onBarometerData = function(obj,device) {
         var a = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
         function sensorBarometerConvert(data) {
@@ -446,7 +446,7 @@ angular.module('app.controllers')
         }
     }
 
-    function onAccelerometerData(obj,device) {
+    $scope.onAccelerometerData = function(obj,device) {
         var acc = $cordovaBluetoothLE.encodedStringToBytes(obj.value);
 
         function sensorAccelerometerConvert(data) {
