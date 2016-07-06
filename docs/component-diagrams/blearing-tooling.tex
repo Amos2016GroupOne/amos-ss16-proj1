@@ -1,0 +1,31 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{umlcomponent}{Tooling}
+\umlbasiccomponent[x=6]{Github}
+\umlbasiccomponent[name=git,x=6,y=-4]{git (Source Control)}
+\umlbasiccomponent[name=travis,x=0]{Travis CI (Continuous Integration)}
+\umlbasiccomponent[y=-4]{Tests}
+
+
+\umldep{travis}{Github}
+\umldep{Github}{git}
+
+\umldep{travis}{Tests}
+
+\end{umlcomponent}
+
+
+\end{tikzpicture}
+
+\end{document}

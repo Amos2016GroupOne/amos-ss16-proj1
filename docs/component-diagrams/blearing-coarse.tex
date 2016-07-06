@@ -16,14 +16,26 @@
 \umlbasiccomponent[name=ionic,y=-4]{\ionic}
 \umlbasiccomponent[name=angular, y=-4,x=-4]{\angular}
 \umlbasiccomponent[y=-4,x=-8]{Bower}
+
+
+\begin{umlcomponent}{E2E Tests}
+
+\umlbasiccomponent[y=-2,x=-12]{Protractor}
+\umlbasiccomponent[y=-5,x=-12]{Selenium}
+
+\end{umlcomponent}
+
 \umlbasiccomponent[name=cordova,y=-4, x=4]{\cordova}
 
 \umlbasiccomponent[y=-4, x=8]{Gulp}
 
-\umlbasiccomponent[y=-4, x=12]{Karma}
-\umlbasiccomponent[y=-7, x=12]{Jasmine}
-\umlbasiccomponent[y=-7, x=16]{PhantomJS}
+\begin{umlcomponent}{Unit Tests}
 
+\umlbasiccomponent[y=-2, x=12]{Karma}
+\umlbasiccomponent[y=-5, x=12]{Jasmine}
+\umlbasiccomponent[y=-5, x=16]{PhantomJS}
+
+\end{umlcomponent}
 
 \umlbasiccomponent[y=-7,x=8]{NodeJS}
 
@@ -31,17 +43,19 @@
 
 \umldep{BLEaring}{ionic}
 \umldep{BLEaring}{Gulp}
-\umldep{BLEaring}{Karma}
+\umldep{BLEaring}{Unit Tests}
 \umldep{BLEaring}{angular}
 \umldep{BLEaring}{Bower}
 \umldep{BLEaring}{cordova}
+\umldep{BLEaring}{E2E Tests}
+\umldep{Protractor}{Selenium}
 
 \umldep{ionic}{angular}
 \umldep{ionic}{cordova}
 \umldep{Gulp}{NodeJS}
 \umldep{Karma}{Jasmine}
 \umldep{Karma}{PhantomJS}
-\umldep{Karma}{NodeJS}
+\umldep{Unit Tests}{NodeJS}
 
 \umldep{cordova}{NodeJS}
 
