@@ -65,6 +65,9 @@
 		"T5":"This toggle is used to enable the continuous measurement of the environment noise level. If activated it will automatically change the Volume Profile to outdoor if it gets too loud.",
 		"T6":"The graph tab can show you cool statistics.",
 		"T7":"If you wish to start the tracking of the graph hit this button. Remember: A device must be connected first!",
-		"T8":"Click this to restart the tutorial."
+		"T8":"Click this to restart the tutorial.",
+		"T9":"Click this to scan for devices.",
+		"T10":"Click this to show the Smartphone's motion sensor data.",
+        "T11":"Use this tab to connect to your hearing aid."
     }
 }

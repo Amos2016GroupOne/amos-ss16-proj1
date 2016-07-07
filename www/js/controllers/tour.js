@@ -79,10 +79,20 @@ angular.module('app.controllers')
     // TODO: broken...
     //$scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
     if (ionic.Platform.isAndroid()) {
-        $scope.appendTourStep("div.tab-nav>a:eq(2)",     1, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "bottom");
+        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "bottom");
     } else {
-        $scope.appendTourStep("div.tab-nav>a:eq(2)",     1, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
+        $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "top");
     }
+
+    if (ionic.Platform.isAndroid()) {
+        $scope.appendTourStep("div.tab-nav>a:eq(0)",     0, "{{'TAG_TAB.STATUS' | translate}}",                "{{'TOUR.T11' | translate}}", "bottom");
+    } else {
+        $scope.appendTourStep("div.tab-nav>a:eq(0)",     0, "{{'TAG_TAB.STATUS' | translate}}",                "{{'TOUR.T11' | translate}}", "top");
+    }
+
+
+    $scope.appendTourStep("#btnRefresh",     0, "{{'TAG_TAB.SCAN_FOR_DEVICES' | translate}}",          "{{'TOUR.T9' | translate}}");
+    $scope.appendTourStep("#btnMotionStart", 0, "{{'TAG_TAB.SHOW_MOTION' | translate}}",          "{{'TOUR.T10' | translate}}");
 
     // Does not work anymore as this button is not available all the time:
     //    $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
@@ -99,6 +109,5 @@ angular.module('app.controllers')
             }
         }, 1000);
 });
-// TODO: step about status tab
-// TODO: translate steps.
 // TODO: larger click boxes for arrows.
+// TODO: review step translation!
