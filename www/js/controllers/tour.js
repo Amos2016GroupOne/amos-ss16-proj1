@@ -49,13 +49,13 @@ angular.module('app.controllers')
         var template =
             '<li target="{target}" target-tab="{targetTab}" at="{at}" class="tour popover {at} in" overlay>' +
             '  <div class="arrow"></div>' +
-            '  <h3 class="popover-title">{title} <a class="close" ng-click="currentStep=0">&times;</a></h3>' +
+            '  <h3 class="popover-title">{title} <div class="close" ng-click="currentStep=0">&times;</div></h3>' +
             '  <div class="popover-content">' +
             '    {content} ' +
             '  </div>' +
             '  <div class="popover-navigation">' +
-            '    <i class="icon ion-arrow-left-b" style="float:left" ng-click="currentStep=currentStep-1"></i>' +
-            '    <i class="icon ion-arrow-right-b" style="float:right" ng-click="currentStep=currentStep+1"></i>' +
+            '    <div style="float:left" ng-click="currentStep=currentStep-1"><i class="icon ion-arrow-left-b" style="float: left"></i></div>' +
+            '    <div style="float:right" ng-click="currentStep=currentStep+1"><i class="icon ion-arrow-right-b" style="float: right"></i></div>' +
             '  </div>' +
             '</li>';
         var options = {target: target, targetTab: targetTab, title: title, content: content, at: at || "bottom"};
@@ -109,5 +109,4 @@ angular.module('app.controllers')
             }
         }, 1000);
 });
-// TODO: larger click boxes for arrows.
 // TODO: review step translation!

@@ -102,14 +102,25 @@ border-bottom: 10px solid transparent;
 }
 
 .tour .close, [ui-tour] >* .close:hover {
-        color: white;
+        color: white !important;
         opacity: 1;
+        /*font-size: 36px;*/
+}
+.tour .close {
+        width: 30%;
+        float: right;
+        text-align: right;
 }
 
 .tour .popover-navigation {
         color: white;
-        font-size: 24px;
+        font-size: 36px;
+}
 
+.tour .popover-navigation div {
+        width: 40%;
+        padding-left: 10px;
+        padding-right: 10px;
 }
 
 .tour .popover-navigation > .icon {
