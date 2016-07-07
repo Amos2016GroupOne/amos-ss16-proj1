@@ -30,8 +30,6 @@ angular.module('app.controllers')
     // Link the scope settings to the settings service
     $scope.settings = settings.settings;
 
-    $rootScope.advancedSettings = false;
-
     // Scope update function is the settings service persist function
     $scope.update = settings.persistSettings;
 

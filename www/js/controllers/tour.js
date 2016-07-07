@@ -25,13 +25,15 @@
 
 // Controller for Tour
 angular.module('app.controllers')
-.controller('TourCtrl', function($scope, $rootScope, $ionicPlatform, settings) {
+.controller('TourCtrl', function($scope, $rootScope, $ionicPlatform, settings, $timeout) {
     $scope.currentStep = 0;
 
     $scope.startTutorial = function() {
-        $scope.currentStep = 1;
-        // As we tour through advanced settings, show them!
         $rootScope.advancedSettings = true;
+        $timeout(function() {
+            $scope.currentStep = 1;
+        });
+        // As we tour through advanced settings, show them!
     }
 
     $scope.appendTourStep = function(target, targetTab, title, content, at) {
@@ -88,13 +90,15 @@ angular.module('app.controllers')
     $scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
 
 
-    $ionicPlatform.ready(function() {
-        if (settings.getSetting('start-with-tour')) {
-            console.log('startTutorial');
-            $scope.startTutorial();
-            settings.setSetting('start-with-tour', false);
-        }
-    });
+    // TODO: when tour is started automatically from a not-settings-tab an error occurs as some elements cannot be found by angular.element as it was not loaded correctly after the tab change...
+        $timeout(function() {
+            if (settings.getSetting('start-with-tour')) {
+                console.log('startTutorial');
+                $scope.startTutorial();
+                settings.setSetting('start-with-tour', false);
+            }
+        }, 1000);
 });
 // TODO: step about status tab
 // TODO: translate steps.
+// TODO: larger click boxes for arrows.

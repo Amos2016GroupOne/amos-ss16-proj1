@@ -76,70 +76,69 @@ angular.module('ui.tour', [])
                 var stepEl = getStepElement(stepNumber),
                     at  = stepEl.attr('at');
 
-                // TODO: wait for compile somehow
-
-                // TODO: do we need to do the following in a timeout?
-                // Get id of tab.
+                // Get id of tab
                 var targetTabId = parseInt(stepEl.attr('target-tab'));
+
+                // Maybe select tab
                 if ($ionicTabsDelegate.selectedIndex() !== targetTabId) {
                     $ionicTabsDelegate.select(targetTabId);
 
-                    // Fire ionic event loop here to let tab change happen, so that all
-                    // elements are in right place and the tourtip can be positioned correctly
-                    $scope.$digest();
                 }
 
-                var target, scrollView, inScrollView;
-                var windowOffset = { height: $window.innerHeight, width: $window.innerWidth };
+                // Wait for next digest to update selected tab
+                $timeout(function() {
 
-                // Since now the tab is changed we have a chance to find the target
-                target = angular.element(stepEl.attr('target'));
+                    var target, scrollView, inScrollView;
+                    var windowOffset = { height: $window.innerHeight, width: $window.innerWidth };
 
-                scrollView = $ionicScrollDelegate.getScrollView();
+                    // Since now the tab is changed we have a chance to find the target
+                    target = angular.element(stepEl.attr('target'));
 
-                // Is the target in the scrollView?
-                inScrollView = angular.element(scrollView.__content).find(stepEl.attr('target')).length > 0;
+                    scrollView = $ionicScrollDelegate.getScrollView();
 
-                // Reset scroll
-                $ionicScrollDelegate.scrollTop(false); // takes too long. so subtract scrollview position from coordinates!
+                    // Is the target in the scrollView?
+                    inScrollView = angular.element(scrollView.__content).find(stepEl.attr('target')).length > 0;
 
-                var atTop = (at.indexOf('top') > -1);
+                    // Reset scroll
+                    $ionicScrollDelegate.scrollTop(false); // takes too long. so subtract scrollview position from coordinates!
 
-                // Move tourtip
-                var targetOffset  = $ionicPosition.offset(target);
-                if (inScrollView) {
-                    targetOffset.top += $ionicScrollDelegate.getScrollPosition().top;
-                }
-                var tourtipOffset = $ionicPosition.offset(stepEl);
+                    var atTop = (at.indexOf('top') > -1);
 
-                var tourtipTop = targetOffset.top + (atTop ? -tourtipOffset.height : targetOffset.height);
-                // TODO: maybe use  tourtipEl.style.transform = tourtipEl.style.webkitTransform = 'translate3d(0,' + tourtipTop(v) +'px,0)';
-                //               arrowEl.style.transform = self._arrowEl.style.webkitTransform = 'translate3d(' + arrowLeft(v) + 'px,0,0)';
-                stepEl.css({top: tourtipTop});
+                    // Move tourtip
+                    var targetOffset  = $ionicPosition.offset(target);
+                    if (inScrollView) {
+                        targetOffset.top += $ionicScrollDelegate.getScrollPosition().top;
+                    }
+                    var tourtipOffset = $ionicPosition.offset(stepEl);
 
-
-                // Make the tourtip visible
-                stepEl.addClass('active');
-
+                    var tourtipTop = targetOffset.top + (atTop ? -tourtipOffset.height : targetOffset.height);
+                    // TODO: maybe use  tourtipEl.style.transform = tourtipEl.style.webkitTransform = 'translate3d(0,' + tourtipTop(v) +'px,0)';
+                    //               arrowEl.style.transform = self._arrowEl.style.webkitTransform = 'translate3d(' + arrowLeft(v) + 'px,0,0)';
+                    stepEl.css({top: tourtipTop});
 
 
-                var newArrowLeft = (targetOffset.left + (targetOffset.width / 2)) - ((windowOffset.width - tourtipOffset.width) / 2);
-                stepEl.find('.arrow').css({left: newArrowLeft});
-
-                var stepElOffset = $ionicPosition.offset(stepEl);
-
-                var newTourtipBottom = tourtipTop + stepElOffset.height + 20;
-                if(newTourtipBottom > windowOffset.height && inScrollView) {
-                    var scrollDiff = Math.min(newTourtipBottom - windowOffset.height, scrollView.__maxScrollTop);
-                    $ionicScrollDelegate.scrollBy(0, scrollDiff, true);
-
-                    // Refresh tourtip position:
-                    stepEl.css({top: tourtipTop - scrollDiff});
-                }
-
-                // TODO: maybe do top or bottom half calculation and get the at from it.
+                    // Make the tourtip visible
+                    stepEl.addClass('active');
 
 
+
+                    var newArrowLeft = (targetOffset.left + (targetOffset.width / 2)) - ((windowOffset.width - tourtipOffset.width) / 2);
+                    stepEl.find('.arrow').css({left: newArrowLeft});
+
+                    var stepElOffset = $ionicPosition.offset(stepEl);
+
+                    var newTourtipBottom = tourtipTop + stepElOffset.height + 20;
+                    if(newTourtipBottom > windowOffset.height && inScrollView) {
+                        var scrollDiff = Math.min(newTourtipBottom - windowOffset.height, scrollView.__maxScrollTop);
+                        $ionicScrollDelegate.scrollBy(0, scrollDiff, true);
+
+                        // Refresh tourtip position:
+                        stepEl.css({top: tourtipTop - scrollDiff});
+                    }
+
+                    // TODO: maybe do top or bottom half calculation and get the at from it.
+
+                }, 1);
             }
         }
     };
