@@ -72,7 +72,13 @@ angular.module('ui.tour', [])
 
             // Show step
             function showStep(stepNumber) {
-                if (stepNumber <= 0) return;
+                if (stepNumber <= 0) {
+                    // Unfreeze all scrolls that were freezed by scroll commands
+                    $timeout(function(){
+                        $ionicScrollDelegate.freezeAllScrolls(false);
+                    }, 20);
+                    return;
+                }
                 var stepEl = getStepElement(stepNumber),
                     at  = stepEl.attr('at');
 
@@ -93,6 +99,11 @@ angular.module('ui.tour', [])
 
                     // Since now the tab is changed we have a chance to find the target
                     target = angular.element(stepEl.attr('target'));
+                    if (! (target.length) ) {
+                        console.log('Could not find tour tip target ' + stepEl.attr('target') + ' ... skipping it!');
+                        $scope.currentStep++;
+                        return;
+                    }
 
                     scrollView = $ionicScrollDelegate.getScrollView();
 

@@ -71,7 +71,7 @@
 			<br><br>
 			<h2>{{ 'TAG_TAB.SMARTPHONE_MOTIONS' | translate }}</h2>
 			<button class="button button-royal" ng-if="motionOn == false" id="btnMotionStart" ng-click="startWatching()">{{ 'TAG_TAB.SHOW_MOTION' | translate }}</button>
-            <button class="button button-royal" ng-if="motionOn == true" id="btnMotionStop" ng-click="stopWatching()">{{ 'TAG_TAB.HIDE_MOTION' | translate }}</button>
+      <button class="button button-royal" ng-if="motionOn == true" id="btnMotionStop" ng-click="stopWatching()">{{ 'TAG_TAB.HIDE_MOTION' | translate }}</button>
 			<ul ng-if="motionOn == true">
 				<li>X: {{measurements.x}}</li>
 				<li>Y: {{measurements.y}}</li>
