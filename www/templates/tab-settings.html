@@ -36,8 +36,8 @@
           <i class="icon ion-volume-low" ng-if="default_direction == 'ltr'"></i>
           <i class="icon ion-volume-high" ng-if="default_direction == 'rtl'"></i>
             <rzslider rz-slider-model="settings.volume" rz-slider-options="volumeSlider.options"></rzslider>
-          <i class="icon ion-volume-high" ng-if="default_direction == 'ltr'"></i>
-          <i class="icon ion-volume-low" ng-if="default_direction == 'rtl'"></i>
+          <i class="icon ion-volume-high" ng-if="default_direction == 'ltr'" ng-init="refreshSlider()"></i>
+          <i class="icon ion-volume-low" ng-if="default_direction == 'rtl'" ng-init="refreshSlider()"></i>
         </div>
         <ion-toggle ng-model="settings.mute" ng-change="muteToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.MUTE' | translate }}</ion-toggle>
         <ion-list ng-show="settings.volumeProfiles.length > 0">
