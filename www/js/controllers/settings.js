@@ -106,6 +106,12 @@ angular.module('app.controllers')
         }
     }
 
+    $scope.refreshSlider = function () {
+        $timeout(function () {
+            $scope.$broadcast('rzSliderForceRender');
+        });
+    };
+    
     $rootScope.$on('$translateChangeSuccess', function () {
         if($scope.settings.language == 'ar-sy'){
             $scope.durationSlider.options.rightToLeft = true;
