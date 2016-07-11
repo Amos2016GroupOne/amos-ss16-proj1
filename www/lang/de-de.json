@@ -52,5 +52,20 @@
 		"SCANNING_ONLY_WORKS_WITH_LOCATION_SERVICE": "Entschuldigung. Scannen funktioniert nur mit aktiverten Standortdiensten",
 		"CONNECT_MORE_THAN_TWO_DEVICES": "Entschuldigung. Die Verbindung mit mehr als zwei Geräten ist nicht möglich",
 		"CONNECTION_FAILED": "Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut"
-	}
+	},
+    "TOUR": {
+        "VOLUME": "Volume",
+		"RESTART_THE_TUTORIAL":"Das Tutorial neu starten",
+		"T1":"Im Einstellungsreiter können Sie Ihr Hörgerät konfigurieren.",
+		"T2":"Hier kann man einstellen, wie lange nach Hörgeräten gesucht werden soll.",
+		"T3":"Hier lässt sich die Lautstärkeverstärkung des Hörgerätes einstellen.",
+		"T4":"Hier kann man die Sprache der App auswählen.",
+		"T5":"Mit diesem Schalter kann man das kontinuierliche Messen der Umgebungslautstärke aktivieren. Je nach Lautstärke wird dann ein volumenprofil ausgewählt.",
+		"T6":"Auf dem Graphreiter kann man ein paar coole Statistiken aus Messwerten anzeigen. ",
+		"T7":"[unused]",
+		"T8":"Hier klicken um das Tutorial neu zu starten.",
+		"T9":"Mit einem Click auf diesen Button starten Sie die Suche nach Hörgeräten.",
+		"T10":"Wenn man hier klickt werden Motionsensordaten des Smartphones angezeigt.",
+        "T11":"Auf dem Statusreiter kann man sich mit Hörgeräten verbinden"
+    }
 }

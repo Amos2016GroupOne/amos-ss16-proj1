@@ -221,4 +221,12 @@ Each ng-include generates a new child scope, which prototypically inherits from 
 Typing (say, "77") into the first input textbox causes the child scope to get a new myPrimitive scope property
 that hides/shadows the parent scope property of the same name. This is probably not what you want/expect.
 
+- css hell
+  - the generated styles and the standard `ionic.app.css` are setting many many style classes!
+  Especially styles for tooltips and bootstrap classes are set. So when e.g. adding
+  a plugin that uses `bootstrap.css` carfully chosen style adjustments become necessary.
 
+- angular can only work together with specific versions of jquery
+
+- 3rd-Party plugins are sometimes really bad documentated. Especially for all the plugins
+for ui tours that holds true!

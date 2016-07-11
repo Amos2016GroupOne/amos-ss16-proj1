@@ -30,12 +30,19 @@
 
 	  <ion-list>
 	    <div class="item item-divider">
+        {{ 'SETTINGS_TAB.TUTORIAL' | translate }}
+      </div>
+      <div class="item" ng-click="startTutorial()" id="startTutorial">
+        <i class="icon ion-help-circled"></i>
+        {{ 'SETTINGS_TAB.START_TUTORIAL' | translate }}
+      </div>
+	    <div class="item item-divider">
             {{ 'SETTINGS_TAB.VOLUME' | translate }}
         </div>
         <div class="item range">
           <i class="icon ion-volume-low" ng-if="default_direction == 'ltr'"></i>
           <i class="icon ion-volume-high" ng-if="default_direction == 'rtl'"></i>
-            <rzslider rz-slider-model="settings.volume" rz-slider-options="volumeSlider.options"></rzslider>
+            <rzslider id="volumeSetting" rz-slider-model="settings.volume" rz-slider-options="volumeSlider.options"></rzslider>
           <i class="icon ion-volume-high" ng-if="default_direction == 'ltr'" ng-init="refreshSlider()"></i>
           <i class="icon ion-volume-low" ng-if="default_direction == 'rtl'" ng-init="refreshSlider()"></i>
         </div>
@@ -57,11 +64,12 @@
           </ion-radio>
         </ion-list>
 	  </ion-list>
-	  <ion-list ng-if="advanced == true">
+	  <ion-list ng-if="$root.advancedSettings == true">
 	    <div class="item item-divider">
-        	{{ 'SETTINGS_TAB.LANGUAGE' | translate }}
-        </div>
+        {{ 'SETTINGS_TAB.LANGUAGE' | translate }}
+      </div>
 	    <ion-radio
+          id="languageSetting"
 			ng-repeat="lang in availableLanguages"
 			ng-value="lang"
 			ng-model="settings.language"
@@ -78,19 +86,19 @@
         </div>
 		<div class="item range">
 		  <i class="icon ion-clock"></i>
-			<rzslider rz-slider-model="durationSlider.selectedIndex" rz-slider-options="durationSlider.options"></rzslider>
+			<rzslider id="scanDurationSetting" rz-slider-model="durationSlider.selectedIndex" rz-slider-options="durationSlider.options"></rzslider>
 		  <i class="icon ion-clock"></i>
 		</div>
         <div class="item item-divider">
       		{{ 'SETTINGS_TAB.ENVIRONMENT_VOLUME' | translate }}: {{ decibel }} dB
         </div>
-        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
+        <ion-toggle ng-model="settings.isListeningDecibel" ng-change="decibelToggle()" toggle-class="toggle-calm"i id="dbMeterSetting">{{ 'SETTINGS_TAB.ACTIVATE_DB_METER' | translate }}</ion-toggle>
       </ion-list>
-	  
+
 	  <br><br>
-	  <button class="button button-royal" ng-if="advanced == false" id="btnShowAdvanced" ng-click="showAdvanced()">{{ 'SETTINGS_TAB.SHOW_ADVANCED' | translate }}</button>
-      <button class="button button-royal" ng-if="advanced == true" id="btnHideAdvanced" ng-click="hideAdvanced()">{{ 'SETTINGS_TAB.HIDE_ADVANCED' | translate }}</button>
-	
+	  <button class="button button-royal" ng-if="$root.advancedSettings == false" id="btnShowAdvanced" ng-click="$root.advancedSettings = !$root.advancedSettings">{{ 'SETTINGS_TAB.SHOW_ADVANCED' | translate }}</button>
+      <button class="button button-royal" ng-if="$root.advancedSettings == true" id="btnHideAdvanced" ng-click="$root.advancedSettings = !$root.advancedSettings">{{ 'SETTINGS_TAB.HIDE_ADVANCED' | translate }}</button>
+
 
   </ion-content>
 </ion-view>
