@@ -112,7 +112,7 @@ angular.module('app.controllers')
         });
     };
     
-    $rootScope.$on('$translateChangeSuccess', function () {
+    function setSliderRTLorLTR(){
         if($scope.settings.language == 'ar-sy'){
             $scope.durationSlider.options.rightToLeft = true;
             $scope.volumeSlider.options.rightToLeft = true;
@@ -120,6 +120,14 @@ angular.module('app.controllers')
             $scope.durationSlider.options.rightToLeft = false;
             $scope.volumeSlider.options.rightToLeft = false;
         }
+    }
+    
+    //determine if the sliders should be RTL or LTR and set "rightToLeft" accordingly
+    setSliderRTLorLTR();
+    
+    $rootScope.$on('$translateChangeSuccess', function () {
+        //also do this as soon as the language changes
+        setSliderRTLorLTR();
     });
 
     $scope.newVolumeProfileName = "";
