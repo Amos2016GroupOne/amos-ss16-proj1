@@ -503,7 +503,7 @@ angular.module('app.controllers')
             $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
                 "Y: " + acc[4] + ", " +
                 "Z: " + acc[5] * -1;
-        } else if(scope.currentDevice2.address == device.address) {
+        } else if($scope.currentDevice2.address == device.address) {
             $scope.accelerometer.accelerometerDev2 = "X: " + acc[3] + ", " +
                 "Y: " + acc[4] + ", " +
                 "Z: " + acc[5] * -1;
