@@ -54,7 +54,7 @@ angular.module('app.controllers')
             '    {content} ' +
             '  </div>' +
             '  <div class="popover-navigation">' +
-            '    <div style="float:left" ng-click="currentStep=currentStep-1"><i class="icon ion-arrow-left-b" style="float: left"></i></div>' +
+            '    <div style="float:left" ng-click="currentStep=currentStep-1" ng-show="currentStep>1"><i class="icon ion-arrow-left-b" style="float: left"></i></div>' +
             '    <div style="float:right" ng-click="currentStep=currentStep+1"><i class="icon ion-arrow-right-b" style="float: right"></i></div>' +
             '  </div>' +
             '</li>';
