@@ -123,8 +123,9 @@ angular.module('ui.tour', [])
                     var tourtipOffset = $ionicPosition.offset(stepEl);
 
                     var tourtipTop = targetOffset.top + (atTop ? -tourtipOffset.height : targetOffset.height);
-                    // TODO: maybe use  tourtipEl.style.transform = tourtipEl.style.webkitTransform = 'translate3d(0,' + tourtipTop(v) +'px,0)';
-                    //               arrowEl.style.transform = self._arrowEl.style.webkitTransform = 'translate3d(' + arrowLeft(v) + 'px,0,0)';
+                    // TODO: Maybe use tourtipEl.style.transform = tourtipEl.style.webkitTransform = 'translate3d(0,' + tourtipTop(v) +'px,0)';
+                    // arrowEl.style.transform = self._arrowEl.style.webkitTransform = 'translate3d(' + arrowLeft(v) + 'px,0,0)';
+                    // for fancier effects
                     stepEl.css({top: tourtipTop});
 
 
@@ -146,8 +147,6 @@ angular.module('ui.tour', [])
                         // Refresh tourtip position:
                         stepEl.css({top: tourtipTop - scrollDiff});
                     }
-
-                    // TODO: maybe do top or bottom half calculation and get the at from it.
 
                 }, 1);
             }

@@ -5,7 +5,7 @@ This document is designed to outline the general steps taken so far.
 Furthermore it aims to consolidate the discussions we had
 during this project and their arguments into one document.
 
-It is meant to be continously expanded as we make new design decisions.
+It is meant to be continuously expanded as we make new design decisions.
 
 ## Cordova
 
@@ -28,7 +28,7 @@ Is similarly to the installation a one liner.
 Cordova requires the developer to explicitly specify which platforms they wish to support and build the app for.
 For example reasons Android is used in the following however the steps are similar for iOS.
 
-This is done using the cordova command aswell.
+This is done using the cordova command as well.
 
     cordova platform add android --save
 
@@ -228,5 +228,5 @@ that hides/shadows the parent scope property of the same name. This is probably 
 
 - angular can only work together with specific versions of jquery
 
-- 3rd-Party plugins are sometimes really bad documentated. Especially for all the plugins
+- 3rd-Party plugins are sometimes really bad documented. Especially for all the plugins
 for ui tours that holds true!

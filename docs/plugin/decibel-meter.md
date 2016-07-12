@@ -16,7 +16,7 @@ the cordova dbmeter plugin offers a variable `DBMeter` in global scope:
 
   DBMeter.start(function(dB) {
     // this is called periodically whenever a new dB value was retrieved until DBMeter.stop() is called.
-    // so the next line will countinously log the loudness
+    // so the next line will continuously log the loudness
     console.log('loudness:' + dB + 'dB');
   });
   DBMeter.stop();

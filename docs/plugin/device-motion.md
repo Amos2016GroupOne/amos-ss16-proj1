@@ -27,7 +27,7 @@ iOS Issue:
 
 
 Why have you chosen it? 
-ngCordova offers this Plugin to meassure the Acceleration.
+ngCordova offers this Plugin to measure the Acceleration.
 As ngCordova is the recommended way to use a plugin (without trouble) we chose this one.
 
 What have you changed, if you have changed sthg.? 

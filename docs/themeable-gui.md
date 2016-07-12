@@ -2,8 +2,8 @@
 
 ## Goals:
 - use device OS' look'n'feel
-- easy customizeable
-- useable for elder people
+- easy customizable
+- usable for elder people
 
 ## First idea: using the ionic materials theme
 - http://ionicmaterial.com/

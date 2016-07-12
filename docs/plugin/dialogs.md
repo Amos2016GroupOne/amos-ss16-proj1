@@ -37,6 +37,6 @@ navigator.notification.confirm($translate.instant("PROMPT.TURN_ON_BLUETOOTH"), f
 
 
 Why did we choose it:
-We use it to interact with the user before the App is completly loaded.
+We use it to interact with the user before the App is completely loaded.
 For example:
-We need to activate the BLE. Therefore we need a interaction with the user. The plguin helps us to do this in a native way.
+We need to activate the BLE. Therefore we need a interaction with the user. The plugin helps us to do this in a native way.

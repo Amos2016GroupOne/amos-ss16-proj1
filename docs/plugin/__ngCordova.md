@@ -15,7 +15,7 @@ $cordovaCamera.getPicture(options)
   });
 
 
-A brandnew and maybe even better wrapper is ionic-native.
+A brand new and maybe even better wrapper is ionic-native.
 The description:
 Ionic Native is a curated set of wrappers for Cordova plugins that make adding any native functionality you need to your Ionic, Cordova, or Web View mobile app easy.
 https://github.com/driftyco/ionic-native
