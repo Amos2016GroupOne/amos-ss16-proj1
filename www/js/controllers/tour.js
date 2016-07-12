@@ -76,7 +76,6 @@ angular.module('app.controllers')
     $scope.appendTourStep("#scanDurationSetting", 1, "{{'SETTINGS_TAB.SCAN_DURATION' | translate}}",     "{{'TOUR.T2' | translate}}");
     $scope.appendTourStep("#volumeSetting",       1, "{{'TOUR.VOLUME' | translate}}",                    "{{'TOUR.T3' | translate}}");
     $scope.appendTourStep("#languageSetting",     1, "{{'SETTINGS_TAB.LANGUAGE' | translate}}",          "{{'TOUR.T4' | translate}}");
-    // TODO: broken...
     //$scope.appendTourStep("#dbMeterSetting",      1, "{{'SETTINGS_TAB.ACTIVATE_DB_METER' | translate}}", "{{'TOUR.T5' | translate}}", "top");
     if (ionic.Platform.isAndroid()) {
         $scope.appendTourStep("div.tab-nav>a:eq(2)",     2, "{{'GRAPH_TAB.GRAPH' | translate}}",                "{{'TOUR.T6' | translate}}", "bottom");
@@ -100,7 +99,6 @@ angular.module('app.controllers')
     $scope.appendTourStep("#startTutorial",       1, "{{'TOUR.RESTART_THE_TUTORIAL' | translate}}",      "{{'TOUR.T8' | translate}}");
 
 
-    // TODO: when tour is started automatically from a not-settings-tab an error occurs as some elements cannot be found by angular.element as it was not loaded correctly after the tab change...
         $timeout(function() {
             if (settings.getSetting('start-with-tour') === true) {
                 console.log('startTutorial');
@@ -109,4 +107,3 @@ angular.module('app.controllers')
             }
         }, 1000);
 });
-// TODO: review step translation!

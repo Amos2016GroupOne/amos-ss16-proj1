@@ -41,7 +41,7 @@ which specifies that everytime you run "ionic serve" it is run in chromium.
 Example Usage:
  
  // Open/Create a Database called my.db
- // You need to specifiy a iosDatabaseLocation
+ // You need to specify a iosDatabaseLocation
  var db = $cordovaSQLite.openDB({name: "my.db", iosDatabaseLocation: 'default'});
 
   $scope.execute = function() {

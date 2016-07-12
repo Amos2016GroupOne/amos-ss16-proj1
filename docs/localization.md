@@ -14,7 +14,7 @@ The actual translation is done via the new AngularJS module __[angular-translate
 - Expandability through easy to use interfaces
 - very good documentation
 - definition of namespaces
-- also offers support for Right-to-Left Languages, with non latin letters like arabic (see eg. __[here](https://www.sitepoint.com/multilingual-support-for-angularjs/)__)
+- also offers support for Right-to-Left Languages, with non Latin letters like Arabic (see eg. __[here](https://www.sitepoint.com/multilingual-support-for-angularjs/)__)
 
 The setup is very easy. After including the module, you write this:
 

@@ -33,7 +33,7 @@ The following build Services that provide support for iOS were taken into accoun
 - Setup a security profile. Follow [this guide](http://docs.ionic.io/docs/security-profiles)
 - If not done yet follow [this guide](http://docs.ionic.io/v2.0.0-beta/docs/ios-build-profiles) to setup the recently created security profile for iOS
 
-**Remeber** to replace `PROFILE_TAG` in all the following steps with the name of your created security profile
+**Remember** to replace `PROFILE_TAG` in all the following steps with the name of your created security profile
 - Now the command `ionic package build ios --profile PROFILE_TAG` will start a development build of your app
 - Use `ionic package list` to determine the recent `BUILD_ID`
 - Use `ionic package download BUILD_ID` to download the newly generated .ipa file from the build server
@@ -42,8 +42,6 @@ The following build Services that provide support for iOS were taken into accoun
 #### Configuring travisCI to kick off iOS build
 - Add the following lines to the `.travis.yml` in the root directory:
 ```yaml
-# TODO: echo-automate login if necessary? Or is it only necessary to login once if an app ID was given?
-# TODO: test!
 - ionic package build ios --profile PROFILE_TAG | grep "Build ID" | cut -d ' ' -f 3
 ```
 

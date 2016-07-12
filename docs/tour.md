@@ -21,7 +21,7 @@ the given ionic app.
 
 
 - Also We had a look at https://github.com/loringdodge/ionic-tour
-  - there was no licence given
+  - there was no license given
   - there seems to be an issue when using multiple tabs what we are doing.
 
 
