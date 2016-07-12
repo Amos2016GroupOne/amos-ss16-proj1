@@ -91,7 +91,7 @@ angular.module('app.controllers')
 
 
     $scope.appendTourStep("#btnRefresh, #btnStopRefresh",     0, "{{'TAG_TAB.SCAN_FOR_DEVICES' | translate}}",          "{{'TOUR.T9' | translate}}");
-    $scope.appendTourStep("#btnMotionStart, #btnMotionStop", 0, "{{'TAG_TAB.SHOW_MOTION' | translate}}",          "{{'TOUR.T10' | translate}}");
+    $scope.appendTourStep("#btnMotionStart, #btnMotionStop", 0, "{{'TAG_TAB.SHOW_MOTION' | translate}}",          "{{'TOUR.T10' | translate}}", "top");
 
     // Does not work anymore as this button is not available all the time:
     //    $scope.appendTourStep("#btnTrackGraph",       2, "{{'GRAPH_TAB.TRACK_GRAPH' | translate}}",          "{{'TOUR.T7' | translate}}", "bottom");
