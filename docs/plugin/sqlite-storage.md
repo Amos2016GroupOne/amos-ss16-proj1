@@ -32,6 +32,11 @@ We need to specify a location where to store the data, but only in IOS.
     Library: Library subdirectory - backed up by iCloud, NOT visible to iTunes
     Documents: Documents subdirectory - visible to iTunes and backed up by iCloud
 
+Browser Issue:
+If you use firefox you get the error "openDatabase is not defined". That is because you are trying to open a SQL storage but firefox has no such feature
+and has no plans to implement it. The easiest fix is to just use chromium. This is was defined in our project with "ionic serve -f chromium-browser", 
+which specifies that everytime you run "ionic serve" it is run in chromium.
+
 
 Example Usage:
  
