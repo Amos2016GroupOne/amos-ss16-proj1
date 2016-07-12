@@ -480,10 +480,7 @@ angular.module('app.controllers')
         var date = new Date();
         var time = "" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-        dataStorage.storeData("accelerometer-x", acc[3]);
-        dataStorage.storeData("accelerometer-y", acc[4]);
-        dataStorage.storeData("accelerometer-z", acc[5]);
-        dataStorage.storeData("accelerometer-time", time);
+
 
         // Save persistent (ugly workaround)
         $ionicPlatform.ready(function() {
@@ -503,10 +500,18 @@ angular.module('app.controllers')
             $scope.accelerometer.accelerometerDev1 = "X: " + acc[3] + ", " +
                 "Y: " + acc[4] + ", " +
                 "Z: " + acc[5] * -1;
+                dataStorage.storeData("accelerometer-x", acc[3]);
+                dataStorage.storeData("accelerometer-y", acc[4]);
+                dataStorage.storeData("accelerometer-z", acc[5]);
+                dataStorage.storeData("accelerometer-time", time);
         } else if($scope.currentDevice2.address == device.address) {
             $scope.accelerometer.accelerometerDev2 = "X: " + acc[3] + ", " +
                 "Y: " + acc[4] + ", " +
                 "Z: " + acc[5] * -1;
+                dataStorage.storeData("accelerometer-2-x", acc[3]);
+                dataStorage.storeData("accelerometer-2-y", acc[4]);
+                dataStorage.storeData("accelerometer-2-z", acc[5]);
+                dataStorage.storeData("accelerometer-2-time", time);
         } else {
             Log.add("onAccelerometerData: no matching device" + JSON.stringify(device.address));
         }
