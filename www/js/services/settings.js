@@ -65,6 +65,7 @@ angular.module('app.services')
         // Use angular.toJson as angular overrides JSON.stringify to automatically
         // include hash properties. We do not want this.
         localStorage.setItem(name, angular.toJson(value));
+        settings[name] = value;
     }
 
     // Function to query settings by name
