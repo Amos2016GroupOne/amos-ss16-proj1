@@ -1,0 +1,39 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\umlbasiccomponent{BLEaring}
+\umlbasiccomponent[name=ionic,y=-4]{\ionic}
+\umlbasiccomponent[name=angular, y=-4,x=-4]{\angular}
+
+
+\umlbasiccomponent[name=cordova,y=-4, x=4]{\cordova}
+
+\umlbasiccomponent[y=-4, x=8]{Cordova Plugins}
+
+
+
+
+\umldep{BLEaring}{ionic}
+\umldep{BLEaring}{angular}
+\umldep{BLEaring}{cordova}
+\umldep{BLEaring}{Cordova Plugins}
+
+\umldep{ionic}{angular}
+\umldep{ionic}{cordova}
+\umldep{Cordova Plugins}{cordova}
+
+
+
+\end{tikzpicture}
+\end{document}

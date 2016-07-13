@@ -1,0 +1,44 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{umlcomponent}{Build Dependencies}
+\umlbasiccomponent[name=ionic]{\ionic}
+\umlbasiccomponent[x=-4]{Bower}
+\umlbasiccomponent[name=cordova,y=-4]{\cordova}
+\umlbasiccomponent[y=-7]{NPM}
+\umlbasiccomponent[y=-4,x=-4]{cordova-icon}
+\umlbasiccomponent[y=-7,x=-4]{imagemagick}
+\umlbasiccomponent[x=4]{Android SDK / XCode}
+
+\umlbasiccomponent[y=-4, x=4]{Gulp}
+
+\umlbasiccomponent[y=-7,x=4]{NodeJS}
+
+\end{umlcomponent}
+
+
+\umldep{ionic}{cordova}
+\umldep{Gulp}{NodeJS}
+
+\umldep{cordova}{NodeJS}
+
+\umldep{cordova}{NPM}
+
+\umldep{NPM}{NodeJS}
+
+\umldep{cordova}{Android SDK / XCode}
+\umldep{cordova-icon}{cordova}
+\umldep{cordova-icon}{imagemagick}
+\end{tikzpicture}
+
+\end{document}

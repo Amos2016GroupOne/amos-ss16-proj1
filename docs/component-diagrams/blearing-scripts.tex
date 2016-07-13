@@ -1,0 +1,28 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{umlcomponent}{Theme Selector}
+\umlbasiccomponent[x=4]{bash}
+\umlbasiccomponent[x=0]{inkscape}
+\end{umlcomponent}
+
+\begin{umlcomponent}{docker/build}
+\umlbasiccomponent[x=10]{bash}
+\umlbasiccomponent[x=14]{Build Dependencies}
+
+
+\end{umlcomponent}
+
+\end{tikzpicture}
+
+\end{document}

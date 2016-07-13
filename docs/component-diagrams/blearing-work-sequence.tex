@@ -1,0 +1,49 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+
+\begin{umlseqdiag}
+\umlactor{Developer}
+\umldatabase{Github}
+
+\begin{umlcall}[op=checksOut, return=]{Developer}{Github}
+
+\end{umlcall}
+
+\begin{umlcallself}[op={Creates Branch}]{Developer}
+
+
+\end{umlcallself}
+\begin{umlcallself}[op={Works}, dt=5]{Developer}
+
+\end{umlcallself}
+
+\begin{umlcall}[op=Pushes Branch, return=,dt=5]{Developer}{Github}
+
+\end{umlcall}
+
+
+\begin{umlcall}[op=Creates Pull Request, return=Discussion]{Developer}{Github}
+
+\end{umlcall}
+
+
+\begin{umlcall}[op=Merges Pull Request,dt=5]{Developer}{Github}
+
+\end{umlcall}
+
+\end{umlseqdiag}
+
+\end{tikzpicture}
+
+\end{document}

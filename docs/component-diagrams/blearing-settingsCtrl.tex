@@ -1,0 +1,27 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{umlcomponent}{SettingsCtrl}
+\umlbasiccomponent[x=-4,y=-3]{Ionic}
+\umlbasiccomponent{timeout}
+\umlbasiccomponent[y=0,x=-4]{availableLanguages}
+\umlbasiccomponent[y=-3]{cordova-plugin-dbmeter}
+\umlbasiccomponent[x=4]{translate}
+
+\umlbasiccomponent[y=-3, x=4]{settingsService}
+
+\end{umlcomponent}
+
+\end{tikzpicture}
+
+\end{document}
