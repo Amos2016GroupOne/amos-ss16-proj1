@@ -1,0 +1,29 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{umlcomponent}{GraphCtrl}
+\umlbasiccomponent{q}
+\umlbasiccomponent[x=-4]{angular-chart}
+\umlbasiccomponent[y=-3]{Ionic}
+\umlbasiccomponent[name=chart,y=-6,x=2]{Chart.js}
+\umlbasiccomponent[y=-3,x=-4]{cordova-sqlite-storage}
+\umlbasiccomponent[y=-6,x=-2]{dataStorageService}
+\umlbasiccomponent[x=4]{translate}
+
+\umlbasiccomponent[y=-3, x=4]{settingsService}
+
+\end{umlcomponent}
+
+\end{tikzpicture}
+
+\end{document}

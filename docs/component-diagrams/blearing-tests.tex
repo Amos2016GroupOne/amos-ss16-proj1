@@ -1,0 +1,47 @@
+\documentclass[]{standalone}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{tikz-uml}
+
+
+
+\newcommand{\ionic}{Ionic 1.7.x}
+\newcommand{\angular}{Angular 1.x}
+\newcommand{\cordova}{Cordova 6.2.x}
+
+
+\begin{document}
+\begin{tikzpicture}
+\umlbasiccomponent{BLEaring}
+
+
+\begin{umlcomponent}{E2E Tests}
+
+\umlbasiccomponent[y=-2,x=-4]{Protractor}
+\umlbasiccomponent[y=-5,x=-4]{Selenium}
+
+\end{umlcomponent}
+
+
+\begin{umlcomponent}{Unit Tests}
+
+\umlbasiccomponent[y=-2, x=4]{Karma}
+\umlbasiccomponent[y=-5, x=4]{Jasmine}
+\umlbasiccomponent[y=-5, x=8]{PhantomJS}
+
+\end{umlcomponent}
+
+\umlbasiccomponent[y=-7,x=0]{NodeJS}
+
+\umldep{BLEaring}{Unit Tests}
+\umldep{BLEaring}{E2E Tests}
+\umldep{Protractor}{Selenium}
+
+\umldep{Karma}{Jasmine}
+\umldep{Karma}{PhantomJS}
+\umldep{Unit Tests}{NodeJS}
+
+
+
+\end{tikzpicture}
+\end{document}
